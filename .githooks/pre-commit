@@ -1,0 +1,3 @@
+#!/bin/sh
+# Stops a commit if Stack Map lint finds a leaked key or a broken workflow.
+node scripts/stack-map-lint.mjs || { echo "Commit stopped by Stack Map lint. Fix the errors above."; exit 1; }

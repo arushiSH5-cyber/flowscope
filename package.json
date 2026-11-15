@@ -1,0 +1,10 @@
+{
+  "name": "stack-map",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "lint": "node scripts/stack-map-lint.mjs",
+    "lint:strict": "node scripts/stack-map-lint.mjs --strict",
+    "hooks": "git config core.hooksPath .githooks"
+  }
+}

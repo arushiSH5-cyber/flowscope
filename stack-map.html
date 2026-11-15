@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#081524">
+<title>Stack Map</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+ --bg:#081524;--bg2:#0b1b2e;--panel:#10233a;--panel2:#152c48;--line:#1f3a5a;--line2:#2a4b70;
+ --ink:#eef3ff;--soft:#a3b5cf;--mute:#7088a6;
+ --pink:#f5a3bf;--teal:#7bd9ce;--gold:#f0ca7e;--lav:#9fa7e5;--bad:#ff8d8d;--good:#8fd99f;--btnInk:#17142b;
+ --font:"Nunito",ui-rounded,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+ --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:var(--bg);color:var(--ink);font-family:var(--font);font-weight:600;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+button:disabled{opacity:.5;cursor:default}
+code,.mono{font-family:var(--mono);font-size:.9em}
+svg.i{width:18px;height:18px;flex:none}
+.btn{text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 16px;border-radius:14px;font-weight:800;font-size:14.5px;background:var(--pink);color:var(--btnInk);box-shadow:0 3px 0 #b8728c;white-space:nowrap;transition:transform .12s}
+.btn:active{transform:translateY(2px);box-shadow:0 1px 0 #b8728c}
+.btn.teal{background:var(--teal);box-shadow:0 3px 0 #3a9a90}
+.btn.ghost{background:var(--panel2);color:var(--ink);box-shadow:none;border:1px solid var(--line2)}
+.btn.ghost:hover{border-color:var(--teal)}
+.btn.sm{padding:7px 12px;font-size:13.5px;border-radius:11px}
+.tag{display:inline-flex;align-items:center;padding:3px 9px;border-radius:999px;font-size:11.5px;font-weight:800;letter-spacing:.02em;background:var(--panel2);border:1px solid var(--line2);color:var(--soft);white-space:nowrap}
+.tag.demo{color:var(--gold);border-color:color-mix(in srgb,var(--gold) 50%,transparent);background:transparent}
+
+/* layout */
+#top{height:62px;display:flex;align-items:center;gap:14px;padding:0 18px;border-bottom:1px solid var(--line);background:var(--bg2)}
+#top .logo{width:44px;height:38px;flex:none}
+#top .ttl{display:flex;flex-direction:column;line-height:1.15;min-width:0}
+#top .ttl b{font-size:17px;font-weight:900}
+#top .ttl span{font-size:12.5px;color:var(--soft);display:flex;gap:8px;align-items:center;white-space:nowrap;overflow:hidden}
+#top .acts{margin-left:auto;display:flex;gap:8px}
+#app{display:grid;grid-template-columns:minmax(0,1fr) 380px;height:calc(100vh - 62px);height:calc(100dvh - 62px)}
+#stage{position:relative;overflow:hidden;background:radial-gradient(ellipse at 50% 0%,#14365a 0%,#0a1d33 55%,#06111f 100%)}
+#cv{position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:grab}
+#cv.drag{cursor:grabbing}#cv.hov{cursor:pointer}
+#ov{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:space-between;padding:14px;pointer-events:none;gap:10px}
+#ov>*{pointer-events:auto}
+#glance{align-self:flex-start;display:flex;gap:14px;align-items:center;background:rgba(9,22,40,.78);backdrop-filter:blur(8px);border:1px solid var(--line2);border-radius:18px;padding:12px 16px;max-width:min(620px,100%)}
+#ring{width:58px;height:58px;flex:none;position:relative}
+#ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+#ring b{position:absolute;inset:0;display:grid;place-items:center;font-size:17px;font-weight:900}
+#glance h1{font-size:19px;font-weight:900;line-height:1.2}
+#glance h1 em{font-style:normal;color:var(--teal)}
+#glance p{font-size:13.5px;color:var(--soft);margin-top:3px;line-height:1.35}
+#bottom{display:flex;flex-direction:column;gap:10px}
+#brow{display:flex;gap:10px;align-items:flex-end;justify-content:space-between}
+#chips{display:flex;gap:6px;flex-wrap:wrap;min-width:0}
+.chip{flex:none;white-space:nowrap;display:inline-flex;align-items:center;gap:6px;padding:6px 11px;border-radius:999px;background:rgba(16,35,58,.85);border:1px solid var(--line2);font-size:12.5px;font-weight:800;color:var(--soft)}
+.chip i{width:9px;height:9px;border-radius:50%}
+.chip.on{color:var(--ink);border-color:var(--ink)}
+#ctrls{display:flex;gap:6px;flex:none}
+.cbtn{width:38px;height:38px;border-radius:12px;background:rgba(16,35,58,.9);border:1px solid var(--line2);display:grid;place-items:center}
+.cbtn:hover{border-color:var(--teal)}
+#tl{background:rgba(9,22,40,.82);backdrop-filter:blur(8px);border:1px solid var(--line2);border-radius:16px;padding:10px 14px}
+#tlHead{display:flex;justify-content:space-between;gap:10px;font-size:13px;margin-bottom:8px;align-items:baseline}
+#tlHead b{font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#tlHead span{color:var(--soft);white-space:nowrap}
+#track{position:relative;height:26px;display:flex;align-items:center;justify-content:space-between;gap:4px}
+#track:before{content:"";position:absolute;left:8px;right:8px;top:12px;height:2px;background:var(--line2)}
+.tick{position:relative;width:18px;height:18px;border-radius:50%;background:var(--bg);border:2.5px solid var(--teal);flex:none;z-index:1}
+.tick.bad{border-color:var(--bad)}.tick.fix{border-color:var(--good);background:color-mix(in srgb,var(--good) 30%,var(--bg))}
+.tick.on{transform:scale(1.35);background:var(--ink)}
+.tick:hover{transform:scale(1.25)}
+#tip{position:absolute;pointer-events:none;background:#eef3ff;color:#0b1b2e;padding:7px 11px;border-radius:10px;font-size:13px;font-weight:800;max-width:280px;line-height:1.35;opacity:0;transition:opacity .12s;z-index:5;box-shadow:0 8px 24px rgba(0,0,0,.35)}
+#tip small{display:block;font-weight:700;color:#3d5576;font-size:12px}
+#cap{position:absolute;left:50%;top:5%;transform:translateX(-50%);text-align:center;pointer-events:none;opacity:0;transition:opacity .3s;width:min(640px,90%)}
+#cap .k{font-family:var(--mono);font-size:12.5px;color:var(--teal);letter-spacing:.06em}
+#cap .t{font-size:clamp(24px,4vw,40px);font-weight:900;text-shadow:0 4px 30px rgba(0,0,0,.6);margin:4px 0}
+#cap .s{font-size:15px;color:var(--soft);text-shadow:0 2px 12px rgba(0,0,0,.8)}
+#skipTour{position:absolute;top:14px;right:14px;display:none;z-index:7}
+#stage.touring #ov{opacity:0;pointer-events:none}#stage.touring #ov>*{pointer-events:none}
+#ov{transition:opacity .3s}
+
+#side{border-left:1px solid var(--line);background:var(--bg2);overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:12px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:14px}
+.card h3{font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--soft);display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;font-weight:900}
+.row{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:13px;background:var(--panel2);border:1px solid transparent;width:100%;text-align:left}
+.row:hover{border-color:var(--line2)}
+.rows{display:flex;flex-direction:column;gap:7px}
+.row .ic{width:34px;height:30px;flex:none;display:grid;place-items:center}
+.row .tx{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+.row .tx b{font-size:14px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .tx span{font-size:12.5px;color:var(--soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dot{width:9px;height:9px;border-radius:50%;flex:none}
+.sico{width:30px;height:30px;border-radius:10px;display:grid;place-items:center;color:#0b1b2e}
+.sico svg{width:17px;height:17px}
+.catlbl{font-size:11.5px;color:var(--mute);font-weight:800;margin:8px 2px 2px;text-transform:uppercase;letter-spacing:.08em}
+.flow{display:flex;align-items:center;gap:8px;font-size:13.5px;padding:7px 2px;border-bottom:1px dashed var(--line)}
+.flow:last-child{border:0}
+.flow .d{flex:1;color:var(--soft);line-height:1.35}
+.flow b{white-space:nowrap}
+.empty{color:var(--soft);font-size:14px;line-height:1.45}
+.foot{color:var(--mute);font-size:12px;line-height:1.45;padding:0 4px 6px}
+
+/* drawer */
+#scrim{position:fixed;inset:0;background:rgba(3,9,18,.5);opacity:0;pointer-events:none;transition:opacity .2s;z-index:60}
+#scrim.on{opacity:1;pointer-events:auto}
+#drawer{position:fixed;top:0;right:0;bottom:0;width:min(560px,100%);background:var(--bg2);border-left:1px solid var(--line);z-index:61;transform:translateX(103%);transition:transform .28s cubic-bezier(.3,1,.4,1),visibility 0s .28s;display:flex;flex-direction:column;visibility:hidden}
+#drawer.on{transform:none;visibility:visible;transition:transform .28s cubic-bezier(.3,1,.4,1)}
+#dHead{display:flex;gap:12px;align-items:center;padding:16px 18px;border-bottom:1px solid var(--line)}
+#dHead .ic{width:46px;height:42px;flex:none;display:grid;place-items:center}
+#dHead .tx{flex:1;min-width:0}
+#dHead h2{font-size:19px;font-weight:900;line-height:1.2}
+#dHead p{font-size:13px;color:var(--soft);margin-top:2px}
+#dBody{flex:1;overflow-y:auto;padding:16px 18px 24px;display:flex;flex-direction:column;gap:16px}
+#dFoot{display:flex;gap:8px;padding:12px 18px;border-top:1px solid var(--line);flex-wrap:wrap}
+#dFoot .btn{flex:1}
+.sec h4{font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--soft);margin-bottom:8px;font-weight:900}
+.lead{font-size:16px;line-height:1.5}
+.lead mark{background:none;color:var(--pink);font-weight:900}
+.code{background:#06101d;border:1px solid var(--line);border-radius:12px;overflow:hidden;font-family:var(--mono);font-size:12.5px}
+.code .fh{display:flex;justify-content:space-between;padding:7px 12px;background:var(--panel);border-bottom:1px solid var(--line);color:var(--soft);font-size:12px}
+.code .ln{display:flex;white-space:pre;overflow-x:auto}
+.code .ln i{font-style:normal;color:var(--mute);width:38px;flex:none;text-align:right;padding-right:10px;user-select:none}
+.code .ln.hl{background:rgba(255,141,141,.13)}
+.code .ln.add{background:rgba(143,217,159,.12)}.code .ln.add i:after{content:" +";color:var(--good)}
+.code .ln.del{background:rgba(255,141,141,.12);text-decoration:line-through;text-decoration-color:rgba(255,141,141,.5)}.code .ln.del i:after{content:" -";color:var(--bad)}
+.code .ln span{padding:2px 10px 2px 0}
+.note{border-radius:14px;padding:11px 13px;font-size:14px;line-height:1.45;background:var(--panel);border:1px solid var(--line)}
+.note.bad{border-color:color-mix(in srgb,var(--bad) 45%,transparent);background:color-mix(in srgb,var(--bad) 8%,var(--panel))}
+.note.good{border-color:color-mix(in srgb,var(--good) 45%,transparent);background:color-mix(in srgb,var(--good) 8%,var(--panel))}
+.note.warn{border-color:color-mix(in srgb,var(--gold) 45%,transparent);background:color-mix(in srgb,var(--gold) 7%,var(--panel))}
+.note b{display:block;margin-bottom:2px}
+.rule{font-family:var(--mono);font-size:13px;line-height:1.5;background:#06101d;border:1px solid var(--line);border-radius:12px;padding:11px 13px;margin:8px 0}
+.files{display:flex;flex-wrap:wrap;gap:6px}
+.fchip{font-family:var(--mono);font-size:12px;padding:5px 9px;border-radius:9px;background:var(--panel2);border:1px solid var(--line2)}
+.fchip:hover,.fchip.on{border-color:var(--teal)}
+.keys{display:flex;flex-direction:column;gap:6px}
+.key{display:flex;align-items:center;gap:10px;font-size:13.5px;padding:8px 10px;border-radius:11px;background:var(--panel)}
+.key code{flex:1;overflow:hidden;text-overflow:ellipsis}
+.st{font-size:11.5px;font-weight:900;padding:3px 8px;border-radius:999px;white-space:nowrap}
+.st.safe{color:var(--good);background:color-mix(in srgb,var(--good) 15%,transparent)}
+.st.leak{color:var(--bad);background:color-mix(in srgb,var(--bad) 15%,transparent)}
+.st.miss{color:var(--gold);background:color-mix(in srgb,var(--gold) 15%,transparent)}
+.st.pub{color:var(--soft);background:var(--panel2)}
+.meter{display:flex;gap:4px;margin:6px 0}
+.meter i{flex:1;height:9px;border-radius:5px;background:var(--line2)}
+.meter.easy i:nth-child(1){background:var(--good)}.meter.med i:nth-child(-n+2){background:var(--gold)}.meter.hard i{background:var(--bad)}
+.swap{border:1px solid var(--line);border-radius:14px;padding:12px;background:var(--panel);display:flex;flex-direction:column;gap:6px}
+.swap .hd{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.swap .hd b{font-size:15.5px;font-weight:900}
+.swap .tags{display:flex;gap:5px;flex-wrap:wrap}
+.swap p{font-size:13.5px;line-height:1.45;color:var(--soft)}
+.swap p b{color:var(--ink)}
+.check{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px}
+.check .opts{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.opt{padding:10px 12px;border-radius:12px;background:var(--panel2);border:1px solid var(--line2);font-size:14px;text-align:left;width:100%}
+.opt:hover{border-color:var(--teal)}
+.opt.right{border-color:var(--good);background:color-mix(in srgb,var(--good) 18%,var(--panel2))}
+.opt.wrong{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 16%,var(--panel2))}
+
+ol.steps{padding-left:22px;display:flex;flex-direction:column;gap:6px;font-size:14.5px;line-height:1.45}
+.tabs{display:flex;gap:6px;flex-wrap:wrap}.tab{padding:8px 12px;border-radius:11px;background:var(--panel2);border:1px solid var(--line2);font-weight:800;font-size:13.5px;color:var(--soft)}.tab.on{color:var(--ink);border-color:var(--pink)}
+.ta{width:100%;background:#06101d;border:1px solid var(--line2);border-radius:12px;color:var(--ink);padding:10px 12px;font-family:var(--mono);font-size:13px;resize:vertical}
+.lbl2{font-size:12px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:var(--soft);margin-top:4px;display:block}
+#tabBody{display:flex;flex-direction:column;gap:10px}
+@media (max-width:440px){#top .ttl{display:none}#top .acts{margin-left:auto}}
+/* modal */
+#modal{position:fixed;inset:0;z-index:80;display:none;place-items:center;background:rgba(3,9,18,.6);padding:16px}
+#modal.on{display:grid}
+#mBox{background:var(--bg2);border:1px solid var(--line2);border-radius:22px;padding:20px;width:min(560px,100%);max-height:90vh;overflow:auto;display:flex;flex-direction:column;gap:14px}
+#mBox h2{font-size:20px;font-weight:900}
+#mBox .sub{color:var(--soft);font-size:14px}
+#mBox img{width:100%;border-radius:14px;border:1px solid var(--line)}
+.mrow{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
+.qbar{display:flex;gap:5px}.qbar i{flex:1;height:6px;border-radius:3px;background:var(--line2)}.qbar i.ok{background:var(--good)}.qbar i.no{background:var(--bad)}.qbar i.cur{background:var(--ink)}
+
+#toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,16px);background:var(--ink);color:var(--bg);padding:11px 18px;border-radius:14px;font-weight:800;font-size:14px;opacity:0;pointer-events:none;transition:.22s;z-index:95;max-width:min(92vw,560px);text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.4)}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+#busy{position:fixed;inset:0;z-index:90;display:none;place-items:center;background:rgba(3,9,18,.7);font-size:17px;font-weight:800}
+#busy.on{display:grid}
+
+@media (max-width:980px){
+ #app{display:block;height:auto}
+ #stage{height:76vh;min-height:520px}
+ #side{border-left:0;border-top:1px solid var(--line)}
+ #top .acts .lbl{display:none}
+ #top .acts .btn{padding:9px 11px}
+}
+@media (max-width:560px){
+ #top{gap:10px;padding:0 12px}
+ #top .ttl span .opt-hide{display:none}
+ #glance{padding:10px 12px;gap:10px}
+ #ring{width:46px;height:46px}#ring b{font-size:14px}
+ #glance h1{font-size:16px}
+ #glance p{font-size:12.5px}
+ #brow{flex-direction:column;align-items:stretch}
+ #chips{flex-wrap:nowrap;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
+ #ctrls{align-self:flex-end;position:absolute;right:14px;top:auto}
+ #ctrls{display:none}
+ #tlHead span{display:none}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<header id="top">
+ <div class="logo" id="logo"></div>
+ <div class="ttl"><b>Stack Map</b><span><span id="pname">bean-there</span><span class="tag demo" id="modeTag">DEMO</span><span class="opt-hide" id="pmeta">Every outside service your app talks to</span></span></div>
+ <div class="acts">
+  <button class="btn teal" id="mapBtn" title="Map my project"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><span class="lbl">Map my project</span></button>
+  <button class="btn" id="n8nBtn" title="n8n"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="4.5" cy="12" r="2.2"/><circle cx="11.5" cy="12" r="2.2"/><circle cx="19" cy="6.5" r="2.2"/><circle cx="19" cy="17.5" r="2.2"/><path d="M6.7 12h2.6M13.5 11l3.6-3.4M13.5 13l3.6 3.4"/></svg><span class="lbl">n8n</span></button>
+  <button class="btn ghost" id="tourBtn" title="30-second tour"><svg class="i" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l10.5-6.5z"/></svg><span class="lbl">Tour</span></button>
+  <button class="btn ghost" id="quizBtn" title="Quiz"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .9-1 1.7M12 17h.01"/></svg><span class="lbl">Quiz</span></button>
+  <button class="btn ghost" id="shareBtn" title="Share card"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 8l5-5 5 5M5 14v5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5"/></svg><span class="lbl">Share</span></button>
+ </div>
+ <input type="file" id="dirIn" webkitdirectory multiple hidden>
+</header>
+<main id="app">
+ <section id="stage">
+  <canvas id="cv" aria-label="3D map of the services your app uses"></canvas>
+  <div id="tip"></div>
+  <div id="cap"><div class="k" id="capK"></div><div class="t" id="capT"></div><div class="s" id="capS"></div></div>
+  <button class="btn ghost sm" id="skipTour">Skip tour</button>
+  <div id="ov">
+   <div id="glance"><div id="ring"></div><div><h1 id="gH"></h1><p id="gP"></p></div></div>
+   <div id="bottom">
+    <div id="brow"><div id="chips"></div>
+     <div id="ctrls"><button class="cbtn" id="zIn" aria-label="Zoom in"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button><button class="cbtn" id="zOut" aria-label="Zoom out"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14"/></svg></button><button class="cbtn" id="zReset" aria-label="Reset view"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5"/></svg></button></div>
+    </div>
+    <div id="tl"><div id="tlHead"><b id="tlT"></b><span id="tlS"></span></div><div id="track"></div></div>
+   </div>
+  </div>
+ </section>
+ <aside id="side">
+  <div class="card"><h3><span>Right now</span><span id="pc"></span></h3><div class="rows" id="probs"></div></div>
+  <div class="card"><h3><span>Your stack</span><span id="sc"></span></h3><div id="svcs"></div></div>
+  <div class="card"><h3><span>What leaves your app</span></h3><div id="flows"></div></div>
+  <div class="card"><h3><span>Teach your AI</span><span id="rc"></span></h3><p class="empty" id="rulesTx"></p><button class="btn sm ghost" id="copyRules" style="margin-top:10px">Copy AGENTS.md block</button></div>
+  <p class="foot" id="foot">Demo project with sample data. Swaps are options with tradeoffs, not verdicts. Free tiers and prices change, so check each pricing page before switching.</p>
+ </aside>
+</main>
+<div id="scrim"></div>
+<aside id="drawer" aria-hidden="true"><div id="dHead"><div class="ic" id="dIc"></div><div class="tx"><h2 id="dT"></h2><p id="dS"></p></div><button class="cbtn" id="dX" aria-label="Close"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div><div id="dBody"></div><div id="dFoot"></div></aside>
+<div id="modal"><div id="mBox"></div></div>
+<div id="busy">Mapping your project...</div>
+<div id="toast"></div>
+
+<script>
+'use strict';
+const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let tT;function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(tT);tT=setTimeout(()=>t.classList.remove('on'),3200)}
+async function copyText(s,msg){try{await navigator.clipboard.writeText(s)}catch(e){const a=document.createElement('textarea');a.value=s;document.body.appendChild(a);a.select();document.execCommand('copy');a.remove()}toast(msg)}
+const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---------- art ---------- */
+const OUT='#3f2d4f';
+const REGEN=(mood='happy')=>`<svg viewBox="0 0 140 120" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><g stroke="${OUT}" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"><path d="M34 44C20 30 8 34 10 42c2 7 14 9 26 8z" fill="#f5a3bf"/><path d="M30 60C12 56 4 64 8 70c5 6 16 2 25-4z" fill="#f5a3bf"/><path d="M34 76C20 82 18 94 25 96c7 2 13-8 16-16z" fill="#f5a3bf"/><path d="M106 44c14-14 26-10 24-2-2 7-14 9-26 8z" fill="#f5a3bf"/><path d="M110 60c18-4 26 4 22 10-5 6-16 2-25-4z" fill="#f5a3bf"/><path d="M106 76c14 6 16 18 9 20-7 2-13-8-16-16z" fill="#f5a3bf"/><ellipse cx="70" cy="64" rx="42" ry="36" fill="#fff1f6"/></g><ellipse cx="44" cy="74" rx="8" ry="4.5" fill="#f5a3bf" opacity=".55"/><ellipse cx="96" cy="74" rx="8" ry="4.5" fill="#f5a3bf" opacity=".55"/><circle cx="54" cy="62" r="5.4" fill="#2b1f3a"/><circle cx="86" cy="62" r="5.4" fill="#2b1f3a"/><circle cx="55.8" cy="60.2" r="1.8" fill="#fff"/><circle cx="87.8" cy="60.2" r="1.8" fill="#fff"/>${mood==='worried'?`<path d="M62 80q8-5 16 0" fill="none" stroke="${OUT}" stroke-width="2.6" stroke-linecap="round"/>`:`<path d="M61 76q9 8 18 0" fill="none" stroke="${OUT}" stroke-width="2.6" stroke-linecap="round"/>`}</svg>`;
+const SHARK=`<svg viewBox="0 0 64 48" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><g stroke="#24324a" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M27 15l5-9 5 10z" fill="#8daac4"/><path d="M6 25c6-8 18-11 30-10 9 1 15 4 19 8l5-4-1 7 2 7-6-3c-4 4-11 7-19 7C24 37 12 33 6 25z" fill="#8daac4"/></g><path d="M16 30c9 4 20 4 29 1-6 5-21 6-29-1z" fill="#d7e3ef"/><circle cx="44" cy="23" r="2.2" fill="#24324a"/></svg>`;
+const JELLY=`<svg viewBox="0 0 48 52" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><g stroke="#3a2a55" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 24C8 12 15 6 24 6s16 6 16 18c-4 2-8-1-10 1-3 2-9 2-12 0-2-2-6 1-10-1z" fill="#d6c1ff"/><path d="M14 27c-1 6 2 9 0 15M20 28c0 7 3 10 1 17M28 28c0 7-3 10-1 17M34 27c1 6-2 9 0 15" fill="none" opacity=".8"/></g><circle cx="19" cy="18" r="1.8" fill="#3a2a55"/><circle cx="29" cy="18" r="1.8" fill="#3a2a55"/></svg>`;
+const URCHIN=`<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><g stroke="#3d2a52" stroke-width="2.2" stroke-linecap="round">${Array.from({length:14},(_,i)=>{const a=i/14*Math.PI*2;return`<path d="M${(24+Math.cos(a)*10).toFixed(1)} ${(26+Math.sin(a)*10).toFixed(1)}L${(24+Math.cos(a)*19).toFixed(1)} ${(26+Math.sin(a)*19).toFixed(1)}"/>`}).join('')}<circle cx="24" cy="26" r="11" fill="#e8c27a"/></g><circle cx="20" cy="25" r="1.7" fill="#3d2a52"/><circle cx="28" cy="25" r="1.7" fill="#3d2a52"/></svg>`;
+const GHOST=`<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><path d="M10 40V22a14 14 0 0 1 28 0v18l-5-4-4 4-5-4-5 4-4-4z" fill="#c9d4e3" stroke="#4a5d78" stroke-width="2" stroke-linejoin="round"/><circle cx="19" cy="22" r="2" fill="#4a5d78"/><circle cx="29" cy="22" r="2" fill="#4a5d78"/></svg>`;
+const CRIT={shark:SHARK,jelly:JELLY,urchin:URCHIN,ghost:GHOST};
+const img=s=>{const i=new Image();i.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(s);return i};
+const IMG={shark:img(SHARK),jelly:img(JELLY),urchin:img(URCHIN),ghost:img(GHOST),regen:img(REGEN()),regenW:img(REGEN('worried'))};
+$('#logo').innerHTML=REGEN();
+
+const CATS={
+ host:{n:'Hosting',ring:0,col:'#9fa7e5',ic:'M4 4h16v6H4zM4 14h16v6H4zM8 7h.01M8 17h.01'},
+ db:{n:'Database',ring:0,col:'#7bd9ce',ic:'M4 6c0-1.7 3.6-3 8-3s8 1.3 8 3-3.6 3-8 3-8-1.3-8-3zM4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3'},
+ auth:{n:'Login',ring:1,col:'#f0ca7e',ic:'M6 11h12v10H6zM8 11V7a4 4 0 0 1 8 0v4M12 15v2'},
+ pay:{n:'Payments',ring:1,col:'#8fd99f',ic:'M3 6h18v12H3zM3 10h18M7 15h4'},
+ ai:{n:'AI',ring:1,col:'#f5a3bf',ic:'M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8zM18 15l.8 2.2L21 18l-2.2.8L18 21l-.8-2.2L15 18l2.2-.8z'},
+ msg:{n:'Email & texts',ring:2,col:'#8ec5ff',ic:'M3 6h18v12H3zM3 7l9 6 9-6'},
+ analytics:{n:'Analytics',ring:2,col:'#c7a6ff',ic:'M5 20V11M10 20V5M15 20v-7M20 20V9'},
+ monitor:{n:'Error tracking',ring:2,col:'#ffb38a',ic:'M3 12h4l2-5 4 10 2-5h6'},
+ storage:{n:'Files & images',ring:2,col:'#9be3b8',ic:'M4 5h16v14H4zM4 16l5-5 4 4 3-3 4 4M15 9h.01'},
+ other:{n:'Other APIs',ring:2,col:'#b8c4d6',ic:'M9 3v5M15 3v5M6 8h12v3a6 6 0 0 1-12 0zM12 17v4'},
+};
+const catSvg=(c,size=17)=>`<svg viewBox="0 0 24 24" width="${size}" height="${size}" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="${CATS[c].ic}"/></svg>`;
+const sIco=s=>`<span class="sico" style="background:${CATS[s.cat].col}">${catSvg(s.cat)}</span>`;
+const PATHS={};for(const k in CATS)PATHS[k]=new Path2D(CATS[k].ic);
+
+/* ---------- catalog ---------- */
+const W_=(n,tags,why,trade)=>({n,tags,why,trade});
+const K=(name,where)=>({name,where});
+const CATALOG=[
+ {id:'vercel',name:'Vercel',cat:'host',does:'Puts your app on the internet and runs your server functions.',data:'Your site and every visit',dir:'both',pkgs:['@vercel/analytics','@vercel/node','@vercel/og','@vercel/kv','@vercel/blob','@vercel/speed-insights'],cfg:['vercel.json','.vercel/project.json'],urls:['.vercel.app'],keys:[],site:'https://vercel.com',swaps:[W_('Netlify',['similar setup'],'Git-based deploys and serverless functions, close to what you have now.','Function folders and config are named differently.'),W_('Cloudflare Pages',['edge network'],'Static hosting plus Workers for server code.','Workers is not full Node, so a few packages may need changes.'),W_('Render',['long-running servers'],'A good fit if your app grows a full backend server.','A bit more setup to manage.')]},
+ {id:'netlify',name:'Netlify',cat:'host',does:'Puts your app on the internet and runs your server functions.',data:'Your site and every visit',dir:'both',pkgs:['@netlify/functions'],cfg:['netlify.toml'],urls:['.netlify.app'],keys:[],site:'https://www.netlify.com',swaps:[W_('Vercel',['similar setup'],'Git-based deploys and serverless functions.','Function folders and config are named differently.'),W_('Cloudflare Pages',['edge network'],'Static hosting plus Workers.','Workers is not full Node.')]},
+ {id:'cloudflare',name:'Cloudflare',cat:'host',does:'Hosts your app and runs code close to your users.',data:'Your site and every visit',dir:'both',pkgs:['wrangler','@cloudflare/workers-types'],cfg:['wrangler.toml','wrangler.jsonc'],urls:['.workers.dev','.pages.dev'],keys:[K('CLOUDFLARE_API_TOKEN','server')],site:'https://www.cloudflare.com',swaps:[W_('Vercel',['Node runtime'],'Full Node functions.','Different config.')]},
+ {id:'supabase',name:'Supabase',cat:'db',does:'Stores your data and can sign people in.',data:'Your menu, orders and user accounts',dir:'both',pkgs:['@supabase/supabase-js','@supabase/ssr','@supabase/auth-helpers-nextjs','@supabase/auth-helpers-react'],py:['supabase'],cfg:['supabase/config.toml'],urls:['.supabase.co'],keys:[K('SUPABASE_URL','public'),K('SUPABASE_ANON_KEY','public'),K('SUPABASE_PUBLISHABLE_KEY','public'),K('SUPABASE_SERVICE_ROLE_KEY','server')],site:'https://supabase.com',swaps:[W_('Neon',['Postgres','serverless'],'Same kind of database (Postgres), so your tables move over cleanly.','No built-in login or file storage, so those need other services.'),W_('Firebase',['realtime','login included'],'Data, login and storage in one place.','Not SQL: your data model would change a lot.'),W_('PocketBase',['open source','self-host'],'One small server with data, login and files.','You run, update and back up the server yourself.')]},
+ {id:'firebase',name:'Firebase',cat:'db',does:'Stores your data and can sign people in.',data:'Your app data and user accounts',dir:'both',pkgs:['firebase','firebase-admin'],py:['firebase_admin'],cfg:['firebase.json','.firebaserc'],urls:['firebaseio.com','firestore.googleapis.com'],keys:[K('FIREBASE_API_KEY','public'),K('FIREBASE_PRIVATE_KEY','server')],site:'https://firebase.google.com',swaps:[W_('Supabase',['Postgres','login included'],'SQL database with login and storage.','Data model changes from documents to tables.'),W_('PocketBase',['open source','self-host'],'Data, login and files in one server.','You host it yourself.')]},
+ {id:'neon',name:'Neon',cat:'db',does:'Stores your data in a Postgres database.',data:'Your app data',dir:'both',pkgs:['@neondatabase/serverless'],urls:['.neon.tech'],keys:[K('DATABASE_URL','server')],site:'https://neon.tech',swaps:[W_('Supabase',['Postgres','login included'],'Postgres plus login and storage.','More features than you may need.')]},
+ {id:'mongodb',name:'MongoDB',cat:'db',does:'Stores your data as documents.',data:'Your app data',dir:'both',pkgs:['mongodb','mongoose'],py:['pymongo'],urls:['mongodb.net'],keys:[K('MONGODB_URI','server'),K('MONGO_URL','server')],site:'https://www.mongodb.com',swaps:[W_('Supabase',['SQL','login included'],'Tables with login built in.','Data model changes.')]},
+ {id:'upstash',name:'Upstash',cat:'db',does:'Fast key-value storage, often for caching and rate limits.',data:'Cached data and counters',dir:'both',pkgs:['@upstash/redis','@upstash/ratelimit','@upstash/qstash'],urls:['.upstash.io'],keys:[K('UPSTASH_REDIS_REST_TOKEN','server'),K('UPSTASH_REDIS_REST_URL','server')],site:'https://upstash.com',swaps:[W_('Vercel KV',['same Redis API'],'Redis-compatible storage.','Tied to one host.')]},
+ {id:'clerk',name:'Clerk',cat:'auth',does:'Signs people in and manages their accounts.',data:'User names, emails and sign-ins',dir:'both',pkgs:['@clerk/clerk-react','@clerk/nextjs','@clerk/clerk-js','@clerk/express'],urls:['clerk.accounts.dev'],keys:[K('CLERK_SECRET_KEY','server'),K('CLERK_PUBLISHABLE_KEY','public'),K('CLERK_WEBHOOK_SECRET','server')],site:'https://clerk.com',swaps:[W_('Supabase Auth',['already in your stack'],'You already use Supabase for data, and its login works with your row level security rules.','Different sign-in screens and components.'),W_('Auth.js',['open source'],'Login library that runs inside your own app.','You style and maintain the sign-in pages.'),W_('Better Auth',['open source','self-host'],'Login library with users stored in your own database.','More setup up front.')]},
+ {id:'auth0',name:'Auth0',cat:'auth',does:'Signs people in and manages their accounts.',data:'User names, emails and sign-ins',dir:'both',pkgs:['@auth0/auth0-react','@auth0/nextjs-auth0','auth0'],urls:['.auth0.com'],keys:[K('AUTH0_SECRET','server'),K('AUTH0_CLIENT_SECRET','server')],site:'https://auth0.com',swaps:[W_('Auth.js',['open source'],'Login inside your own app.','You maintain the pages.'),W_('Clerk',['ready-made components'],'Drop-in sign-in UI.','Another hosted service.')]},
+ {id:'nextauth',name:'Auth.js',cat:'auth',does:'Signs people in, running inside your own app.',data:'User sessions',dir:'both',pkgs:['next-auth','@auth/core'],keys:[K('NEXTAUTH_SECRET','server'),K('AUTH_SECRET','server')],site:'https://authjs.dev',swaps:[]},
+ {id:'stripe',name:'Stripe',cat:'pay',does:'Takes card payments.',data:'Payments and customer emails',dir:'both',pkgs:['stripe','@stripe/stripe-js','@stripe/react-stripe-js'],py:['stripe'],urls:['api.stripe.com','js.stripe.com'],keys:[K('STRIPE_SECRET_KEY','server'),K('STRIPE_WEBHOOK_SECRET','server'),K('STRIPE_PUBLISHABLE_KEY','public')],site:'https://stripe.com',swaps:[W_('Lemon Squeezy',['merchant of record'],'Handles sales tax and VAT for you.','Higher fees, fewer custom payment flows.'),W_('Paddle',['merchant of record'],'Handles tax and invoices, popular for software.','Built for subscriptions more than one-off orders.'),W_('Polar',['open source','for developers'],'Payments and subscriptions aimed at developer products.','Newer, smaller ecosystem.')]},
+ {id:'lemonsqueezy',name:'Lemon Squeezy',cat:'pay',does:'Sells your product and handles tax.',data:'Payments and customer emails',dir:'both',pkgs:['@lemonsqueezy/lemonsqueezy.js'],keys:[K('LEMONSQUEEZY_API_KEY','server')],site:'https://www.lemonsqueezy.com',swaps:[W_('Stripe',['more control'],'Full control over payment flows.','You handle sales tax yourself.')]},
+ {id:'openai',name:'OpenAI',cat:'ai',does:'Answers questions and writes text with GPT models.',data:'Prompts and what your users type',dir:'out',pkgs:['openai','@ai-sdk/openai'],py:['openai'],urls:['api.openai.com'],keys:[K('OPENAI_API_KEY','server')],site:'https://platform.openai.com',swaps:[W_('Claude (Anthropic)',['strong at writing and code'],'High-quality answers with a similar chat API.','Different SDK, and prompts may need small tweaks.'),W_('Gemini (Google)',['OpenAI-compatible endpoint'],'Can be called through the OpenAI SDK by changing the base URL and model name.','Answers differ, so test your prompts.'),W_('Ollama',['open source','runs locally','OpenAI-compatible']," Runs open models on your own machine or server, so user text never leaves.",'You need the hardware, and small models are less capable.')]},
+ {id:'anthropic',name:'Anthropic',cat:'ai',does:'Answers questions and writes text with Claude models.',data:'Prompts and what your users type',dir:'out',pkgs:['@anthropic-ai/sdk','@ai-sdk/anthropic'],py:['anthropic'],urls:['api.anthropic.com'],keys:[K('ANTHROPIC_API_KEY','server')],site:'https://www.anthropic.com/api',swaps:[W_('OpenAI',['similar chat API'],'GPT models with a similar API.','Different SDK.'),W_('Ollama',['open source','runs locally'],'Open models on your own hardware.','Less capable small models.')]},
+ {id:'gemini',name:'Gemini',cat:'ai',does:'Answers questions and understands images with Google models.',data:'Prompts, images and what your users type',dir:'out',pkgs:['@google/genai','@google/generative-ai','@ai-sdk/google'],py:['google-genai','google-generativeai'],urls:['generativelanguage.googleapis.com'],keys:[K('GEMINI_API_KEY','server'),K('GOOGLE_API_KEY','server'),K('GOOGLE_GENERATIVE_AI_API_KEY','server')],site:'https://ai.google.dev',swaps:[W_('OpenAI',['similar chat API'],'GPT models.','Different SDK.')]},
+ {id:'groq',name:'Groq',cat:'ai',does:'Runs open AI models very fast.',data:'Prompts and what your users type',dir:'out',pkgs:['groq-sdk'],py:['groq'],urls:['api.groq.com'],keys:[K('GROQ_API_KEY','server')],site:'https://groq.com',swaps:[]},
+ {id:'replicate',name:'Replicate',cat:'ai',does:'Runs AI models for images, audio and more.',data:'Prompts and uploaded media',dir:'out',pkgs:['replicate'],py:['replicate'],urls:['api.replicate.com'],keys:[K('REPLICATE_API_TOKEN','server')],site:'https://replicate.com',swaps:[]},
+ {id:'resend',name:'Resend',cat:'msg',does:'Sends emails from your app.',data:'Customer emails and receipts',dir:'out',pkgs:['resend'],py:['resend'],urls:['api.resend.com'],keys:[K('RESEND_API_KEY','server')],site:'https://resend.com',swaps:[W_('Postmark',['transactional email'],'Built for receipts and sign-in emails.','No marketing newsletters.'),W_('Amazon SES',['pay as you go'],'Low cost at high volume.','More setup: domain checks and leaving the sandbox.'),W_('Mailgun',['email API'],'Long-running email API.','Different SDK.')]},
+ {id:'sendgrid',name:'SendGrid',cat:'msg',does:'Sends emails from your app.',data:'Customer emails',dir:'out',pkgs:['@sendgrid/mail'],py:['sendgrid'],urls:['api.sendgrid.com'],keys:[K('SENDGRID_API_KEY','server')],site:'https://sendgrid.com',swaps:[W_('Resend',['simple API'],'Small, modern email API.','Different SDK.')]},
+ {id:'twilio',name:'Twilio',cat:'msg',does:'Sends texts and makes calls.',data:'Phone numbers and messages',dir:'out',pkgs:['twilio'],py:['twilio'],urls:['api.twilio.com'],keys:[K('TWILIO_AUTH_TOKEN','server'),K('TWILIO_ACCOUNT_SID','server')],site:'https://www.twilio.com',swaps:[]},
+ {id:'posthog',name:'PostHog',cat:'analytics',does:'Tracks what people click and view.',data:'Clicks, page views and device info',dir:'out',pkgs:['posthog-js','posthog-node'],py:['posthog'],urls:['posthog.com'],keys:[K('POSTHOG_KEY','public')],site:'https://posthog.com',swaps:[W_('Remove it',['not used yet']," It's installed but never loaded. Removing it is the simplest fix.",'Add analytics back when you actually need them.'),W_('Plausible',['open source','no cookies'],'Simple, privacy-friendly page stats.','No session replays or funnels.'),W_('Umami',['open source','self-host'],'Lightweight stats you can host yourself.','You run it.')]},
+ {id:'ga',name:'Google Analytics',cat:'analytics',does:'Tracks visits and page views.',data:'Page views and device info',dir:'out',pkgs:['react-ga4','@next/third-parties'],urls:['googletagmanager.com','google-analytics.com'],keys:[K('GA_MEASUREMENT_ID','public')],site:'https://analytics.google.com',swaps:[W_('Plausible',['open source','no cookies'],'Privacy-friendly stats.','Fewer reports.')]},
+ {id:'mixpanel',name:'Mixpanel',cat:'analytics',does:'Tracks what people do in your app.',data:'Clicks and events',dir:'out',pkgs:['mixpanel-browser','mixpanel'],py:['mixpanel'],urls:['api.mixpanel.com'],keys:[K('MIXPANEL_TOKEN','public')],site:'https://mixpanel.com',swaps:[W_('PostHog',['open source'],'Product analytics you can self-host.','Different event API.')]},
+ {id:'sentry',name:'Sentry',cat:'monitor',does:'Tells you when your app crashes and why.',data:'Error reports, which can include user info',dir:'out',pkgs:['@sentry/react','@sentry/nextjs','@sentry/node','@sentry/browser','@sentry/vue'],py:['sentry-sdk','sentry_sdk'],cfg:['sentry.client.config.ts','sentry.server.config.ts','sentry.client.config.js'],urls:['.sentry.io'],keys:[K('SENTRY_DSN','public'),K('SENTRY_AUTH_TOKEN','server')],site:'https://sentry.io',swaps:[W_('GlitchTip',['open source','works with Sentry SDKs'],'Keeps your Sentry code: you only change the DSN.','Fewer features, and you host it.'),W_('Better Stack',['logs and uptime too'],'Errors, logs and uptime checks together.','Different SDK.')]},
+ {id:'cloudinary',name:'Cloudinary',cat:'storage',does:'Stores and resizes your images.',data:'Menu photos',dir:'both',pkgs:['cloudinary','next-cloudinary','@cloudinary/react','@cloudinary/url-gen'],py:['cloudinary'],urls:['res.cloudinary.com','api.cloudinary.com'],keys:[K('CLOUDINARY_API_SECRET','server'),K('CLOUDINARY_API_KEY','server'),K('CLOUDINARY_CLOUD_NAME','public')],site:'https://cloudinary.com',swaps:[W_('Supabase Storage',['already in your stack'],'You already use Supabase, and it can store and resize images.','Fewer image effects.'),W_('ImageKit',['image CDN'],'Resizing and fast delivery.','Different URL format.'),W_('UploadThing',['simple uploads'],'Easy file uploads for web apps.','No image transforms.')]},
+ {id:'uploadthing',name:'UploadThing',cat:'storage',does:'Handles file uploads.',data:'Files your users upload',dir:'both',pkgs:['uploadthing','@uploadthing/react'],keys:[K('UPLOADTHING_TOKEN','server'),K('UPLOADTHING_SECRET','server')],site:'https://uploadthing.com',swaps:[]},
+ {id:'s3',name:'AWS S3',cat:'storage',does:'Stores files in the cloud.',data:'Files and uploads',dir:'both',pkgs:['@aws-sdk/client-s3','aws-sdk'],py:['boto3'],urls:['.amazonaws.com'],keys:[K('AWS_SECRET_ACCESS_KEY','server'),K('AWS_ACCESS_KEY_ID','server')],site:'https://aws.amazon.com/s3/',swaps:[W_('Cloudflare R2',['S3-compatible API'],'Same API, so code changes are small.','Different dashboard and billing.')]},
+ {id:'algolia',name:'Algolia',cat:'other',does:'Powers search in your app.',data:'Your searchable content and search terms',dir:'both',pkgs:['algoliasearch','react-instantsearch'],keys:[K('ALGOLIA_ADMIN_KEY','server'),K('ALGOLIA_SEARCH_KEY','public')],site:'https://www.algolia.com',swaps:[W_('Meilisearch',['open source','self-host'],'Fast search you can host.','You run it.')]},
+ {id:'mapbox',name:'Mapbox',cat:'other',does:'Shows maps.',data:'Locations people look at',dir:'both',pkgs:['mapbox-gl','react-map-gl'],keys:[K('MAPBOX_TOKEN','public')],site:'https://www.mapbox.com',swaps:[W_('MapLibre',['open source'],'Open map renderer.','Needs a tile source.')]},
+ {id:'pusher',name:'Pusher',cat:'other',does:'Sends live updates to open pages.',data:'Live events',dir:'both',pkgs:['pusher','pusher-js'],keys:[K('PUSHER_SECRET','server'),K('PUSHER_KEY','public')],site:'https://pusher.com',swaps:[]},
+];
+const CAT_BY_ID=Object.fromEntries(CATALOG.map(c=>[c.id,c]));
+const STUCK_W={db:3,auth:2.6,pay:2.3,storage:2,host:1.6,ai:1,msg:1,analytics:.7,monitor:.8,other:1.4};
+const SEV={shark:3,urchin:2,jelly:2,ghost:1};
+
+/* ---------- demo ---------- */
+const E=(p,l,c)=>({p,l,c});
+const DEMO={
+ name:'bean-there',
+ services:{
+  vercel:{from:0,ev:[E('vercel.json',1,'{ "rewrites": [{ "source": "/api/(.*)", "destination": "/api/$1" }] }')]},
+  supabase:{from:0,ev:[E('src/lib/supabase.ts',3,"export const supabase = createClient(import.meta.env.VITE_SUPABASE_URL, import.meta.env.VITE_SUPABASE_ANON_KEY)"),E('src/hooks/useMenu.ts',8,"const { data } = await supabase.from('menu').select('*')"),E('src/hooks/useOrders.ts',12,"await supabase.from('orders').insert(order)"),E('src/pages/Account.tsx',21,'await supabase.auth.signInWithOtp({ email })'),E('src/lib/auth.ts',5,'export const getUser = () => supabase.auth.getUser()'),E('supabase/migrations/001_menu.sql',1,'create table menu (id uuid primary key, name text, price int);')]},
+  cloudinary:{from:1,ev:[E('src/lib/images.ts',4,'const url = `https://res.cloudinary.com/${CLOUD}/image/upload/w_600/${id}`'),E('src/components/DrinkCard.tsx',9,'<img src={imageUrl(drink.photo)} alt={drink.name} />')]},
+  stripe:{from:2,ev:[E('src/pages/Checkout.tsx',14,'const stripe = await loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY)'),E('api/checkout.ts',6,'const session = await stripe.checkout.sessions.create({ line_items, mode: "payment" })'),E('api/webhooks/stripe.ts',4,'const event = req.body')]},
+  openai:{from:3,ev:[E('src/components/DrinkHelper.tsx',7,'apiKey: import.meta.env.VITE_OPENAI_API_KEY,')]}, // stack-map-ignore: sample snippet
+  resend:{from:4,ev:[E('api/send-receipt.ts',3,'const resend = new Resend(process.env.RESEND_API_KEY)')]},
+  sentry:{from:4,ev:[E('src/main.tsx',7,'Sentry.init({ dsn: import.meta.env.VITE_SENTRY_DSN })'),E('sentry.client.config.ts',1,"import * as Sentry from '@sentry/react'")]},
+  clerk:{from:5,ev:[E('src/main.tsx',14,'<ClerkProvider publishableKey={import.meta.env.VITE_CLERK_PUBLISHABLE_KEY}>'),E('src/components/SignInButton.tsx',2,"import { SignInButton } from '@clerk/clerk-react'")]},
+  posthog:{from:5,unused:true,ev:[E('package.json',24,'"posthog-js": "^1.0.0",')]},
+ },
+ saves:[
+  {by:'Lovable',title:'Started the cafe app',prompt:'make a cafe ordering app'},
+  {by:'Lovable',title:'Added menu photos',prompt:'show a photo for each drink'},
+  {by:'Cursor',title:'Added card checkout',prompt:'let people pay with a card'},
+  {by:'Claude Code',title:'Added an AI drink helper',prompt:'add an AI that suggests drinks'},
+  {by:'Cursor',title:'Order emails and error tracking',prompt:'email a receipt and tell me when it crashes'},
+  {by:'Claude Code',title:'Added sign-in',prompt:'let people sign in to see past orders'},
+ ],
+ problems:[
+  {id:'openaiKey',kind:'shark',svc:'openai',from:3,title:'OpenAI key in browser code',sub:'Anything in a VITE_ variable ships to every visitor. Anyone can copy this key and run up your bill.',
+   where:{path:'src/components/DrinkHelper.tsx',lines:[[4,"import OpenAI from 'openai'"],[5,''],[6,'const openai = new OpenAI({'],[7,'  apiKey: import.meta.env.VITE_OPENAI_API_KEY,'],[8,'  dangerouslyAllowBrowser: true,'],[9,'})']],hl:[7,8]}, // stack-map-ignore: sample snippet
+   fix:{title:'Moved OpenAI calls to a server function',diffs:[{path:'src/components/DrinkHelper.tsx',lines:[['-',4,"import OpenAI from 'openai'"],['-',6,'const openai = new OpenAI({ apiKey: import.meta.env.VITE_OPENAI_API_KEY, dangerouslyAllowBrowser: true })'],['+',6,"const res = await fetch('/api/drink-helper', { method: 'POST', body: JSON.stringify({ question }) })"]]},{path:'api/drink-helper.ts (new)',lines:[['+',1,"import OpenAI from 'openai'"],['+',2,'const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })'],['+',3,'export default async function handler(req, res) {'],['+',4,'  const { question } = JSON.parse(req.body)'],['+',5,'  const out = await openai.responses.create({ model: process.env.OPENAI_MODEL, input: question })'],['+',6,'  res.json({ answer: out.output_text })'],['+',7,'}']]},{path:'.env.example',lines:[['-',3,'VITE_OPENAI_API_KEY='],['+',3,'OPENAI_API_KEY=']]}]}, // stack-map-ignore: sample snippet
+   why:'AIs build the quickest version that works. Calling OpenAI straight from the browser skips writing a server function, but it hands your key to every visitor.',
+   rule:'Never put secret keys in VITE_, NEXT_PUBLIC_, REACT_APP_ or EXPO_PUBLIC_ variables. Call paid APIs like OpenAI from a server function and keep their keys on the server.',
+   after:{t:'Rotate this key now',d:'Removing it from the code does not undo a leak. Make a new key in your OpenAI dashboard and delete the old one.',url:'https://platform.openai.com/api-keys'}},
+  {id:'webhook',kind:'urchin',svc:'stripe',from:2,title:'Payment webhook trusts anyone',sub:'Your app marks orders as paid without checking the message came from Stripe. Anyone could fake a payment and get free coffee.',
+   where:{path:'api/webhooks/stripe.ts',lines:[[3,'export default async function handler(req, res) {'],[4,'  const event = req.body'],[5,"  if (event.type === 'checkout.session.completed') {"],[6,'    await markOrderPaid(event.data.object.id)'],[7,'  }']],hl:[4]},
+   fix:{title:'Stripe webhook now checks its signature',diffs:[{path:'api/webhooks/stripe.ts',lines:[['-',4,'  const event = req.body'],['+',4,"  const sig = req.headers['stripe-signature']"],['+',5,'  const event = stripe.webhooks.constructEvent(await rawBody(req), sig, process.env.STRIPE_WEBHOOK_SECRET)']]}]},
+   why:'The AI built the happy path: it handles the message but never checks who sent it.',
+   rule:'Verify the signature on every webhook (Stripe, Clerk, GitHub and others) before trusting it. Use the provider\'s official verify function.'},
+  {id:'resendEnv',kind:'jelly',svc:'resend',from:4,title:'RESEND_API_KEY isn’t in .env.example',sub:'Your code needs this key, but the list of keys your app needs doesn’t mention it. The next deploy will quietly stop sending receipts.',
+   where:{path:'api/send-receipt.ts',lines:[[1,"import { Resend } from 'resend'"],[2,''],[3,'const resend = new Resend(process.env.RESEND_API_KEY)']],hl:[3]},
+   fix:{title:'Listed RESEND_API_KEY in .env.example',diffs:[{path:'.env.example',lines:[['+',6,'RESEND_API_KEY=']]}]},
+   why:'AIs add the code that reads a new key, but rarely update the list of keys your app needs.',
+   rule:'Every time you read a new environment variable, add its name (never its value) to .env.example.'},
+  {id:'dupAuth',kind:'urchin',svc:'clerk',also:'supabase',from:5,title:'Two login systems',sub:'Clerk and Supabase Auth both sign people in. Customers could end up with two separate accounts and lose their order history.',
+   where:{path:'src/main.tsx',lines:[[13,'return ('],[14,'  <ClerkProvider publishableKey={import.meta.env.VITE_CLERK_PUBLISHABLE_KEY}>'],[15,'    <App />'],[16,'  </ClerkProvider>'],[17,')']],hl:[14],note:'Supabase Auth already signs people in, in src/pages/Account.tsx and src/lib/auth.ts.'},
+   fix:{title:'Kept Supabase Auth and removed Clerk',removes:'clerk',diffs:[{path:'src/main.tsx',lines:[['-',14,'  <ClerkProvider publishableKey={import.meta.env.VITE_CLERK_PUBLISHABLE_KEY}>'],['-',16,'  </ClerkProvider>']]},{path:'src/components/SignInButton.tsx',lines:[['-',2,"import { SignInButton } from '@clerk/clerk-react'"],['+',2,"import { supabase } from '../lib/supabase'"],['+',3,'const signIn = (email) => supabase.auth.signInWithOtp({ email })']]},{path:'package.json',lines:[['-',12,'"@clerk/clerk-react": "^5.0.0",']]}]},
+   why:'Asked for "sign in", an AI often adds the login service it knows best without checking that your project already has one.',
+   rule:'Before adding a new service or package, check whether the project already has one that does the same job, and use that one.'},
+  {id:'posthogUnused',kind:'ghost',svc:'posthog',from:5,title:'PostHog is installed but never used',sub:'It adds weight and one more package to keep updated, and nothing loads it.',
+   where:{path:'package.json',lines:[[23,'"openai": "^5.0.0",'],[24,'"posthog-js": "^1.0.0",'],[25,'"react": "^19.0.0",']],hl:[24]},
+   fix:{title:'Removed unused PostHog package',removes:'posthog',diffs:[{path:'package.json',lines:[['-',24,'"posthog-js": "^1.0.0",']]}]},
+   why:'AIs sometimes install a package for a plan they never finish.',
+   rule:'Only install packages you use in the same change, and remove any you stop using.'},
+ ],
+};
+
+/* ---------- state ---------- */
+const S={mode:'demo',name:'',services:[],problems:[],saves:[],view:0,filter:null,rules:[],handle:null,files:null};
+function loadDemo(){
+ S.mode='demo';S.unit='file';S.via=null;S.summary=null;S.name=DEMO.name;S.handle=null;
+ S.services=Object.entries(DEMO.services).map(([id,o])=>({...CAT_BY_ID[id],ev:o.ev,from:o.from,to:Infinity,unused:!!o.unused,anim:0}));
+ S.saves=DEMO.saves.map((s,i)=>({...s,kind:'ai',adds:S.services.filter(x=>x.from===i).map(x=>x.id)}));
+ S.problems=DEMO.problems.map(p=>({...p,to:Infinity}));
+ S.view=S.saves.length-1;layout();renderAll();
+}
+const visSvc=s=>s.from<=S.view&&S.view<s.to;
+const openProbs=()=>S.problems.filter(p=>p.from<=S.view&&S.view<p.to);
+const svcById=id=>S.services.find(s=>s.id===id);
+function keyStatus(s){const ps=openProbs();if(ps.some(p=>p.svc===s.id&&p.kind==='shark'))return'leak';if(ps.some(p=>p.svc===s.id&&p.kind==='jelly'))return'miss';return s.keys.some(k=>k.where==='server')?'safe':(s.keys.length?'pub':'none')}
+function health(){let sc=100;for(const p of openProbs())sc-=({shark:28,urchin:14,jelly:12,ghost:5})[p.kind];return Math.max(0,sc)}
+function stuck(s){const v=STUCK_W[s.cat]*(1+s.ev.filter(e=>e.p!=='package.json').length*.18);return v<1.6?['easy','Easy to switch']:v<3.2?['med','Some work to switch']:['hard','Hard to switch']}
+
+/* ---------- layout ---------- */
+const RINGS=[200,320,440];
+function layout(){
+ const rings=[[],[],[]];S.services.forEach(s=>rings[CATS[s.cat].ring].push(s));
+ const R=RINGS;
+ rings.forEach((arr,r)=>{arr.sort((a,b)=>Object.keys(CATS).indexOf(a.cat)-Object.keys(CATS).indexOf(b.cat));const n=arr.length;arr.forEach((s,i)=>{const a=(r*.62)+(i/n)*Math.PI*2+(n===1?.8:0);s.x=Math.cos(a)*R[r];s.z=Math.sin(a)*R[r];s.y=r*18;s.ph=i*1.7+r})});
+}
+
+/* ---------- 3D engine ---------- */
+const cv=$('#cv'),ctx=cv.getContext('2d');let W=0,H=0,DPR=1,F=800;
+const cam={yaw:-.55,pitch:.5,dist:1250,tx:0,ty:0,tz:0,ox:0},goal={...cam};
+let lastInput=0,tour=null,time=0,hover=null,hits=[],leaving=[],bursts=[];
+function fitDist(){const hw=W*.47,hh=(H-ovTop()-ovBottom())*.5;const RR=W<600?470:520;return Math.max(F*RR/hw,F*RR*Math.sin(.5)/Math.max(80,hh*.8))+(W<600?120:260)}
+function ovTop(){const g=$('#glance');return g?g.offsetTop+g.offsetHeight+6:0}
+function ovBottom(){const b=$('#bottom');return b?b.offsetHeight+20:0}
+let fitted=false;function resize(){const r=cv.getBoundingClientRect();DPR=Math.min(2,devicePixelRatio||1);W=r.width;H=r.height;cv.width=W*DPR;cv.height=H*DPR;F=Math.min(W,H*1.25)*1.05;if(!fitted||!drawerOpen()){goal.dist=cam.dist=fitDist();fitted=true}}
+const drawerOpen=()=>$('#drawer').classList.contains('on');
+function P(x,y,z){const dx=x-cam.tx,dy=y-cam.ty,dz=z-cam.tz,cy=Math.cos(cam.yaw),sy=Math.sin(cam.yaw),x1=dx*cy-dz*sy,z1=dx*sy+dz*cy,cp=Math.cos(cam.pitch),sp=Math.sin(cam.pitch),y2=dy*cp+z1*sp,z2=-dy*sp+z1*cp+cam.dist,s=F/Math.max(60,z2);const cyS=ovTop()+(H-ovTop()-ovBottom())*.52;return{x:W/2+cam.ox+x1*s,y:cyS-y2*s,s,z:z2}}
+const lerp=(a,b,t)=>a+(b-a)*t;
+function curve(s,t){const ax=0,ay=40,az=0,bx=s.x,by=s.y+fl(s),bz=s.z,cx=s.x*.5,cy=170+s.y,cz=s.z*.5,u=1-t;return[u*u*ax+2*u*t*cx+t*t*bx,u*u*ay+2*u*t*cy+t*t*by,u*u*az+2*u*t*cz+t*t*bz]}
+const fl=s=>RM?0:Math.sin(time*1.1+s.ph)*8;
+function dimmed(s){return S.filter&&S.filter!==s.cat}
+
+function frame(dt){
+ time+=dt;
+ const k=1-Math.exp(-dt*3.2);for(const key of['yaw','pitch','dist','tx','ty','tz','ox'])cam[key]=lerp(cam[key],goal[key],k);
+ if(!tour&&!RM&&performance.now()-lastInput>5000){goal.yaw+=dt*.05;cam.yaw+=dt*.05}
+ for(const s of S.services){const t=visSvc(s)?1:0;s.anim=lerp(s.anim,t,1-Math.exp(-dt*4));if(Math.abs(s.anim-t)<.002)s.anim=t}
+ ctx.setTransform(DPR,0,0,DPR,0,0);ctx.clearRect(0,0,W,H);hits=[];
+ // light rays
+ if(!RM){ctx.save();ctx.globalCompositeOperation='lighter';for(let i=0;i<5;i++){const x=W*(.15+i*.18)+Math.sin(time*.2+i)*30;const g=ctx.createLinearGradient(x,0,x+80,H);g.addColorStop(0,'rgba(140,200,255,.06)');g.addColorStop(1,'rgba(140,200,255,0)');ctx.fillStyle=g;ctx.beginPath();ctx.moveTo(x-30,0);ctx.lineTo(x+40,0);ctx.lineTo(x+180,H);ctx.lineTo(x+20,H);ctx.fill()}ctx.restore()}
+ // floor rings
+ const FY=-90;ctx.lineWidth=1;
+ RINGS.forEach((R,r)=>{ctx.beginPath();for(let i=0;i<=72;i++){const a=i/72*Math.PI*2,p=P(Math.cos(a)*R,FY,Math.sin(a)*R);i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y)}ctx.strokeStyle=`rgba(123,217,206,${.10-r*.02})`;ctx.setLineDash([4,6]);ctx.stroke();ctx.setLineDash([])});
+ // seafloor glow
+ {const p=P(0,FY,0);const g=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,640*p.s);g.addColorStop(0,'rgba(60,140,170,.22)');g.addColorStop(1,'rgba(60,140,170,0)');ctx.fillStyle=g;ctx.beginPath();ctx.ellipse(p.x,p.y,640*p.s,640*p.s*Math.sin(cam.pitch),0,0,Math.PI*2);ctx.fill()}
+ // caustic specks
+ if(!RM){ctx.fillStyle='rgba(180,230,255,.08)';for(let i=0;i<40;i++){const a=i*2.39996,R=60+((i*53)%560),p=P(Math.cos(a+time*.03)*R,FY,Math.sin(a+time*.03)*R);ctx.beginPath();ctx.arc(p.x,p.y,(1.5+Math.sin(time*2+i)*1)*p.s*3,0,7);ctx.fill()}}
+
+ const vis=S.services.filter(s=>s.anim>.01);
+ // currents
+ for(const s of vis){
+  const col=CATS[s.cat].col,files=s.ev.filter(e=>e.p!=='package.json').length,dim=dimmed(s),ghost=s.unused,hl=hover&&hover.svc===s;
+  const pts=[];for(let i=0;i<=28;i++){const t=i/28*s.anim;const[x,y,z]=curve(s,t);pts.push(P(x,y,z))}
+  const w=Math.min(9,1.6+files*1.1)*pts[14].s*1.3;
+  ctx.save();ctx.globalAlpha=dim?.12:ghost?.45:1;if(ghost)ctx.setLineDash([6,8]);
+  ctx.lineCap='round';ctx.strokeStyle=col;ctx.globalAlpha*=hl?.5:.22;ctx.lineWidth=w*3.2;ctx.beginPath();pts.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.stroke();
+  ctx.globalAlpha=dim?.15:ghost?.5:(hl?1:.85);ctx.lineWidth=Math.max(1.2,w*.55);ctx.stroke();ctx.restore();
+  for(let i=0;i<pts.length;i+=4)hits.push({type:'current',svc:s,x:pts[i].x,y:pts[i].y,r:10,z:pts[i].z+40});
+  if(!ghost&&!dim&&s.anim>.95&&!RM){const n=3+files;for(let j=0;j<n;j++){let t=((time*.28+j/n)%1);if(s.dir==='both'&&j%2)t=1-t;else if(s.dir==='in')t=1-t;const[x,y,z]=curve(s,t),p=P(x,y,z);ctx.fillStyle='#fff';ctx.globalAlpha=.85*Math.sin(t*Math.PI);ctx.beginPath();ctx.arc(p.x,p.y,Math.max(1.4,3.2*p.s),0,7);ctx.fill();ctx.globalAlpha=.35;ctx.fillStyle=col;ctx.beginPath();ctx.arc(p.x,p.y,Math.max(3,8*p.s),0,7);ctx.fill();ctx.globalAlpha=1}}
+ }
+ // drawables sorted by depth
+ const D=[];
+ D.push({z:P(0,40,0).z,draw:drawCenter});
+ for(const s of vis){const p=P(s.x,s.y+fl(s),s.z);D.push({z:p.z,draw:()=>drawIsland(s,p)});if(s.keys.length&&s.anim>.9&&!s.unused){const[x,y,z]=curve(s,.42),cp=P(x,y,z);D.push({z:cp.z-1,draw:()=>drawChest(s,cp)})}}
+ D.sort((a,b)=>b.z-a.z).forEach(d=>d.draw());
+ labels(vis);
+ // leaving sharks
+ leaving=leaving.filter(l=>time-l.t<1.6);for(const l of leaving){const u=(time-l.t)/1.6;ctx.globalAlpha=1-u;const x=l.x+u*u*W*.6,y=l.y-u*60;ctx.drawImage(IMG.shark,x-28,y-21,56,42);ctx.globalAlpha=1}
+ bursts=bursts.filter(b=>time-b.t<1.2);for(const b of bursts){const u=(time-b.t)/1.2;for(let i=0;i<22;i++){const a=i/22*Math.PI*2;ctx.fillStyle=i%2?'#7bd9ce':'#f5a3bf';ctx.globalAlpha=1-u;ctx.beginPath();ctx.arc(b.x+Math.cos(a)*u*120,b.y+Math.sin(a)*u*120-u*20,4*(1-u)+1,0,7);ctx.fill()}ctx.globalAlpha=1}
+}
+function rockBody(cx,cy,r,top,side){ctx.beginPath();ctx.moveTo(cx-r,cy);ctx.bezierCurveTo(cx-r*.95,cy+r*.55,cx-r*.35,cy+r*.95,cx,cy+r*1.02);ctx.bezierCurveTo(cx+r*.35,cy+r*.95,cx+r*.95,cy+r*.55,cx+r,cy);ctx.closePath();const g=ctx.createLinearGradient(cx-r,cy,cx+r,cy+r);g.addColorStop(0,side[0]);g.addColorStop(1,side[1]);ctx.fillStyle=g;ctx.fill();ctx.beginPath();ctx.ellipse(cx,cy,r,r*.36,0,0,Math.PI*2);const g2=ctx.createLinearGradient(cx,cy-r*.36,cx,cy+r*.36);g2.addColorStop(0,top[0]);g2.addColorStop(1,top[1]);ctx.fillStyle=g2;ctx.fill()}
+function shadow(x,z,r){const p=P(x,-90,z);ctx.fillStyle='rgba(0,8,20,.38)';ctx.beginPath();ctx.ellipse(p.x,p.y,r*p.s,r*p.s*Math.max(.18,Math.sin(cam.pitch)),0,0,Math.PI*2);ctx.fill()}
+function drawCenter(){
+ const p=P(0,40,0),r=96*p.s,ps=openProbs(),worried=ps.some(x=>x.kind==='shark');
+ shadow(0,0,110);
+ rockBody(p.x,p.y,r,['#3b6b8f','#244a6b'],['#1a3557','#0a1828']);
+ ctx.strokeStyle='rgba(245,163,191,.55)';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(p.x,p.y,r,r*.36,0,0,Math.PI*2);ctx.stroke();
+ for(let i=0;i<6;i++){const a=i/6*Math.PI*2+.4,cx=p.x+Math.cos(a)*r*.68,cy=p.y+Math.sin(a)*r*.22;ctx.strokeStyle='#f5a3bf';ctx.lineCap='round';ctx.lineWidth=Math.max(2,5*p.s);const sw=RM?0:Math.sin(time*1.5+i)*3*p.s;ctx.beginPath();ctx.moveTo(cx,cy);ctx.quadraticCurveTo(cx+sw,cy-14*p.s,cx+sw*1.6,cy-26*p.s);ctx.stroke();ctx.fillStyle='#ffd0e0';ctx.beginPath();ctx.arc(cx+sw*1.6,cy-26*p.s,4*p.s,0,7);ctx.fill()}
+ const u=r*1.05,bob=RM?0:Math.sin(time*2)*3*p.s;ctx.drawImage(worried?IMG.regenW:IMG.regen,p.x-u/2,p.y-u*.78+bob,u,u*.857);
+ hits.push({type:'center',x:p.x,y:p.y-r*.2,r:r*.9,z:p.z});
+ const ap=ps.filter(x=>!x.svc);ap.forEach((pr,i)=>{const sz=34*p.s*1.4;ctx.drawImage(IMG[pr.kind],p.x+r*.6+i*sz,p.y-r*.9,sz,sz);hits.push({type:'prob',prob:pr,x:p.x+r*.6+i*sz+sz/2,y:p.y-r*.9+sz/2,r:sz*.6,z:p.z-5})});
+}
+function drawIsland(s,p){
+ const a=s.anim,e=a<1?1-Math.pow(1-a,3):1,r=58*p.s*e,col=CATS[s.cat].col,dim=dimmed(s),hl=hover&&hover.svc===s;
+ ctx.save();ctx.globalAlpha=(dim?.22:s.unused?.5:1)*Math.min(1,a*1.4);
+ shadow(s.x,s.z,66*e);
+ const yy=p.y+(1-e)*60*p.s;
+ rockBody(p.x,yy,r,[mix(col,'#1e3a58',.55),mix(col,'#0f2238',.75)],['#18304e','#081626']);
+ ctx.strokeStyle=col;ctx.globalAlpha*=hl?1:.55;ctx.lineWidth=hl?3:1.6;ctx.beginPath();ctx.ellipse(p.x,yy,r,r*.36,0,0,Math.PI*2);ctx.stroke();ctx.globalAlpha=(dim?.22:s.unused?.5:1)*Math.min(1,a*1.4);
+ // token
+ const tr=r*.52,ty=yy-r*.62-(RM?0:Math.sin(time*1.6+s.ph)*3*p.s);
+ if(!dim&&!s.unused){ctx.save();ctx.globalCompositeOperation='lighter';const g=ctx.createRadialGradient(p.x,ty,0,p.x,ty,tr*2.2);g.addColorStop(0,col+'66');g.addColorStop(1,col+'00');ctx.fillStyle=g;ctx.beginPath();ctx.arc(p.x,ty,tr*2.2,0,7);ctx.fill();ctx.restore()}
+ ctx.fillStyle=mix(col,'#000',.45);ctx.beginPath();ctx.ellipse(p.x,ty+tr*.14,tr,tr,0,0,Math.PI*2);ctx.fill();
+ const g3=ctx.createRadialGradient(p.x-tr*.35,ty-tr*.4,tr*.1,p.x,ty,tr);g3.addColorStop(0,mix(col,'#fff',.45));g3.addColorStop(1,col);ctx.fillStyle=g3;ctx.beginPath();ctx.arc(p.x,ty,tr,0,7);ctx.fill();
+ ctx.save();ctx.translate(p.x-tr*.62,ty-tr*.62);ctx.scale(tr*1.24/24,tr*1.24/24);ctx.strokeStyle='#0b1b2e';ctx.lineWidth=2.3;ctx.lineCap='round';ctx.lineJoin='round';ctx.stroke(PATHS[s.cat]);ctx.restore();
+ ctx.restore();
+ s._p={x:p.x,y:yy,r,s:p.s,ty,tr};
+ hits.push({type:'svc',svc:s,x:p.x,y:yy-r*.3,r:r*1.05,z:p.z});
+ // problems on island
+ const ps=openProbs().filter(x=>x.svc===s.id&&x.kind!=='shark');
+ ps.forEach((pr,i)=>{const sz=Math.max(22,40*p.s*1.3),bx=p.x+r*.72+i*sz*.8,by=ty-tr*1.1+(RM?0:Math.sin(time*2.2+i)*3);ctx.save();ctx.globalAlpha=dim?.3:1;
+  if(!dim){ctx.strokeStyle=pr.kind==='ghost'?'rgba(200,212,227,.6)':'rgba(255,141,141,.8)';ctx.lineWidth=2;ctx.beginPath();ctx.arc(bx+sz/2,by+sz/2,sz*.62+(RM?0:Math.sin(time*4)*2),0,7);ctx.stroke()}
+  ctx.drawImage(IMG[pr.kind],bx,by,sz,sz);ctx.restore();hits.push({type:'prob',prob:pr,x:bx+sz/2,y:by+sz/2,r:sz*.65,z:p.z-10})});
+}
+function drawChest(s,p){
+ const st=keyStatus(s),u=clamp(11*p.s*1.3,7,13),dim=dimmed(s);ctx.save();ctx.globalAlpha=dim?.2:1;
+ const col=st==='leak'?'#ff8d8d':st==='miss'?'#f0ca7e':'#7bd9ce';
+ if(st==='leak'&&!dim){ctx.save();ctx.globalCompositeOperation='lighter';const g=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,u*3);g.addColorStop(0,'rgba(255,100,100,.5)');g.addColorStop(1,'rgba(255,100,100,0)');ctx.fillStyle=g;ctx.beginPath();ctx.arc(p.x,p.y,u*3,0,7);ctx.fill();ctx.restore()}
+ ctx.fillStyle='#5a3d22';ctx.strokeStyle=col;ctx.lineWidth=2;rr(p.x-u,p.y-u*.35,u*2,u*1.15,3);ctx.fill();ctx.stroke();
+ ctx.save();ctx.translate(p.x-u,p.y-u*.35);if(st==='leak')ctx.rotate(-.7);ctx.fillStyle='#7a5530';rr(0,-u*.6,u*2,u*.6,3);ctx.fill();ctx.stroke();ctx.restore();
+ ctx.fillStyle=col;ctx.beginPath();ctx.arc(p.x,p.y+u*.15,u*.22,0,7);ctx.fill();
+ if(st==='leak'&&!dim){const a=time*1.8,sx=p.x+Math.cos(a)*u*3.4,sy=p.y+Math.sin(a)*u*1.3-u*.3,sz=u*3.6;ctx.save();ctx.translate(sx,sy);if(Math.sin(a)<0)ctx.scale(-1,1);ctx.drawImage(IMG.shark,-sz/2,-sz*.375,sz,sz*.75);ctx.restore();const pr=openProbs().find(x=>x.svc===s.id&&x.kind==='shark');if(pr)hits.push({type:'prob',prob:pr,x:sx,y:sy,r:sz*.55,z:p.z-20})}
+ ctx.restore();hits.push({type:'chest',svc:s,x:p.x,y:p.y,r:u*1.4,z:p.z-15});
+}
+function labels(vis){
+ const placed=[];ctx.textAlign='center';ctx.textBaseline='middle';
+ const items=vis.filter(s=>s._p&&s.anim>.6).map(s=>({s,x:s._p.x,y:s._p.y+s._p.r*1.12+12,z:P(s.x,s.y,s.z).z})).sort((a,b)=>a.z-b.z);
+ const c=P(0,40,0);items.unshift({center:true,x:c.x,y:c.y+96*c.s*1.1+14,z:c.z});
+ for(const it of items){
+  const s=it.s,name=it.center?S.name:s.name,sub=it.center?'your app':`${CATS[s.cat].n} · ${UNIT(s.ev.filter(e=>e.p!=='package.json').length||0)}`;
+  const sm=W<600;ctx.font=`800 ${sm?11.5:13}px Nunito, system-ui`;const w1=ctx.measureText(name).width;ctx.font='700 11px Nunito, system-ui';const w2=sm?0:ctx.measureText(sub).width;const w=Math.max(w1,w2)+(sm?14:20),h=sm?22:36;
+  let y=it.y,ok=false;for(let t=0;t<4;t++){const box={x:it.x-w/2,y:y-h/2,w,h};if(!placed.some(b=>b.x<box.x+box.w&&box.x<b.x+b.w&&b.y<box.y+box.h&&box.y<b.y+b.h)){ok=true;break}y+=h+4}
+  if(!ok||y+h/2>H-ovBottom()||y-h/2<ovTop()||it.x-w/2<4||it.x+w/2>W-4)continue;
+  const dim=s&&dimmed(s);ctx.globalAlpha=dim?.25:(s&&s.unused?.6:1);
+  ctx.fillStyle='rgba(8,21,36,.86)';ctx.strokeStyle=it.center?'#f5a3bf':CATS[s.cat].col;ctx.lineWidth=1.3;rr(it.x-w/2,y-h/2,w,h,sm?8:10);ctx.fill();ctx.stroke();
+  ctx.fillStyle='#eef3ff';ctx.font=`800 ${sm?11.5:13}px Nunito, system-ui`;ctx.fillText(name,it.x,sm?y:y-7);if(!sm){ctx.fillStyle='#a3b5cf';ctx.font='700 11px Nunito, system-ui';ctx.fillText(sub,it.x,y+8)}ctx.globalAlpha=1;
+  placed.push({x:it.x-w/2,y:y-h/2,w,h});
+ }
+}
+function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath()}
+function mix(a,b,t){const pa=parseInt(a.slice(1),16),pb=parseInt(b.slice(1),16);const ch=(v,s)=>(v>>s)&255;const m=s=>Math.round(ch(pa,s)*(1-t)+ch(pb,s)*t);return'#'+((1<<24)+(m(16)<<16)+(m(8)<<8)+m(0)).toString(16).slice(1)}
+
+let lastT=performance.now();function loop(now){const dt=Math.min(.05,(now-lastT)/1000);lastT=now;if(!document.hidden)frame(dt);requestAnimationFrame(loop)}
+
+/* ---------- input ---------- */
+const ptrs=new Map();let dragStart=null,moved=false,pinch=0;
+function pick(x,y){let best=null;for(const h of hits){const d=Math.hypot(h.x-x,h.y-y);if(d<h.r){const pr=h.type==='prob'?0:h.type==='chest'?1:h.type==='svc'?2:h.type==='center'?3:4;if(!best||pr<best.pr||(pr===best.pr&&h.z<best.h.z))best={h,pr}}}return best&&best.h}
+cv.addEventListener('pointerdown',e=>{cv.setPointerCapture(e.pointerId);ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY});dragStart={x:e.clientX,y:e.clientY};moved=false;lastInput=performance.now();if(tour)endTour();if(ptrs.size===2){const[a,b]=[...ptrs.values()];pinch=Math.hypot(a.x-b.x,a.y-b.y)}});
+cv.addEventListener('pointermove',e=>{const r=cv.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;
+ if(ptrs.has(e.pointerId)){const prev=ptrs.get(e.pointerId);ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY});lastInput=performance.now();
+  if(ptrs.size===2){const[a,b]=[...ptrs.values()];const d=Math.hypot(a.x-b.x,a.y-b.y);if(pinch){goal.dist=clamp(goal.dist*pinch/d,420,2200)}pinch=d;moved=true;return}
+  const dx=e.clientX-prev.x,dy=e.clientY-prev.y;if(Math.hypot(e.clientX-dragStart.x,e.clientY-dragStart.y)>5)moved=true;if(moved){goal.yaw-=dx*.006;goal.pitch=clamp(goal.pitch+dy*.004,.16,1.15);cv.classList.add('drag')}return}
+ const h=pick(x,y);setHover(h,x,y)});
+cv.addEventListener('pointerup',e=>{ptrs.delete(e.pointerId);cv.classList.remove('drag');if(ptrs.size<2)pinch=0;if(!moved){const r=cv.getBoundingClientRect();const h=pick(e.clientX-r.left,e.clientY-r.top);if(h)clickHit(h)}});
+cv.addEventListener('pointerleave',()=>setHover(null));
+cv.addEventListener('wheel',e=>{e.preventDefault();lastInput=performance.now();goal.dist=clamp(goal.dist*Math.exp(e.deltaY*.0012),420,2200)},{passive:false});
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+function setHover(h,x,y){hover=h&&(h.svc?{svc:h.svc}:h.prob?{svc:svcById(h.prob.svc)}:null);cv.classList.toggle('hov',!!h);const tip=$('#tip');if(!h){tip.style.opacity=0;return}
+ let t='',s='';if(h.type==='svc'){t=h.svc.name;s=h.svc.unused?'Installed, but nothing uses it':h.svc.does}else if(h.type==='current'){t=`${h.svc.dir==='out'?'Sends':'Shares'}: ${h.svc.data}`;s=`${S.name} ↔ ${h.svc.name} · ${UNIT(h.svc.ev.filter(e=>e.p!=='package.json').length)}`}else if(h.type==='chest'){const st=keyStatus(h.svc);t=st==='leak'?'Key leaked':st==='miss'?'Key missing from .env.example':'Keys stored safely';s=h.svc.keys.map(k=>k.name).join(', ')}else if(h.type==='prob'){t=h.prob.title;s='Tap to see the fix'}else if(h.type==='center'){t=`${S.name} (your app)`;s='Tap for an overview'}
+ tip.innerHTML=`${esc(t)}<small>${esc(s)}</small>`;tip.style.opacity=1;const tw=tip.offsetWidth;tip.style.left=clamp(x+14,6,W-tw-6)+'px';tip.style.top=clamp(y+14,6,H-60)+'px'}
+function clickHit(h){if(h.type==='prob')openProblem(h.prob);else if(h.type==='svc'||h.type==='current')openService(h.svc);else if(h.type==='chest')openService(h.svc,'keys');else if(h.type==='center')openOverview()}
+function flyTo(s,dist=760){if(!s){goal.tx=0;goal.ty=0;goal.tz=0;goal.dist=fitDist();goal.pitch=.5;goal.ox=0;return}goal.tx=s.x*.85;goal.ty=s.y;goal.tz=s.z*.85;goal.dist=Math.max(dist,F*.9);const ang=Math.atan2(s.x,s.z);goal.yaw=nearestAngle(cam.yaw,-ang+Math.PI);goal.pitch=.42;lastInput=performance.now()}
+function nearestAngle(cur,t){let d=((t-cur)%(Math.PI*2)+Math.PI*3)%(Math.PI*2)-Math.PI;return cur+d}
+$('#zIn').onclick=()=>{goal.dist=clamp(goal.dist*.8,420,2200);lastInput=performance.now()};
+$('#zOut').onclick=()=>{goal.dist=clamp(goal.dist*1.25,420,2200);lastInput=performance.now()};
+$('#zReset').onclick=()=>{flyTo(null);goal.yaw=-.55};
+
+/* ---------- side + glance ---------- */
+function renderAll(){
+ $('#pname').textContent=S.name;$('#modeTag').style.display=(S.mode==='demo'||S.mode==='n8n-demo')?'':'none';$('#modeTag').textContent=S.mode==='n8n-demo'?'SAMPLE':'DEMO';$('#pmeta').textContent=S.unit==='node'?'Every app this n8n workflow touches':S.via==='n8n'?'Scanned by your n8n workflow':'Every outside service your app talks to';
+ $('#foot').textContent=S.unit==='node'?'Mapped from the workflow JSON on this device. Nothing was uploaded. Keys inside credentials are never in the JSON, so only keys typed into nodes show up.':S.mode==='demo'?'Demo project with sample data. Swaps are options with tradeoffs, not verdicts. Free tiers and prices change, so check each pricing page before switching.':'Mapped from your files on this device. Nothing was uploaded, and .env values were never read. Swaps are options with tradeoffs, not verdicts.';
+ const vs=S.services.filter(visSvc),ps=openProbs().sort((a,b)=>SEV[b.kind]-SEV[a.kind]),hs=health(),keysN=vs.filter(s=>s.keys.some(k=>k.where==='server')).length;
+ const col=hs>=80?'#8fd99f':hs>=50?'#f0ca7e':'#ff8d8d',C=2*Math.PI*24;
+ $('#ring').innerHTML=`<svg viewBox="0 0 58 58"><circle cx="29" cy="29" r="24" fill="none" stroke="#2a4b70" stroke-width="6"/><circle cx="29" cy="29" r="24" fill="none" stroke="${col}" stroke-width="6" stroke-linecap="round" stroke-dasharray="${C*hs/100} ${C}"/></svg><b style="color:${col}">${hs}</b>`;
+ $('#gH').innerHTML=`${esc(S.name)} ${S.unit==='node'?'touches':'talks to'} <em>${vs.length} ${S.unit==='node'?'app':'service'}${vs.length===1?'':'s'}</em>`;
+ const leaks=ps.filter(p=>p.kind==='shark').length;
+ $('#gP').textContent=`${S.via==='n8n'?'Scanned by n8n \u00b7 ':''}${keysN} need secret keys · ${ps.length?`${ps.length} problem${ps.length>1?'s':''}${leaks?`, ${leaks} leaked key${leaks>1?'s':''}`:''}`:'no problems'} · Stack health ${hs}`;
+ // chips
+ const cats=[...new Set(vs.map(s=>s.cat))];
+ $('#chips').innerHTML=`<button class="chip ${!S.filter?'on':''}" data-c="">All</button>`+cats.map(c=>`<button class="chip ${S.filter===c?'on':''}" data-c="${c}"><i style="background:${CATS[c].col}"></i>${CATS[c].n} ${vs.filter(s=>s.cat===c).length}</button>`).join('');
+ $$('#chips .chip').forEach(b=>b.onclick=()=>{S.filter=b.dataset.c||null;renderAll()});
+ // timeline
+ $('#track').innerHTML=S.saves.map((s,i)=>{const bad=S.problems.some(p=>p.from===i);return`<button class="tick ${s.kind==='fix'?'fix':bad?'bad':''} ${i===S.view?'on':''}" data-i="${i}" title="Save ${i+1}: ${esc(s.title)}"></button>`}).join('');
+ $$('#track .tick').forEach(b=>b.onclick=()=>{S.view=+b.dataset.i;renderAll();const sv=S.saves[S.view];const ad=(sv.adds||[]).map(svcById).filter(Boolean);if(ad[0])flyTo(ad[0],700)});
+ const sv=S.saves[S.view];const adds=(sv.adds||[]).map(id=>svcById(id)?.name).filter(Boolean);
+ $('#tlT').textContent=`Save ${S.view+1} of ${S.saves.length} · ${sv.by} · ${sv.title}`;
+ $('#tlS').textContent=adds.length?`added ${adds.join(', ')}`:(sv.kind==='fix'?'fix':'');
+ // problems
+ $('#pc').textContent=ps.length;
+ $('#probs').innerHTML=ps.length?ps.map(p=>`<button class="row" data-p="${p.id}"><span class="ic">${CRIT[p.kind]}</span><span class="tx"><b>${esc(p.title)}</b><span>${esc(p.svc?svcById(p.svc)?.name:'Your app')} · ${({shark:'leaked key',urchin:'risky',jelly:'will break',ghost:'clean-up'})[p.kind]}</span></span><span class="btn sm">${S.mode==='demo'&&p.fix?'Fix':'See'}</span></button>`).join(''):`<div class="note good"><b>All clear.</b>Every service is wired up safely in this save.</div>`;
+ $$('#probs [data-p]').forEach(b=>b.onclick=()=>openProblem(S.problems.find(p=>p.id===b.dataset.p)));
+ // services
+ $('#sc').textContent=vs.length;
+ $('#svcs').innerHTML=vs.length?Object.keys(CATS).filter(c=>vs.some(s=>s.cat===c)).map(c=>`<div class="catlbl">${CATS[c].n}</div><div class="rows">${vs.filter(s=>s.cat===c).map(s=>{const st=keyStatus(s),n=s.ev.filter(e=>e.p!=='package.json').length;return`<button class="row" data-s="${s.id}">${sIco(s)}<span class="tx"><b>${esc(s.name)}</b><span>${s.unused?(S.unit==='node'?'turned off':'installed, not used'):UNIT(n)} · ${esc(s.does)}</span></span>${st==='leak'?'<span class="st leak">leaked</span>':st==='miss'?'<span class="st miss">missing</span>':st==='safe'?'<span class="st safe">key safe</span>':''}</button>`}).join('')}</div>`).join(''):'<p class="empty">No outside services yet.</p>';
+ $$('#svcs [data-s]').forEach(b=>b.onclick=()=>openService(svcById(b.dataset.s)));
+ // flows
+ const fl=vs.filter(s=>!s.unused);
+ $('#flows').innerHTML=fl.length?fl.map(s=>`<div class="flow"><span class="dot" style="background:${CATS[s.cat].col}"></span><span class="d">${esc(s.data)}</span><b>${s.dir==='out'?'→':'↔'} ${esc(s.name)}</b></div>`).join(''):'<p class="empty">Nothing leaves your app yet.</p>';
+ // rules
+ $('#rc').textContent=S.rules.length;
+ $('#rulesTx').textContent=S.rules.length?`${S.rules.length} rule${S.rules.length>1?'s':''} ready for your AI. Paste the block into AGENTS.md or CLAUDE.md so Cursor, Claude Code, Codex and Lovable follow them.`:'Each problem teaches a rule. Tap "Teach my AI this rule" on any problem to collect it here.';
+ $('#copyRules').disabled=!S.rules.length;
+}
+$('#copyRules').onclick=()=>copyText(rulesBlock(),'Copied. Paste it into AGENTS.md or CLAUDE.md in your project.');
+function rulesBlock(){return`<!-- stack-map:start -->\n## Safety rules from Stack Map\nFollow these on every task in this project.\n\n${S.rules.map(r=>'- '+r).join('\n')}\n<!-- stack-map:end -->`}
+
+/* ---------- drawer ---------- */
+function openDrawer(ic,t,s,body,foot){goal.ox=innerWidth>980?-Math.min(560,innerWidth)/2+(innerWidth-W)/2:0;$('#dIc').innerHTML=ic;$('#dT').textContent=t;$('#dS').textContent=s;$('#dBody').innerHTML=body;$('#dFoot').innerHTML=foot||'';$('#dFoot').style.display=foot?'':'none';$('#drawer').classList.add('on');$('#drawer').setAttribute('aria-hidden','false');$('#scrim').classList.add('on');$('#dBody').scrollTop=0}
+function closeDrawer(){goal.ox=0;$('#drawer').classList.remove('on');$('#drawer').setAttribute('aria-hidden','true');$('#scrim').classList.remove('on')}
+$('#dX').onclick=closeDrawer;$('#scrim').onclick=closeDrawer;addEventListener('keydown',e=>{if(e.key==='Escape'){closeDrawer();closeModal();if(tour)endTour()}});
+const codeBlock=(path,lines,hl=[],mask=false)=>`<div class="code"><div class="fh"><span>${esc(path)}</span></div>${lines.map(([n,t])=>`<div class="ln ${hl.includes(n)?'hl':''}"><i>${n||''}</i><span>${esc(mask?maskSecrets(t):t)}</span></div>`).join('')}</div>`;
+const diffBlock=d=>`<div class="code"><div class="fh"><span>${esc(d.path)}</span><span>+${d.lines.filter(l=>l[0]==='+').length} −${d.lines.filter(l=>l[0]==='-').length}</span></div>${d.lines.map(([k,n,t])=>`<div class="ln ${k==='+'?'add':'del'}"><i>${n}</i><span>${esc(t)}</span></div>`).join('')}</div>`;
+function openService(s,focus){
+ if(!s)return;flyTo(s);
+ const st=keyStatus(s),[sk,sl]=stuck(s),files=s.ev,sv=S.saves[s.from],ps=openProbs().filter(p=>p.svc===s.id||p.also===s.id),realFiles=files.filter(e=>e.p!=='package.json');
+ const keyRows=s.keys.map(k=>{let b=k.where==='public'?'<span class="st pub">ok in browser</span>':'<span class="st safe">server only</span>';if(k.where==='server'&&st==='leak'&&ps.some(p=>p.kind==='shark'&&(p.where?.lines||[]).some(l=>String(l[1]).includes(k.name))))b='<span class="st leak">leaked in browser</span>';if(st==='miss'&&ps.some(p=>p.kind==='jelly'&&p.title.includes(k.name)))b='<span class="st miss">not in .env.example</span>';return`<div class="key"><code>${esc(k.name)}</code>${b}</div>`}).join('');
+ const swaps=(s.swaps||[]).map((w,i)=>`<div class="swap"><div class="hd"><b>${esc(w.n)}</b><span class="tags">${w.tags.map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</span></div><p>${esc(w.why.trim())}</p><p><b>Tradeoff:</b> ${esc(w.trade)}</p><p><b>You'd change:</b> ${UNIT(realFiles.length||1)} and ${s.keys.length} key name${s.keys.length===1?'':'s'}</p><div><button class="btn sm ghost" data-sw="${i}">Copy swap prompt for my AI</button></div></div>`).join('');
+ openDrawer(sIco(s).replace('sico"','sico" style="width:44px;height:44px;border-radius:14px;background:'+CATS[s.cat].col+'"'),s.name,`${CATS[s.cat].n} · added in save ${s.from+1} by ${sv?sv.by:'your AI'}`,
+ `<p class="lead">${esc(s.does)}${s.unused?' <mark>But nothing in your app uses it yet.</mark>':''}</p>
+ ${ps.length?`<div class="sec"><h4>Problems here</h4><div class="rows">${ps.map(p=>`<button class="row" data-p="${p.id}"><span class="ic">${CRIT[p.kind]}</span><span class="tx"><b>${esc(p.title)}</b><span>Tap for the fix</span></span></button>`).join('')}</div></div>`:''}
+ <div class="sec"><h4>What goes there</h4><div class="note"><b>${s.dir==='out'?'Leaves your app':'Goes back and forth'}</b>${esc(s.data)}${sv&&sv.prompt?`<br><span style="color:var(--soft);font-size:13px">Added when ${esc(sv.by)} was asked: “${esc(sv.prompt)}”</span>`:''}</div></div>
+ <div class="sec"><h4>${S.unit==='node'?'Nodes that use it':'Where your code uses it'}</h4><div class="files">${files.map((f,i)=>`<button class="fchip" data-f="${i}">${esc(f.p)}${f.l?':'+f.l:''}</button>`).join('')}</div><div id="fview" style="margin-top:8px"></div></div>
+ ${s.keys.length?`<div class="sec" id="keysSec"><h4>Keys it needs</h4><div class="keys">${keyRows}</div></div>`:''}
+ <div class="sec"><h4>How stuck are you</h4><div class="meter ${sk}"><i></i><i></i><i></i></div><p style="font-size:14px;color:var(--soft)"><b style="color:var(--ink)">${sl}.</b> ${CATS[s.cat].n} services ${['db','auth','storage'].includes(s.cat)?'hold your data or your users, so switching means moving them':'are mostly calls in your code, so switching is a code change'}. Used in ${UNIT(realFiles.length)}.</p></div>
+ <div class="sec"><h4>Swaps</h4>${swaps?`<div class="rows" style="gap:10px">${swaps}</div>`:'<p class="empty">No swaps listed yet. Ask your AI to compare options for this service.</p>'}</div>
+ <div class="sec"><h4>Links</h4><a class="btn sm ghost" href="${s.site}" target="_blank" rel="noopener">Open ${esc(s.name)} website</a></div>`);
+ $$('#dBody [data-p]').forEach(b=>b.onclick=()=>openProblem(S.problems.find(p=>p.id===b.dataset.p)));
+ $$('#dBody [data-f]').forEach(b=>b.onclick=()=>{$$('#dBody .fchip').forEach(x=>x.classList.remove('on'));b.classList.add('on');const f=files[+b.dataset.f];$('#fview').innerHTML=codeBlock(f.p,[[f.l||1,f.c]],[],true)});
+ $$('#dBody [data-sw]').forEach(b=>b.onclick=()=>{const w=s.swaps[+b.dataset.sw];copyText(`Replace ${s.name} with ${w.n} in this project.\n\nFiles that use ${s.name}:\n${realFiles.map(f=>'- '+f.p).join('\n')||'- package.json'}\n\nKey names to replace: ${s.keys.map(k=>k.name).join(', ')||'none'}\n\nRules:\n- Keep every secret key in .env and read it only in server code.\n- Update .env.example with the new key names (never values).\n- Remove the old ${s.name} package when nothing imports it.\n- Do not touch unrelated files. List every file you changed at the end.`,`Swap prompt copied. Paste it into your AI.`)});
+ if(focus==='keys')setTimeout(()=>$('#keysSec')?.scrollIntoView({behavior:'smooth'}),300);
+}
+function openProblem(p){
+ if(!p)return;const s=svcById(p.svc);if(s)flyTo(s);
+ const fixed=p.to<=S.view,taught=S.rules.includes(p.rule),canFix=!!p.fix&&!fixed,isDemo=S.mode==='demo';
+ openDrawer(`<span style="width:46px;height:42px;display:block">${CRIT[p.kind]}</span>`,p.title,`${s?s.name:'Your app'} · ${p.where.path}`,
+ `<p class="lead">${esc(p.sub)}</p>
+ <div class="sec"><h4>Where</h4>${codeBlock(p.where.path,p.where.lines,p.where.hl||[],true)}${p.where.note?`<p style="font-size:13.5px;color:var(--soft);margin-top:6px">${esc(p.where.note)}</p>`:''}</div>
+ ${p.steps?`<div class="sec"><h4>${S.unit==='node'?'How to fix it in n8n':'How to fix it'}</h4><ol class="steps">${p.steps.map(x=>`<li>${esc(x)}</li>`).join('')}</ol></div>`:''}
+ ${p.fix&&p.fix.diffs.length?`<div class="sec"><h4>The fix, line by line</h4><div class="rows" style="gap:8px">${p.fix.diffs.map(diffBlock).join('')}</div></div>`:''}
+ ${p.after?`<div class="note warn"><b>${esc(p.after.t)}</b>${esc(p.after.d)} <a href="${p.after.url}" target="_blank" rel="noopener" style="color:var(--teal);font-weight:800">Open the key page</a></div>`:''}
+ <div class="sec"><h4>Learn from this</h4><div class="note" style="margin-bottom:8px"><b>Why AIs do this</b>${esc(p.why)}</div>
+ <div class="note"><b>So it never happens again</b>Add this rule to AGENTS.md or CLAUDE.md, the files AI coding tools read before every task.<div class="rule">${esc(p.rule)}</div><button class="btn sm teal" id="teach" ${taught?'disabled':''}>${taught?'Added to your AI rules':'Teach my AI this rule'}</button></div></div>`,
+ `<button class="btn ghost" id="fixPrompt">${p.steps?'Copy fix steps':'Copy fix prompt for my AI'}</button>${canFix?`<button class="btn" id="doFix">${isDemo?'Fix it':'Mark as fixed'}</button>`:fixed?'<button class="btn" disabled>Fixed</button>':''}`);
+ $('#teach').onclick=()=>{if(!S.rules.includes(p.rule))S.rules.push(p.rule);renderAll();copyText(rulesBlock(),`Rule added. Your AGENTS.md block (${S.rules.length} rule${S.rules.length>1?'s':''}) is copied.`);$('#teach').disabled=true;$('#teach').textContent='Added to your AI rules'};
+ $('#fixPrompt').onclick=()=>p.steps?copyText(`${p.title} (${p.where.path})\n\n${p.sub}\n\n${p.steps.map((x,i)=>(i+1)+'. '+x).join('\n')}\n\nRule from now on: ${p.rule}`,'Fix steps copied.'):copyText(`${p.title} in ${p.where.path}.\n\n${p.sub}\n\nPlease fix it.${p.fix?`\n\nThe fix:\n${p.fix.diffs.map(d=>d.path+'\n'+d.lines.map(l=>`${l[0]} ${l[2]}`).join('\n')).join('\n\n')}`:''}\n\nRule to follow from now on: ${p.rule}\n\nDo not touch unrelated files. List every file you changed at the end.`,'Fix prompt copied. Paste it into your AI.');
+ const df=$('#doFix');if(df)df.onclick=()=>applyFix(p);
+}
+function applyFix(p){
+ const i=S.saves.length,s=svcById(p.svc);
+ if(p.kind==='shark'&&s&&s._p)leaving.push({x:s._p.x,y:s._p.ty,t:time});
+ if(s&&s._p)bursts.push({x:s._p.x,y:s._p.ty,t:time});
+ S.view=S.saves.length-1;
+ S.saves.push({by:S.mode==='demo'?'Stack Map':'You',title:'Fixed: '+p.fix.title,kind:'fix',adds:[]});
+ p.to=i;if(p.fix.removes){const r=svcById(p.fix.removes);if(r)r.to=i}
+ S.view=i;closeDrawer();renderAll();
+ const left=openProbs().length;toast(left?`Fixed. Save ${i+1} created. ${left} left.`:`All fixed. Stack health ${health()}.`);
+}
+function openOverview(){flyTo(null);const vs=S.services.filter(visSvc);
+ openDrawer(`<span style="width:46px;height:42px;display:block">${REGEN(openProbs().some(p=>p.kind==='shark')?'worried':'happy')}</span>`,S.name,S.unit==='node'?'Your workflow and every app it touches':'Your app and everything it connects to',
+ `<p class="lead">${S.unit==='node'?'This workflow touches':'Your app talks to'} <mark>${vs.length} outside ${S.unit==='node'?'apps':'services'}</mark>. Each one is another account to secure, another key to protect, and another place your users' data goes.</p>
+ ${S.summary?`<div class="note good" style="white-space:pre-wrap"><b>Your n8n AI Agent says</b>${esc(S.summary)}</div>`:''}
+ <div class="sec"><h4>By job</h4>${Object.keys(CATS).filter(c=>vs.some(s=>s.cat===c)).map(c=>`<div class="flow"><span class="sico" style="background:${CATS[c].col};width:26px;height:26px">${catSvg(c,15)}</span><span class="d">${CATS[c].n}</span><b>${vs.filter(s=>s.cat===c).map(s=>esc(s.name)).join(', ')}</b></div>`).join('')}</div>
+ <div class="sec"><h4>Accounts to protect</h4><p style="font-size:14px;line-height:1.5;color:var(--soft)">Turn on two-factor sign-in for each of these: ${vs.map(s=>esc(s.name)).join(', ')}. If one of them is taken over, so is that part of your app.</p></div>`);
+}
+
+/* ---------- tour ---------- */
+function startTour(){closeDrawer();const vs=S.services.filter(visSvc);if(!vs.length){toast('Nothing to tour yet');return}
+ const steps=[{k:'> stack-map '+S.name,t:`${S.name} talks to ${vs.length} services`,s:'Every island is an outside service. Currents show what data goes where.',go:()=>{flyTo(null);goal.yaw=cam.yaw+.6}}];
+ const order=[...vs].sort((a,b)=>a.from-b.from);
+ for(const s of order){const sv=S.saves[s.from];const pr=openProbs().find(p=>p.svc===s.id);steps.push({k:`SAVE ${s.from+1} · ${(sv?.by||'').toUpperCase()}`,t:s.name,s:pr?`Problem: ${pr.title}`:`${CATS[s.cat].n}: ${s.data}`,go:()=>flyTo(s,700),bad:!!pr})}
+ const ps=openProbs();steps.push({k:'> stack-map --health',t:`Stack health ${health()}`,s:ps.length?`${ps.length} problem${ps.length>1?'s':''} to fix. Tap any creature to see how.`:'Everything is wired up safely.',go:()=>{flyTo(null)}});
+ tour={steps,i:-1,timer:0};$('#stage').classList.add('touring');$('#skipTour').style.display='inline-flex';nextTour();
+}
+function nextTour(){if(!tour)return;tour.i++;const st=tour.steps[tour.i];if(!st){endTour();return}st.go();$('#capK').textContent=st.k;$('#capT').textContent=st.t;$('#capT').style.color=st.bad?'#ff8d8d':'';$('#capS').textContent=st.s;$('#cap').style.opacity=1;tour.timer=setTimeout(nextTour,tour.i===0?3200:2200)}
+function endTour(){if(!tour)return;clearTimeout(tour.timer);tour=null;$('#stage').classList.remove('touring');$('#cap').style.opacity=0;$('#skipTour').style.display='none'}
+$('#tourBtn').onclick=startTour;$('#skipTour').onclick=endTour;
+
+/* ---------- quiz ---------- */
+function openModal(h){$('#mBox').innerHTML=h;$('#modal').classList.add('on')}
+function closeModal(){$('#modal').classList.remove('on')}
+$('#modal').onclick=e=>{if(e.target.id==='modal')closeModal()};
+function quiz(){const vs=S.services.filter(s=>visSvc(s)&&!s.unused);if(vs.length<3){toast('Map a project with at least 3 services first');return}
+ const sh=a=>a.map(x=>[Math.random(),x]).sort((a,b)=>a[0]-b[0]).map(x=>x[1]);
+ const qs=sh(vs).slice(0,3).map(s=>{const others=sh(vs.filter(o=>o!==s)).slice(0,2);return{q:`Which service does this for ${S.name}?`,d:s.does+' ('+s.data.toLowerCase()+')',o:sh([s,...others]).map(x=>x.name),a:s.name,svc:s}});
+ qs.push({q:'Where should a secret API key live?',d:'For example, the key for OpenAI or Stripe.',o:['In .env, read only by server code','In a VITE_ or NEXT_PUBLIC_ variable','Pasted into the component that uses it'],a:'In .env, read only by server code'});
+ let i=0,score=0;const res=[];
+ const show=()=>{if(i>=qs.length){openModal(`<h2>${score} of ${qs.length}</h2><p class="sub">${score===qs.length?'You know your stack.':'Tap any island on the map to learn what it does, then try again.'}</p><div class="mrow"><button class="btn ghost" id="qAgain">Again</button><button class="btn" id="qDone">Done</button></div>`);$('#qAgain').onclick=quiz;$('#qDone').onclick=closeModal;return}
+  const q=qs[i];openModal(`<div class="qbar">${qs.map((_,j)=>`<i class="${j<i?(res[j]?'ok':'no'):j===i?'cur':''}"></i>`).join('')}</div><h2>${esc(q.q)}</h2><p class="sub">${esc(q.d)}</p><div class="check" style="background:none;border:0;padding:0"><div class="opts">${q.o.map(o=>`<button class="opt" data-o="${esc(o)}">${esc(o)}</button>`).join('')}</div></div><p id="qMsg" class="sub" style="min-height:20px"></p>`);
+  $$('#mBox .opt').forEach(b=>b.onclick=()=>{const ok=b.dataset.o===q.a;res[i]=ok;if(ok)score++;$$('#mBox .opt').forEach(x=>{x.disabled=true;if(x.dataset.o===q.a)x.classList.add('right')});if(!ok)b.classList.add('wrong');$('#qMsg').textContent=ok?'Right.':`It's ${q.a}.`;if(q.svc)flyTo(q.svc,600);setTimeout(()=>{i++;show()},1300)})};
+ show()}
+$('#quizBtn').onclick=quiz;
+
+/* ---------- share card ---------- */
+$('#shareBtn').onclick=()=>{closeDrawer();endTour();flyTo(null);goal.yaw=-.55;cam.ox=goal.ox=0;toast('Framing your map...');setTimeout(makeCard,1100)};
+function makeCard(){const c=document.createElement('canvas');c.width=1200;c.height=630;const g=c.getContext('2d');
+ const bg=g.createLinearGradient(0,0,0,630);bg.addColorStop(0,'#14365a');bg.addColorStop(1,'#06111f');g.fillStyle=bg;g.fillRect(0,0,1200,630);
+ const pts=S.services.filter(x=>visSvc(x)&&x._p).map(x=>x._p);const c0=P(0,40,0);pts.push({x:c0.x,y:c0.y,r:96*c0.s});let x0=Math.min(...pts.map(q=>q.x-q.r))-50,x1=Math.max(...pts.map(q=>q.x+q.r))+50,y0=Math.min(...pts.map(q=>q.y-q.r*1.4))-30,y1=Math.max(...pts.map(q=>q.y+q.r*1.2))+50;x0=Math.max(0,x0);y0=Math.max(0,y0);x1=Math.min(W,x1);y1=Math.min(H,y1);const sw=x1-x0,sh=y1-y0,sc=Math.min(760/sw,590/sh);g.drawImage(cv,x0*DPR,y0*DPR,sw*DPR,sh*DPR,1200-sw*sc-20,(630-sh*sc)/2,sw*sc,sh*sc);
+ const fade=g.createLinearGradient(380,0,620,0);fade.addColorStop(0,'rgba(8,21,36,1)');fade.addColorStop(1,'rgba(8,21,36,0)');g.fillStyle=fade;g.fillRect(0,0,620,630);g.fillStyle='rgba(8,21,36,1)';g.fillRect(0,0,380,630);
+ const vs=S.services.filter(visSvc),ps=openProbs();g.fillStyle='#7bd9ce';g.font='700 22px JetBrains Mono, monospace';g.fillText('> stack-map',60,110);
+ g.fillStyle='#eef3ff';g.font='900 64px Nunito, sans-serif';g.fillText(S.name,60,190);g.font='800 40px Nunito, sans-serif';g.fillText(`runs on ${vs.length} services`,60,250);
+ g.fillStyle='#a3b5cf';g.font='700 26px Nunito, sans-serif';g.fillText(`${vs.filter(s=>s.keys.some(k=>k.where==='server')).length} secret keys · ${ps.length} problem${ps.length===1?'':'s'}`,60,305);
+ const hs=health();g.fillStyle=hs>=80?'#8fd99f':hs>=50?'#f0ca7e':'#ff8d8d';g.font='900 30px Nunito, sans-serif';g.fillText(`Stack health ${hs}`,60,360);
+ let x=60;g.font='800 20px Nunito, sans-serif';for(const c of [...new Set(vs.map(s=>s.cat))].slice(0,6)){const t=CATS[c].n,w=g.measureText(t).width+28;if(x+w>560)break;g.fillStyle=CATS[c].col;g.beginPath();g.roundRect?g.roundRect(x,410,w,38,19):g.rect(x,410,w,38);g.fill();g.fillStyle='#0b1b2e';g.fillText(t,x+14,436);x+=w+10}
+ g.fillStyle='#f5a3bf';g.font='900 24px Nunito, sans-serif';g.fillText('Mapped by Stack Map',60,560);
+ const url=c.toDataURL('image/png');openModal(`<h2>Share your stack</h2><p class="sub">A picture of your map for a README, a post or your demo slides.</p><img src="${url}" alt="Share card"><div class="mrow"><button class="btn ghost" id="sClose">Close</button><a class="btn" download="${esc(S.name)}-stack.png" href="${url}">Download PNG</a></div>`);$('#sClose').onclick=closeModal}
+
+/* ---------- real project mapping ---------- */
+const SKIP=new Set(['node_modules','.git','dist','build','.next','.vercel','.turbo','coverage','.output','out','.svelte-kit','venv','.venv','__pycache__','.expo','ios','android','vendor']);
+const WANT=/(\.(m?[jt]sx?|cjs|json|toml|ya?ml|py|vue|svelte|astro|sql|txt|jsonc)|(^|\/)\.env\.(example|sample|template))$/;
+const isEnvSecret=p=>/(^|\/)\.env($|\.(?!example$|sample$|template$))/.test(p);
+async function walk(dir,prefix='',out=[]){for await(const[name,h]of dir.entries()){if(out.length>2500)break;const p=prefix+name;if(h.kind==='directory'){if(SKIP.has(name))continue;await walk(h,p+'/',out)}else if(WANT.test(p)&&!isEnvSecret(p)){const f=await h.getFile();if(f.size<400000)out.push({p,t:await f.text()})}}return out}
+$('#mapBtn').onclick=async()=>{closeDrawer();if(window.showDirectoryPicker){try{const h=await showDirectoryPicker({mode:'read'});$('#busy').classList.add('on');S.handle=h;const files=await walk(h);mapProject(files,h.name)}catch(e){if(e.name!=='AbortError')toast('Could not open that folder')}finally{$('#busy').classList.remove('on')}}else $('#dirIn').click()};
+$('#dirIn').onchange=async e=>{const fs=[...e.target.files];if(!fs.length)return;$('#busy').classList.add('on');try{const root=fs[0].webkitRelativePath.split('/')[0];const out=[];for(const f of fs){const p=f.webkitRelativePath.split('/').slice(1).join('/');if(p.split('/').some(seg=>SKIP.has(seg))||!WANT.test(p)||isEnvSecret(p)||f.size>400000)continue;out.push({p,t:await f.text()});if(out.length>2500)break}mapProject(out,root)}finally{$('#busy').classList.remove('on');e.target.value=''}};
+const PUB_PREFIX=/^(VITE_|NEXT_PUBLIC_|REACT_APP_|EXPO_PUBLIC_|PUBLIC_|NUXT_PUBLIC_)/;
+const ENV_RE=/(?:process\.env\.|import\.meta\.env\.|Deno\.env\.get\(\s*['"]|os\.environ(?:\.get)?\(\s*['"]|os\.environ\[\s*['"]|os\.getenv\(\s*['"])([A-Z][A-Z0-9_]+)/g;
+const IGNORE_ENV=new Set(['NODE_ENV','MODE','DEV','PROD','SSR','BASE_URL','PORT','VERCEL','VERCEL_ENV','VERCEL_URL','CI','HOST','TZ']);
+const LIT=[{re:/sk-ant-[A-Za-z0-9_-]{20,}/,svc:'anthropic',n:'Anthropic key'},{re:/sk-(?:proj-)?[A-Za-z0-9_-]{24,}/,svc:'openai',n:'OpenAI key'},{re:/[sr]k_live_[A-Za-z0-9]{16,}/,svc:'stripe',n:'Stripe live key'},{re:/AKIA[0-9A-Z]{16}/,svc:'s3',n:'AWS access key'},{re:/re_[A-Za-z0-9]{8,}_[A-Za-z0-9]{12,}/,svc:'resend',n:'Resend key'},{re:/gh[pousr]_[A-Za-z0-9]{30,}/,svc:null,n:'GitHub token'},{re:/AIza[0-9A-Za-z_-]{35}/,svc:'gemini',n:'Google API key'},{re:/gsk_[A-Za-z0-9]{30,}/,svc:'groq',n:'Groq key'}];
+function maskSecrets(t){let s=String(t);for(const l of LIT)s=s.replace(new RegExp(l.re.source,'g'),m=>m.slice(0,7)+'•'.repeat(8));return s}
+function mapProject(files,name,opts={}){
+ const deps={};const pkgs=files.filter(f=>/(^|\/)package\.json$/.test(f.p));for(const f of pkgs){try{const j=JSON.parse(f.t);Object.assign(deps,j.dependencies||{},j.devDependencies||{})}catch(e){}}
+ const pyReq=files.filter(f=>/(^|\/)(requirements[^/]*\.txt|pyproject\.toml)$/.test(f.p)).map(f=>f.t.toLowerCase()).join('\n');
+ const code=files.filter(f=>/\.(m?[jt]sx?|cjs|py|vue|svelte|astro)$/.test(f.p));
+ const envReads=[];for(const f of code){f.lines=f.t.split('\n');f.lines.forEach((ln,i)=>{ENV_RE.lastIndex=0;let m;while((m=ENV_RE.exec(ln)))envReads.push({name:m[1],p:f.p,l:i+1,c:ln.trim().slice(0,160)})})}
+ const base=n=>n.replace(PUB_PREFIX,'');
+ const services=[];
+ for(const c of CATALOG){const inDeps=c.pkgs.filter(p=>deps[p]),inPy=(c.py||[]).filter(p=>new RegExp('(^|\\n)\\s*"?'+p.replace(/[-_]/g,'[-_]')+'\\b').test(pyReq));const ev=[];
+  for(const f of code){if(ev.length>=12)break;for(let i=0;i<f.lines.length&&ev.length<12;i++){const ln=f.lines[i];
+   const imp=c.pkgs.some(p=>(ln.includes(`'${p}`)||ln.includes(`"${p}`))&&/import|require|from/.test(ln))||(c.py||[]).some(p=>new RegExp(`^\\s*(from|import)\\s+${p.replace(/-/g,'_')}\\b`).test(ln));
+   const url=(c.urls||[]).some(u=>ln.includes(u));
+   if(imp||url)ev.push(E(f.p,i+1,ln.trim().slice(0,160)))}}
+  for(const r of envReads)if(c.keys.some(k=>k.name===base(r.name))&&!ev.some(e=>e.p===r.p&&e.l===r.l)&&ev.length<12)ev.push(E(r.p,r.l,r.c));
+  for(const f of files)if((c.cfg||[]).some(x=>f.p===x||f.p.endsWith('/'+x)))ev.push(E(f.p,1,'config file'));
+  if(inDeps.length||inPy.length||ev.length){const used=ev.length>0;services.push({...c,ev:ev.length?ev:[E('package.json',0,`"${inDeps[0]||inPy[0]}"`)],from:0,to:Infinity,unused:!used,anim:0})}}
+ const probs=[];let n=0;const has=id=>services.some(s=>s.id===id);
+ // secret keys in public vars
+ for(const r of envReads){if(!PUB_PREFIX.test(r.name))continue;const b=base(r.name);const c=CATALOG.find(c=>c.keys.some(k=>k.name===b&&k.where==='server'));if(c&&!probs.some(p=>p.svc===c.id&&p.kind==='shark')){if(!has(c.id))services.push({...c,ev:[E(r.p,r.l,r.c)],from:0,to:Infinity,unused:false,anim:0});probs.push(mk('shark',c.id,`${c.name} secret key in browser code`,`${r.name} is public: everything in a ${r.name.match(PUB_PREFIX)[1]} variable ships to every visitor's browser.`,r,'AIs build the quickest version that works, and calling the API straight from the browser skips writing a server function.','Never put secret keys in VITE_, NEXT_PUBLIC_, REACT_APP_ or EXPO_PUBLIC_ variables. Call paid APIs from a server function and keep their keys on the server.'))}}
+ // dangerouslyAllowBrowser
+ for(const f of code)f.lines.forEach((ln,i)=>{if(/dangerouslyAllowBrowser\s*:\s*true/.test(ln)){const id=f.t.includes('anthropic')?'anthropic':'openai';if(!probs.some(p=>p.svc===id&&p.kind==='shark'))probs.push(mk('shark',id,`${CAT_BY_ID[id].name} called from the browser`,'dangerouslyAllowBrowser is on, so the API key is sent to every visitor.',{p:f.p,l:i+1,c:ln.trim()},'The SDK blocks browser use for a reason. AIs turn the switch on to make the error go away.','Never set dangerouslyAllowBrowser. Call AI APIs from a server function.'))}});
+ // literal keys
+ for(const f of code.concat(files.filter(f=>/\.json$/.test(f.p))))(f.lines||f.t.split('\n')).forEach((ln,i)=>{for(const L of LIT)if(L.re.test(ln)&&!/example|placeholder|xxxx/i.test(ln)){const id=L.svc&&has(L.svc)?L.svc:L.svc&&CAT_BY_ID[L.svc]?L.svc:null;if(id&&!has(id))services.push({...CAT_BY_ID[id],ev:[E(f.p,i+1,ln.trim())],from:0,to:Infinity,unused:false,anim:0});probs.push(mk('shark',id,`${L.n} pasted in code`,'Anyone who can see this file can use the key. Move it to .env and rotate it.',{p:f.p,l:i+1,c:ln.trim()},'AIs paste keys straight into code so it works on the first try.','Never put API keys, tokens or passwords in code. Read them from .env in server code.'));break}});
+ // duplicates
+ const supaAuth=has('supabase')&&code.some(f=>/supabase/.test(f.t)&&/\.auth\.(getUser|getSession|signIn\w*|signUp|signOut|onAuthStateChange)\(/.test(f.t)),fbAuth=has('firebase')&&code.some(f=>/getAuth\(|firebase\/auth/.test(f.t));
+ for(const cat of['auth','msg','analytics','monitor','pay']){const list=services.filter(s=>s.cat===cat&&!s.unused);const extra=cat==='auth'?[supaAuth&&'Supabase Auth',fbAuth&&'Firebase Auth'].filter(Boolean):[];const names=[...extra,...list.map(s=>s.name)];if(names.length>=2&&list.length){const s=list[list.length-1];probs.push(mk('urchin',s.id,`Two ${CATS[cat].n.toLowerCase()} services`,`${names.join(' and ')} both do this job. Pick one so data doesn't split between them.`,s.ev[0],'Asked for a feature, an AI often adds the service it knows best without checking what your project already has.','Before adding a new service or package, check whether the project already has one that does the same job, and use that one.'))}}
+ // unused
+ for(const s of services)if(s.unused)probs.push(mk('ghost',s.id,`${s.name} is installed but never used`,'Nothing imports it. It adds weight and one more package to keep updated.',s.ev[0],'AIs sometimes install a package for a plan they never finish.','Only install packages you use in the same change, and remove any you stop using.'));
+ // env example
+ const exf=files.find(f=>/(^|\/)\.env\.(example|sample|template)$/.test(f.p));const listed=new Set(exf?[...exf.t.matchAll(/^\s*([A-Z][A-Z0-9_]*)\s*=/gm)].map(m=>m[1]):[]);
+ const needed=[...new Map(envReads.filter(r=>!IGNORE_ENV.has(r.name)&&!r.name.startsWith('npm_')).map(r=>[r.name,r])).values()];
+ const missing=needed.filter(r=>!listed.has(r.name));
+ if(missing.length){const r=missing[0],c=CATALOG.find(c=>c.keys.some(k=>k.name===base(r.name))&&has(c.id));probs.push(mk('jelly',c?c.id:null,exf?`${missing.length} key name${missing.length>1?'s':''} missing from ${exf.p.split('/').pop()}`:'No .env.example file',exf?`Your code reads ${missing.slice(0,4).map(m=>m.name).join(', ')}${missing.length>4?' and more':''}, but the list of keys your app needs doesn't mention ${missing.length>1?'them':'it'}. The next deploy can quietly break.`:`Your code reads ${needed.length} environment variable${needed.length>1?'s':''}, but there's no .env.example listing them. Whoever deploys next won't know what to set.`,r,'AIs add the code that reads a new key, but rarely update the list of keys your app needs.','Every time you read a new environment variable, add its name (never its value) to .env.example.'))}
+ // webhooks
+ for(const f of code)if(/webhook/i.test(f.p)){if(/stripe/i.test(f.t)&&!/constructEvent/.test(f.t))probs.push(mk('urchin','stripe','Stripe webhook trusts anyone','This webhook never checks Stripe’s signature, so anyone could send a fake payment event.',{p:f.p,l:1,c:f.lines[0]},'The AI built the happy path: it handles the message but never checks who sent it.','Verify the signature on every webhook before trusting it. Use the provider’s official verify function.'));else if(/clerk|svix/i.test(f.t)&&!/\.verify\(/.test(f.t))probs.push(mk('urchin',has('clerk')?'clerk':null,'Webhook without a signature check','This webhook never verifies who sent it.',{p:f.p,l:1,c:f.lines[0]},'The AI built the happy path.','Verify the signature on every webhook before trusting it.'))}
+ function mk(kind,svc,title,sub,r,why,rule){const f=files.find(x=>x.p===r.p);const ls=f?f.t.split('\n'):[r.c];const l=r.l||1;const from=Math.max(1,l-2),to=Math.min(ls.length,l+2);const lines=[];for(let i=from;i<=to;i++)lines.push([i,(ls[i-1]||'').slice(0,180)]);return{id:'r'+(n++),kind,svc,title,sub,where:{path:r.p,lines,hl:[l]},why,rule,from:0,to:Infinity}}
+ if(!services.length&&!probs.length){toast('No outside services found. Pick the folder that has package.json in it.');return}
+ S.mode='real';S.unit='file';S.via=null;S.summary=null;S.name=name;S.services=services;S.problems=probs;S.saves=[{by:'Stack Map',title:'Mapped your project',kind:'ai',adds:services.map(s=>s.id)}];S.view=0;S.filter=null;
+ layout();renderAll();flyTo(null);toast(`Mapped ${name}: ${services.length} service${services.length===1?'':'s'}, ${probs.length} problem${probs.length===1?'':'s'}.`);if(!opts.noTour)setTimeout(startTour,900);
+}
+
+/* ---------- n8n: map any workflow ---------- */
+const N8N_SVC=[[/lmChatOpenAi|langchain\.openAi$|embeddingsOpenAi|n8n-nodes-base\.openAi/i,'openai'],[/Anthropic/i,'anthropic'],[/GoogleGemini|googleGemini|googlePalm/i,'gemini'],[/OpenRouter/i,'openrouter'],[/Groq/i,'groq'],[/gmail/i,'gmail'],[/googleSheets/i,'gsheets'],[/googleDrive/i,'gdrive'],[/googleCalendar/i,'gcal'],[/microsoftOutlook/i,'outlook'],[/slack/i,'slack'],[/telegram/i,'telegram'],[/discord/i,'discord'],[/notion/i,'notion'],[/airtable/i,'airtable'],[/hubspot/i,'hubspot'],[/postgres/i,'postgres'],[/supabase/i,'supabase'],[/mongoDb/i,'mongodb'],[/stripe/i,'stripe'],[/twilio/i,'twilio'],[/sendGrid/i,'sendgrid'],[/github/i,'github'],[/Pinecone/i,'pinecone'],[/apify/i,'apify']];
+const N8N_EXTRA=[
+ {id:'gmail',name:'Gmail',cat:'msg',does:'Reads and sends email from your Google account.',data:'Emails to and from real people',dir:'both',keys:[K('Gmail credential','server')],site:'https://mail.google.com',swaps:[W_('Outlook',['if your team uses Microsoft'],'Same send and read actions in n8n.','Different credential setup.'),W_('Resend',['for app emails'],'Built for automated email, with delivery stats.','Needs your own sending domain.')]},
+ {id:'gsheets',name:'Google Sheets',cat:'db',does:'Stores rows in a spreadsheet.',data:'Names, emails and status of each row',dir:'both',keys:[K('Google Sheets credential','server')],site:'https://sheets.google.com',swaps:[W_('Airtable',['easy views and forms'],'Spreadsheet feel with real field types.','Row limits on free plans.'),W_('Supabase',['real database'],'Postgres with rules for who can read what.','Less friendly to edit by hand.')]},
+ {id:'gdrive',name:'Google Drive',cat:'storage',does:'Stores and shares files.',data:'Files and documents',dir:'both',keys:[K('Google Drive credential','server')],site:'https://drive.google.com',swaps:[]},
+ {id:'gcal',name:'Google Calendar',cat:'other',does:'Reads and creates calendar events.',data:'Meetings and attendees',dir:'both',keys:[K('Google Calendar credential','server')],site:'https://calendar.google.com',swaps:[]},
+ {id:'outlook',name:'Outlook',cat:'msg',does:'Reads and sends email from a Microsoft account.',data:'Emails to and from real people',dir:'both',keys:[K('Outlook credential','server')],site:'https://outlook.com',swaps:[]},
+ {id:'slack',name:'Slack',cat:'msg',does:'Posts and reads messages in Slack.',data:'Team messages',dir:'both',keys:[K('Slack credential','server')],urls:['hooks.slack.com','slack.com/api'],site:'https://slack.com',swaps:[W_('Discord',['free for communities'],'Similar bots and webhooks.','Less common at work.')]},
+ {id:'telegram',name:'Telegram',cat:'msg',does:'Sends and receives Telegram messages.',data:'Chat messages',dir:'both',keys:[K('Telegram bot token','server')],urls:['api.telegram.org'],site:'https://telegram.org',swaps:[]},
+ {id:'discord',name:'Discord',cat:'msg',does:'Posts messages to Discord.',data:'Chat messages',dir:'out',keys:[K('Discord credential','server')],urls:['discord.com/api'],site:'https://discord.com',swaps:[]},
+ {id:'notion',name:'Notion',cat:'db',does:'Reads and writes Notion pages and databases.',data:'Pages and database rows',dir:'both',keys:[K('Notion credential','server')],urls:['api.notion.com'],site:'https://www.notion.so',swaps:[]},
+ {id:'airtable',name:'Airtable',cat:'db',does:'Stores records in Airtable bases.',data:'Records in your base',dir:'both',keys:[K('Airtable token','server')],urls:['api.airtable.com'],site:'https://airtable.com',swaps:[W_('Google Sheets',['free and familiar'],'Simple rows anyone can edit.','No field types or views.')]},
+ {id:'hubspot',name:'HubSpot',cat:'other',does:'Keeps your contacts and deals (CRM).',data:'Contacts, companies and deals',dir:'both',keys:[K('HubSpot credential','server')],urls:['api.hubapi.com'],site:'https://www.hubspot.com',swaps:[]},
+ {id:'postgres',name:'Postgres',cat:'db',does:'Stores data in a SQL database.',data:'Your tables',dir:'both',keys:[K('Postgres credential','server')],site:'https://www.postgresql.org',swaps:[]},
+ {id:'openrouter',name:'OpenRouter',cat:'ai',does:'Routes prompts to many AI models through one key.',data:'Prompts and the data inside them',dir:'out',keys:[K('OpenRouter credential','server')],urls:['openrouter.ai'],site:'https://openrouter.ai',swaps:[W_('OpenAI direct',['one less hop'],'Your data goes to one company instead of two.','Only OpenAI models.'),W_('Ollama',['open source','runs locally'],'Data never leaves your machine.','Needs your own hardware.')]},
+ {id:'github',name:'GitHub',cat:'other',does:'Reads and writes your code repositories.',data:'Code, issues and pull requests',dir:'both',keys:[K('GitHub credential','server')],urls:['api.github.com'],site:'https://github.com',swaps:[]},
+ {id:'pinecone',name:'Pinecone',cat:'db',does:'Stores embeddings so AI can search your documents.',data:'Chunks of your documents',dir:'both',keys:[K('Pinecone credential','server')],site:'https://www.pinecone.io',swaps:[W_('Supabase pgvector',['already common in n8n'],'Vectors inside a normal Postgres database.','You manage the index.')]},
+ {id:'apify',name:'Apify',cat:'other',does:'Scrapes websites for you.',data:'Search terms and scraped pages',dir:'both',keys:[K('Apify token','server')],urls:['api.apify.com'],site:'https://apify.com',swaps:[W_('Firecrawl',['made for AI'],'Turns pages into clean text for AI.','Different API.')]},
+];
+CATALOG.push(...N8N_EXTRA);for(const c of N8N_EXTRA){c.pkgs=c.pkgs||[];CAT_BY_ID[c.id]=c}
+LIT.push({re:/apify_api_[A-Za-z0-9]{20,}/,svc:'apify',n:'Apify token'},{re:/xox[bp]-[A-Za-z0-9-]{20,}/,svc:'slack',n:'Slack token'});
+const ACTION_TOOL=/gmail|slack|googleSheets|airtable|notion|postgres|supabase|telegram|discord|httpRequest|hubspot|microsoftOutlook|twilio|stripe/i;
+const UNIT=n=>`${n} ${S.unit||'file'}${n===1?'':'s'}`;
+function n8nSvcFor(node){
+ if(/httpRequest/i.test(node.type)){const url=String(node.parameters?.url||'');const c=CATALOG.find(c=>(c.urls||[]).some(u=>url.includes(u)));if(c)return c;const host=(url.match(/https?:\/\/([^/?'"\s}]+)/)||[])[1];if(!host)return null;return{id:'http:'+host,name:host,cat:'other',does:'Called with an HTTP Request node.',data:'Whatever this node sends',dir:'both',keys:[],site:'https://'+host,swaps:[]}}
+ for(const[re,id]of N8N_SVC)if(re.test(node.type))return CAT_BY_ID[id];return null}
+function mapN8n(wf,opts={}){
+ const nodes=wf.nodes||[],conns=wf.connections||{};if(!nodes.length){toast('That doesn’t look like an n8n workflow. Copy it with Ctrl+A, Ctrl+C in n8n.');return false}
+ const svcMap=new Map(),probs=[];let n=0;
+ const pretty=node=>JSON.stringify(node.parameters||{},null,2).split('\n');
+ const where=(node,re)=>{const ls=pretty(node);let i=Math.max(0,ls.findIndex(l=>re&&re.test(l)));const a=Math.max(0,i-2),b=Math.min(ls.length,i+3);return{path:'node: '+node.name,lines:ls.slice(a,b).map((t,k)=>[a+k+1,t.slice(0,170)]),hl:[i+1]}};
+ for(const node of nodes){const c=n8nSvcFor(node);if(!c)continue;let s=svcMap.get(c.id);if(!s){s={...c,ev:[],from:0,to:Infinity,unused:true,anim:0};svcMap.set(c.id,s)}s.ev.push(E(node.name,0,node.type.split('.').pop()+(node.disabled?' (turned off)':'')));if(!node.disabled)s.unused=false}
+ const services=[...svcMap.values()];
+ const mk=(o)=>({id:'n'+(n++),from:0,to:Infinity,...o});
+ // keys typed into nodes
+ for(const node of nodes){const p=JSON.stringify(node.parameters||{});let hit=LIT.find(l=>l.re.test(p));
+  const hdr=[...(node.parameters?.headerParameters?.parameters||[]),...(node.parameters?.queryParameters?.parameters||[])].find(h=>/auth|key|token|secret/i.test(h.name||'')&&h.value&&!String(h.value).startsWith('=')&&String(h.value).length>12);
+  if(!hit&&!hdr)continue;const svc=n8nSvcFor(node);const sid=svc?svc.id:(hit&&hit.svc)||null;
+  probs.push(mk({kind:'shark',svc:sid&&svcMap.has(sid)?sid:null,title:`Key typed into "${node.name}"`,sub:'The key sits in the workflow itself, so anyone who sees, exports or shares this workflow gets it. Templates get shared a lot.',where:where(node,hit?hit.re:new RegExp(hdr.name)),
+   why:'Pasting the key into the URL or a header field is the fastest way to make a node work, so tutorials and AI builders often do it.',rule:'Never type API keys into node fields, URLs or Code nodes. Store them as n8n credentials and pick the credential in the node.',
+   steps:[`Open the node "${node.name}".`,'Set Authentication to the app’s own credential, or to Generic Credential Type, then Header Auth or Query Auth.','Create the credential and paste the key there.','Delete the key from the URL or field.','Make a new key in that service’s dashboard and delete the old one. Anyone who saw this workflow has it.'],after:{t:'Rotate this key',d:'Moving it into a credential stops new leaks, but the old key was already in the workflow JSON.',url:(svc&&svc.site)||'#'}}))}
+ // open webhooks / public chat
+ for(const node of nodes){if(node.disabled)continue;const open=(/\.webhook$/i.test(node.type)&&(!node.parameters?.authentication||node.parameters.authentication==='none'))||(/chatTrigger/i.test(node.type)&&node.parameters?.public)||(/mcpTrigger/i.test(node.type)&&(!node.parameters?.authentication||node.parameters.authentication==='none'));
+  if(open)probs.push(mk({kind:'urchin',svc:null,title:`"${node.name}" has no lock`,sub:'Anyone who finds the URL can start this workflow as often as they like, with any data they want.',where:where(node,/path|public/),
+   why:'Webhooks work right away with authentication set to None, so it rarely gets changed.',rule:'Every Webhook node needs authentication (Header Auth or a signature check), or an IP allow list.',
+   steps:[`Open "${node.name}".`,'Set Authentication to Header Auth and create a credential with a long random value.','Send that header from the app that calls the webhook.','For GitHub, Stripe and similar, verify their signature header in a Code node instead.']}))}
+ // agents with action tools
+ for(const[from,c]of Object.entries(conns))for(const group of(c.ai_tool||[]))for(const t of group){const tool=nodes.find(x=>x.name===from);if(!tool||tool.disabled||!ACTION_TOOL.test(tool.type))continue;const op=String(tool.parameters?.operation||'');if(/^(get|getAll|search|read|list)$/i.test(op))continue;const svc=n8nSvcFor(tool);
+  probs.push(mk({kind:'urchin',svc:svc&&svcMap.has(svc.id)?svc.id:null,title:`AI can use "${from}" on its own`,sub:`The agent "${t.node}" decides by itself when to use this tool. One bad prompt or a tricky input could make it send, post or change things nobody checked.`,where:where(tool,/operation|sendTo|message|text/),
+   why:'Giving an agent tools is the point of agents, but tools that act on the outside world need a person in the loop.',rule:'AI agents may read on their own, but anything that sends, posts, pays or deletes needs a human approval step first.',
+   steps:['Keep the agent, but give it a "draft" tool instead of "send".',`Put a human check before "${from}": for example Gmail or Slack "Send and wait for response" with an approve button.`,'Tell the agent in its system message exactly when it may use each tool.']}))}
+ // turned-off model/tool nodes
+ for(const s of services)if(s.unused)probs.push(mk({kind:'ghost',svc:s.id,title:`${s.name} is turned off but still wired in`,sub:'Turned-off nodes still hold settings and credentials, and they confuse whoever edits this next.',where:{path:'node: '+s.ev[0].p,lines:[[1,s.ev[0].p+' · '+s.ev[0].c]],hl:[1]},
+  why:'People switch models while testing and leave the old node behind.',rule:'Delete nodes you turned off once the workflow works, or add a sticky note saying why they stay.',fix:{title:`Removed the turned-off ${s.name} node`,removes:s.id,diffs:[]},steps:[`Delete the turned-off ${s.name} node.`,'If its credential isn’t used anywhere else, delete the credential too.']}));
+ // error workflow
+ if(!wf.settings?.errorWorkflow)probs.push(mk({kind:'jelly',svc:null,title:'Nobody hears when this breaks',sub:'There’s no error workflow. If a key expires or an API changes, this stops quietly and you find out from an angry user.',where:{path:'workflow settings',lines:[[1,'"settings": '+JSON.stringify(wf.settings||{}).slice(0,150)]],hl:[1]},
+  why:'Error workflows live in settings, not on the canvas, so they’re easy to forget.',rule:'Every active workflow needs an error workflow that alerts a person.',steps:['Create a new workflow that starts with an Error Trigger node.','Add a Gmail, Slack or Discord node that sends you the error message and the workflow name.','In this workflow, open Settings and pick it as the Error workflow.']}));
+ for(const p of probs)if(!p.fix)p.fix={title:p.title,diffs:[]};
+ S.mode=opts.demo?'n8n-demo':'n8n';S.unit='node';S.via=null;S.summary=null;S.name=wf.name||'n8n workflow';S.services=services;S.problems=probs;
+ S.saves=[{by:'Stack Map',title:`Mapped ${nodes.length} nodes`,kind:'ai',adds:services.map(s=>s.id)}];S.view=0;S.filter=null;
+ layout();renderAll();flyTo(null);if(!opts.quiet)toast(`Mapped "${S.name}": ${services.length} apps, ${probs.length} thing${probs.length===1?'':'s'} to fix.`);return true}
+
+const SAMPLE_N8N={name:'Lead machine (sample)',active:true,settings:{executionOrder:'v1'},nodes:[
+ {name:'On form submission',type:'n8n-nodes-base.formTrigger',parameters:{formTitle:'Find leads',formFields:{values:[{fieldLabel:'Business type'},{fieldLabel:'City'}]}}},
+ {name:'Scrape businesses',type:'n8n-nodes-base.httpRequest',parameters:{method:'POST',url:'https://api.apify.com/v2/acts/maps-scraper/run-sync-get-dataset-items?token=apify_api_Q7mXk2LpR9vT4wZ8nB3cY6hJ',sendBody:true}}, // stack-map-ignore: fake key for the labeled sample
+ {name:'Has a website',type:'n8n-nodes-base.filter',parameters:{}},
+ {name:'Find the email',type:'@n8n/n8n-nodes-langchain.informationExtractor',parameters:{text:'={{ $json.website }}'}},
+ {name:'Google Gemini Chat Model',type:'@n8n/n8n-nodes-langchain.lmChatGoogleGemini',disabled:true,parameters:{}},
+ {name:'OpenRouter Chat Model',type:'@n8n/n8n-nodes-langchain.lmChatOpenRouter',parameters:{model:'openai/gpt-4o-mini'}},
+ {name:'Save lead',type:'n8n-nodes-base.googleSheets',parameters:{operation:'appendOrUpdate'}},
+ {name:'Wait a day',type:'n8n-nodes-base.wait',parameters:{amount:1,unit:'days'}},
+ {name:'Write cold email',type:'@n8n/n8n-nodes-langchain.agent',parameters:{promptType:'define',text:'=Write a short cold email to {{ $json.name }}'}},
+ {name:'OpenAI Chat Model',type:'@n8n/n8n-nodes-langchain.lmChatOpenAi',parameters:{}},
+ {name:'Send email',type:'n8n-nodes-base.gmailTool',parameters:{sendTo:'={{ $fromAI("to") }}',message:'={{ $fromAI("body") }}'}},
+ {name:'Mark as emailed',type:'n8n-nodes-base.googleSheets',parameters:{operation:'update'}},
+ {name:'Unsubscribe link',type:'n8n-nodes-base.webhook',parameters:{httpMethod:'GET',path:'unsubscribe'}},
+ {name:'Remove lead',type:'n8n-nodes-base.googleSheets',parameters:{operation:'delete'}}],
+ connections:{'On form submission':{main:[[{node:'Scrape businesses',type:'main',index:0}]]},'Scrape businesses':{main:[[{node:'Has a website',type:'main',index:0}]]},'Has a website':{main:[[{node:'Find the email',type:'main',index:0}]]},'Find the email':{main:[[{node:'Save lead',type:'main',index:0}]]},'Save lead':{main:[[{node:'Wait a day',type:'main',index:0}]]},'Wait a day':{main:[[{node:'Write cold email',type:'main',index:0}]]},'Write cold email':{main:[[{node:'Mark as emailed',type:'main',index:0}]]},'Unsubscribe link':{main:[[{node:'Remove lead',type:'main',index:0}]]},
+  'Google Gemini Chat Model':{ai_languageModel:[[{node:'Find the email',type:'ai_languageModel',index:0}]]},'OpenRouter Chat Model':{ai_languageModel:[[{node:'Find the email',type:'ai_languageModel',index:0}]]},'OpenAI Chat Model':{ai_languageModel:[[{node:'Write cold email',type:'ai_languageModel',index:0}]]},'Send email':{ai_tool:[[{node:'Write cold email',type:'ai_tool',index:0}]]}}};
+
+/* ---------- n8n modal ---------- */
+const lsGet=k=>{try{return localStorage.getItem(k)||''}catch(e){return''}},lsSet=(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}};
+function n8nModal(tab='paste'){
+ openModal(`<h2>Stack Map + n8n</h2><div class="tabs"><button class="tab ${tab==='paste'?'on':''}" data-t="paste">Map an n8n workflow</button><button class="tab ${tab==='repo'?'on':''}" data-t="repo">Scan a GitHub repo with n8n</button><button class="tab ${tab==='code'?'on':''}" data-t="code">Code demo</button></div><div id="tabBody"></div>`);
+ $$('#mBox .tab').forEach(b=>b.onclick=()=>n8nModal(b.dataset.t));const tb=$('#tabBody');
+ if(tab==='paste'){tb.innerHTML=`<p class="sub">In n8n, open a workflow, press Ctrl+A then Ctrl+C, and paste here. Stack Map shows every app it touches and what to fix. Nothing is uploaded.</p><textarea class="ta" id="wfIn" rows="7" placeholder='{"name": "My workflow", "nodes": [...], "connections": {...}}'></textarea><div class="mrow"><button class="btn ghost" id="wfSample">Use the sample</button><button class="btn" id="wfGo">Map it</button></div>`;
+  $('#wfSample').onclick=()=>{closeModal();mapN8n(SAMPLE_N8N,{demo:true})};
+  $('#wfGo').onclick=()=>{let j;try{j=JSON.parse($('#wfIn').value)}catch(e){toast('That isn’t valid JSON. Copy the whole workflow from n8n.');return}if(j.data&&j.data.nodes)j=j.data;if(Array.isArray(j))j=j[0];if(mapN8n(j)){closeModal();setTimeout(startTour,700)}}}
+ if(tab==='repo'){tb.innerHTML=`<p class="sub">Import <b>stack-map-scan-repo.json</b> into n8n, activate it, and paste its Production URL here. Your n8n downloads the repo, an AI Agent explains it, and the map appears.</p><label class="lbl2">n8n webhook URL</label><input class="ta" id="whUrl" placeholder="https://you.app.n8n.cloud/webhook/stack-map-scan" value="${esc(lsGet('sm_n8n_url'))}"><label class="lbl2">Public GitHub repo</label><input class="ta" id="repoIn" placeholder="owner/repo or https://github.com/owner/repo" value="${esc(lsGet('sm_repo'))}"><div class="mrow"><button class="btn" id="repoGo">Scan with n8n</button></div>`;
+  $('#repoGo').onclick=()=>scanViaN8n($('#whUrl').value.trim(),$('#repoIn').value.trim())}
+ if(tab==='code'){tb.innerHTML=`<p class="sub">A sample web app with 9 services and a save-by-save history from AI coding tools. Good for showing fixes line by line.</p><div class="mrow"><button class="btn" id="codeGo">Open the code demo</button></div>`;$('#codeGo').onclick=()=>{closeModal();loadDemo();S.unit='file';renderAll();flyTo(null)}}
+}
+async function scanViaN8n(url,repo){
+ if(!/^https?:\/\//.test(url)){toast('Paste the Production URL from your n8n Webhook node');return}if(!repo){toast('Type a GitHub repo, like owner/name');return}
+ lsSet('sm_n8n_url',url);lsSet('sm_repo',repo);closeModal();$('#busy').textContent='Your n8n workflow is reading the repo and asking the AI Agent...';$('#busy').classList.add('on');
+ try{const ctl=new AbortController();const to=setTimeout(()=>ctl.abort(),120000);const r=await fetch(url,{method:'POST',body:new URLSearchParams({repo}),signal:ctl.signal});clearTimeout(to);
+  if(!r.ok)throw new Error('n8n answered '+r.status+'. Is the workflow active?');let d=await r.json();if(Array.isArray(d))d=d[0];if(d&&d.json)d=d.json;
+  if(!d||!Array.isArray(d.files))throw new Error('n8n answered, but without files. Check the "Send to Stack Map" node.');
+  mapProject(d.files,d.name||repo,{noTour:true});if(S.mode==='real'){S.via='n8n';S.summary=d.summary||'';S.repo=d.repo;renderAll();setTimeout(openOverview,700)}}
+ catch(e){toast(e.name==='AbortError'?'n8n took too long. Try a smaller repo.':(/Failed to fetch/.test(e.message)?'Could not reach n8n. Check the URL, that the workflow is active, and Allowed Origins (CORS) is *.':e.message))}
+ finally{$('#busy').classList.remove('on');$('#busy').textContent='Mapping your project...'}}
+
+/* ---------- boot ---------- */
+addEventListener('resize',resize);new ResizeObserver(resize).observe(cv);
+loadDemo();resize();mapN8n(SAMPLE_N8N,{demo:true,quiet:true});requestAnimationFrame(loop);
+$('#n8nBtn').onclick=()=>n8nModal('paste');
+setTimeout(()=>toast('Sample n8n workflow. Tap an island or a creature, or press Tour. Paste your own with the n8n button.'),600);
+</script>
+</body>
+</html>
