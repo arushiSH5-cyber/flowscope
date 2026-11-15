@@ -1,9 +1,9 @@
 #!/usr/bin/env node
-// Stack Map lint: checks n8n workflow JSON and code for the same holes Stack Map shows in 3D.
-// Usage: node scripts/stack-map-lint.mjs [paths...] [--strict]
+// Flowscope lint: checks n8n workflow JSON and code for the same holes Flowscope shows in 3D.
+// Usage: node scripts/flowscope-lint.mjs [paths...] [--strict]
 //   no paths = every file git tracks (or the current folder if not a git repo)
 //   --strict  = warnings fail the run too
-// Put "stack-map-ignore" on a line to skip it (for labeled fake sample keys only).
+// Put "flowscope-ignore" on a line to skip it (for labeled fake sample keys only).
 import { readFileSync, statSync, readdirSync } from 'node:fs';
 import { join, extname } from 'node:path';
 import { execSync } from 'node:child_process';
@@ -47,7 +47,7 @@ function listFiles() {
 function lintText(file, text) {
   if (/(^|\/)\.env($|\.(?!example$|sample$|template$))/.test(file)) add('error', file, 1, '.env file is in the repo. Every key in it is public once pushed.');
   text.split('\n').forEach((ln, i) => {
-    if (ln.includes('stack-map-ignore')) return;
+    if (ln.includes('flowscope-ignore')) return;
     for (const [re, what] of KEY_RULES) if (re.test(ln)) add('error', file, i + 1, `${what}. Move it into .env or an n8n credential and rotate it.`);
     if (BROWSER_SECRET.test(ln)) add('error', file, i + 1, 'Secret read in browser code. Anything with VITE_/NEXT_PUBLIC_ ships to every visitor.');
     if (/dangerouslyAllowBrowser\s*:\s*true/.test(ln)) add('error', file, i + 1, 'AI SDK allowed in the browser, which sends your key to visitors.');
@@ -119,5 +119,5 @@ for (const f of findings) {
 }
 const errors = findings.filter(f => f.level === 'error').length;
 const warnings = findings.length - errors;
-console.log(`\nStack Map lint: ${errors} error${errors === 1 ? '' : 's'}, ${warnings} warning${warnings === 1 ? '' : 's'}.`);
+console.log(`\nFlowscope lint: ${errors} error${errors === 1 ? '' : 's'}, ${warnings} warning${warnings === 1 ? '' : 's'}.`);
 process.exit(errors || (strict && warnings) ? 1 : 0);

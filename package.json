@@ -1,10 +1,10 @@
 {
-  "name": "stack-map",
+  "name": "flowscope",
   "private": true,
   "type": "module",
   "scripts": {
-    "lint": "node scripts/stack-map-lint.mjs",
-    "lint:strict": "node scripts/stack-map-lint.mjs --strict",
+    "lint": "node scripts/flowscope-lint.mjs",
+    "lint:strict": "node scripts/flowscope-lint.mjs --strict",
     "hooks": "git config core.hooksPath .githooks",
     "embed": "node scripts/embed-workflows.mjs"
   }

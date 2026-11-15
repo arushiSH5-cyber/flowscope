@@ -1,4 +1,4 @@
-name: Stack Map lint
+name: Flowscope lint
 on:
   push:
   pull_request:
@@ -13,6 +13,6 @@ jobs:
         with:
           node-version: 20
       - name: Check workflows and code for leaked keys and open doors
-        run: node scripts/stack-map-lint.mjs
+        run: node scripts/flowscope-lint.mjs
       - name: App has the latest workflows
         run: node scripts/embed-workflows.mjs --check
