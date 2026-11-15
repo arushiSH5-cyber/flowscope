@@ -80,6 +80,59 @@ The same rules also run as **Flowscope lint**: a CLI, a pre-commit hook and a Gi
 
 ---
 
+## 🖼️ The real workflows in n8n
+
+These are drawn by n8n's own canvas from the files in [`workflows/`](workflows). You can see them live in the app too: **Home → ❤️ How n8n powers it → 🔍 Look inside n8n** (no sign-in needed). A red ⚠ on a node only means "connect your own credential here". No keys are stored in these files.
+
+**🔭 Scout: scan a GitHub repo** · Webhook → GitHub API → pick and download files → **AI Agent** explains the stack → Respond to Webhook
+![Scout workflow in n8n](media/n8n-scan.png)
+
+**🛡️ Guard: push guard** · every `git push` → get the changes → check added lines for keys → email you
+![Guard workflow in n8n](media/n8n-push.png)
+
+**🤖 Buddy: MCP server** · Claude, Cursor or any MCP client can call Flowscope as tools
+![Buddy MCP workflow in n8n](media/n8n-mcp.png)
+
+<details><summary><b>🚨 Siren</b> (error alerts) and <b>🕵️ Inspector</b> (weekly audit)</summary>
+
+![Siren workflow in n8n](media/n8n-errors.png)
+![Inspector workflow in n8n](media/n8n-audit.png)
+</details>
+
+---
+
+## 🧠 The brain, the heart, and the face
+
+| Part | What it is | Why it's built this way |
+|---|---|---|
+| 🧠 **Brain** | A rule engine in the page (`flowscope.html`): it reads n8n workflow JSON or code, finds every app, scores health, spots hazards, and the 🪄 Fixer writes the repaired workflow. | Rules, not AI, so it's **instant, free, private** (nothing uploaded) and gives **the same answer every time**. |
+| ❤️ **Heart** | **n8n**: 5 workflows that talk to the outside world (GitHub, the AI Agent node, Gmail, schedules, MCP). | No server of our own. n8n runs the agents 24/7 and does the AI part. |
+| 🪐 **Face** | The 3D solar system, plain-English fixes and the cute characters. | Beginners understand a picture faster than a report. |
+
+## 🤔 Why not just ask Claude (or any AI agent)?
+
+We use AI too: Scout's **AI Agent** node, and Buddy lets Claude or Cursor **call Flowscope**. They work together. But a chat alone falls short:
+
+| | Asking an AI chat | Flowscope |
+|---|---|---|
+| When it runs | Only when you remember to ask | **Every push, every failure, every Monday**, by itself in n8n |
+| Same input, same answer? | Not always | **Yes**: rules, plus a health score you can track |
+| Your keys | You paste the workflow (keys and all) into a chat | Checked **in your browser**; we report line numbers, never key values |
+| Output | Advice to copy by hand | A **fixed n8n workflow** to paste straight back |
+| Seeing it | A wall of text | A **map** of everything your automation touches |
+
+**One line:** *Claude is who you ask. Flowscope is who's watching.*
+
+## 🧑‍💻 For vibe coders and students too
+
+Everyone has projects running that they forget, some with live keys inside.
+- **🛰️ Your projects, checked on for you** (Home): add your GitHub repos, see which are 🟢 alive, 🟡 getting quiet or 🔴 forgotten, and scan any of them with n8n.
+- **Code, not just workflows:** the lint and Guard catch keys in code; the map works on a project folder too.
+- **Teach your AI:** one click gives you a rule for `AGENTS.md` / `CLAUDE.md` so Cursor and Claude Code stop repeating the mistake.
+- **Buddy (MCP):** ask Claude or Cursor "scan my repo" and it calls Flowscope through n8n.
+
+---
+
 ## 📲 Install it as an app
 - **Laptop (Chrome or Edge):** click **📲 Install** at the top right.
 - **iPhone:** in Safari, tap **Share**, then **Add to Home Screen**.
