@@ -6,13 +6,13 @@
 <meta name="theme-color" content="#070a1f">
 <title>Flowscope</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 <style>
 :root{
  --bg:#070a1f;--bg2:#0c1030;--panel:#121740;--panel2:#1a2055;--line:#262d66;--line2:#363e86;
  --ink:#eef0ff;--soft:#aab0dd;--mute:#7b82b5;
  --pink:#ff8a5c;--teal:#3ee0d0;--gold:#ffc857;--lav:#a78bfa;--bad:#ff6b7a;--good:#5be39a;--btnInk:#1a0e05;
- --font:"Nunito",ui-rounded,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+ --font:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
 }
 *{box-sizing:border-box;margin:0;padding:0}
@@ -218,21 +218,78 @@ ol.steps{padding-left:22px;display:flex;flex-direction:column;gap:6px;font-size:
 .fixlist.need li::marker{color:var(--gold)}.fixlist.did li::marker{color:var(--good)}
 .arow{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 @media (max-width:560px){.arow{grid-template-columns:1fr}}
+/* tabs + pages */
+html,body{height:100%}
+body{display:flex;flex-direction:column;overflow:hidden}
+h1,h2,h3,#top .ttl b,.tabb,.btn,.phead h2,#glance h1,.agent b{font-family:"Outfit",var(--font)}
+#top{height:auto;min-height:64px;flex:none;gap:18px;padding:10px 20px}
+#top .ttl span{gap:6px}
+#tabs{display:flex;gap:4px;margin:0 auto;background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:16px;padding:4px}
+.tabb{display:flex;align-items:center;gap:8px;padding:9px 16px;border-radius:12px;font-weight:600;font-size:15px;color:var(--soft);transition:background .15s,color .15s}
+.tabb i{font-style:normal;font-size:17px}
+.tabb em{font-style:normal;font-size:11.5px;font-weight:700;min-width:20px;padding:1px 7px;border-radius:999px;background:var(--panel2);color:var(--soft)}
+.tabb em:empty{display:none}
+.tabb em.bad{background:color-mix(in srgb,var(--bad) 22%,transparent);color:#ffb3bb}
+.tabb:hover{color:var(--ink)}
+.tabb.on{background:var(--panel2);color:var(--ink);box-shadow:inset 0 0 0 1px var(--line2)}
+#top .acts{margin-left:0}
+#app{display:block;flex:1;min-height:0;height:auto;position:relative}
+#stage{position:absolute;inset:0;height:auto;min-height:0}
+#pages{position:absolute;inset:0;overflow-y:auto;display:none;padding:28px 20px 60px;background:radial-gradient(ellipse at 50% -10%,rgba(124,77,255,.16),transparent 55%),var(--bg)}
+body:not(.t-map) #stage{visibility:hidden}
+body:not(.t-map) #pages{display:block}
+.page{display:none;max-width:860px;margin:0 auto;flex-direction:column;gap:16px}
+body.t-fix #pg-fix,body.t-agents #pg-agents,body.t-learn #pg-learn{display:flex}
+.phead h2{font-size:30px;font-weight:700;letter-spacing:-.01em}
+.phead p{color:var(--soft);font-size:15.5px;margin-top:6px;line-height:1.5;max-width:620px}
+.page .card{padding:18px;border-radius:20px}
+.page .row{padding:12px 14px}
+.quizcta{display:flex;align-items:center;justify-content:space-between;gap:16px;background:linear-gradient(135deg,#1d2366,#121740)}
+.quizcta div{display:flex;flex-direction:column;gap:4px}.quizcta b{font-size:17px}.quizcta span{color:var(--soft);font-size:14px}
+#chips{display:none}
+#ctrls{gap:8px;display:flex}
+.agrid2{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+.agent{background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:18px;display:flex;flex-direction:column;gap:10px;transition:transform .15s,border-color .15s}
+.agent:hover{transform:translateY(-2px);border-color:var(--line2)}
+.agent.on{border-color:color-mix(in srgb,var(--good) 55%,var(--line))}
+.agent .face{width:64px;height:64px;border-radius:20px;display:grid;place-items:center;font-size:34px;background:var(--panel2);animation:bob 3s ease-in-out infinite}
+.agent.on .face{background:color-mix(in srgb,var(--good) 18%,var(--panel2));box-shadow:0 0 24px rgba(91,227,154,.25)}
+.agent .top{display:flex;align-items:center;gap:14px}
+.agent .nm{display:flex;flex-direction:column;gap:2px}
+.agent .nm b{font-size:19px;font-weight:700}
+.agent .nm span{font-size:13px;color:var(--soft)}
+.agent p{font-size:14px;line-height:1.5;color:var(--soft)}
+.agent .nodes{display:flex;gap:5px;flex-wrap:wrap}.agent .nodes span{font-size:11.5px;font-weight:600;padding:3px 9px;border-radius:999px;background:var(--panel2);border:1px solid var(--line);color:var(--soft)}
+#pmeta{display:none}
+.agent .when{font-size:12.5px;font-weight:600;color:var(--teal)}
+.agent .bar{display:flex;gap:8px;flex-wrap:wrap;margin-top:auto}
+.fixer{display:flex;gap:18px;align-items:flex-start;background:linear-gradient(135deg,#2a1d4f,#121740);border:1px solid color-mix(in srgb,var(--pink) 45%,var(--line));border-radius:22px;padding:20px}
+.fixer .face{width:72px;height:72px;flex:none;border-radius:22px;display:grid;place-items:center;font-size:40px;background:rgba(255,138,92,.15);animation:bob 3s ease-in-out infinite}
+.fixer .bd{flex:1;display:flex;flex-direction:column;gap:8px}
+.fixer b.t{font-size:20px;font-family:"Outfit",var(--font)}
+.big{font-family:"Outfit",var(--font);font-size:28px;font-weight:800}
+@keyframes bob{50%{transform:translateY(-4px)}}
+@media (max-width:860px){
+ #top{flex-wrap:wrap;gap:10px;padding:10px 12px}
+ #tabs{order:3;width:100%;margin:0;justify-content:space-between}
+ .tabb{flex:1;justify-content:center;padding:8px 6px;font-size:13.5px;gap:6px}
+ #top .acts{margin-left:auto}
+ .fixer{flex-direction:column}
+}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
 <body>
 <header id="top">
  <div class="logo" id="logo"></div>
- <div class="ttl"><b>Flowscope</b><span><span id="pname">bean-there</span><span class="tag demo" id="modeTag">DEMO</span><span class="opt-hide" id="pmeta">Every outside service your app talks to</span></span></div>
- <div class="acts">
-  <button class="btn" id="autoBtn" title="Automations"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(-20 12 12)"/></svg><span class="lbl">Automations</span></button>
-  <button class="btn ghost" id="mapBtn" title="Map my project"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><span class="lbl">Map my project</span></button>
-  <button class="btn teal" id="n8nBtn" title="n8n"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="4.5" cy="12" r="2.2"/><circle cx="11.5" cy="12" r="2.2"/><circle cx="19" cy="6.5" r="2.2"/><circle cx="19" cy="17.5" r="2.2"/><path d="M6.7 12h2.6M13.5 11l3.6-3.4M13.5 13l3.6 3.4"/></svg><span class="lbl">n8n</span></button>
-  <button class="btn ghost" id="tourBtn" title="30-second tour"><svg class="i" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l10.5-6.5z"/></svg><span class="lbl">Tour</span></button>
-  <button class="btn ghost" id="quizBtn" title="Quiz"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .9-1 1.7M12 17h.01"/></svg><span class="lbl">Quiz</span></button>
-  <button class="btn ghost" id="shareBtn" title="Share card"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 8l5-5 5 5M5 14v5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5"/></svg><span class="lbl">Share</span></button>
- </div>
+ <div class="ttl"><b>Flowscope</b><span><span id="pname">bean-there</span><span class="tag demo" id="modeTag">DEMO</span><span class="opt-hide" id="pmeta" hidden></span></span></div>
+ <nav id="tabs" role="tablist">
+  <button class="tabb on" data-tab="map" role="tab"><i>🪐</i><span>Map</span></button>
+  <button class="tabb" data-tab="fix" role="tab"><i>🛠️</i><span>Fix</span><em id="tbFix"></em></button>
+  <button class="tabb" data-tab="agents" role="tab"><i>🤖</i><span>Agents</span><em id="tbAg"></em></button>
+  <button class="tabb" data-tab="learn" role="tab"><i>📚</i><span>Learn</span></button>
+ </nav>
+ <div class="acts"><button class="btn" id="n8nBtn" title="Map an n8n workflow or a repo"><b style="font-size:18px;line-height:0">+</b><span class="lbl">Add workflow</span></button></div>
  <input type="file" id="dirIn" webkitdirectory multiple hidden>
 </header>
 <main id="app">
@@ -245,20 +302,31 @@ ol.steps{padding-left:22px;display:flex;flex-direction:column;gap:6px;font-size:
    <div id="glance"><div id="ring"></div><div><h1 id="gH"></h1><p id="gP"></p></div></div>
    <div id="bottom">
     <div id="brow"><div id="chips"></div>
-     <div id="ctrls"><button class="cbtn" id="zIn" aria-label="Zoom in"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button><button class="cbtn" id="zOut" aria-label="Zoom out"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14"/></svg></button><button class="cbtn" id="zReset" aria-label="Reset view"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5"/></svg></button></div>
+     <div id="ctrls"><button class="cbtn" id="tourBtn" title="Play the tour" aria-label="Play the tour"><svg class="i" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l10.5-6.5z"/></svg></button><button class="cbtn" id="shareBtn" title="Share a picture of this map" aria-label="Share"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 8l5-5 5 5M5 14v5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5"/></svg></button><button class="cbtn" id="mapBtn" title="Map a project folder on this computer" aria-label="Map a project folder"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></button><button class="cbtn" id="zIn" aria-label="Zoom in"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button><button class="cbtn" id="zOut" aria-label="Zoom out"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14"/></svg></button><button class="cbtn" id="zReset" aria-label="Reset view"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5"/></svg></button></div>
     </div>
     <div id="tl"><div id="tlHead"><b id="tlT"></b><span id="tlS"></span></div><div id="track"></div></div>
    </div>
   </div>
  </section>
- <aside id="side">
-  <div class="card" id="watchCard"><h3><span>Keeping watch</span><span id="wc"></span></h3><div class="rows" id="watch"></div></div>
-  <div class="card"><h3><span>Right now</span><span id="pc"></span></h3><div class="rows" id="probs"></div></div>
-  <div class="card"><h3><span>Your stack</span><span id="sc"></span></h3><div id="svcs"></div></div>
-  <div class="card"><h3><span>What leaves your app</span></h3><div id="flows"></div></div>
-  <div class="card"><h3><span>Teach your AI</span><span id="rc"></span></h3><p class="empty" id="rulesTx"></p><button class="btn sm ghost" id="copyRules" style="margin-top:10px">Copy AGENTS.md block</button></div>
-  <p class="foot" id="foot">Demo project with sample data. Swaps are options with tradeoffs, not verdicts. Free tiers and prices change, so check each pricing page before switching.</p>
- </aside>
+ <section id="pages">
+  <div class="page" id="pg-fix">
+   <div class="phead"><h2>🛠️ Fix what’s exposed</h2><p>Every problem on your map, with the fix written for n8n. Or let the Fixer do it for you.</p></div>
+   <div id="fixHero"></div>
+   <div class="card"><h3><span>Problems right now</span><span id="pc"></span></h3><div class="rows" id="probs"></div></div>
+  </div>
+  <div class="page" id="pg-agents">
+   <div class="phead"><h2>🤖 Your n8n agents</h2><p>Each agent is a real n8n workflow. Set one up once and it keeps watch for you, even while you sleep.</p></div>
+   <div id="agentsBody"></div>
+  </div>
+  <div class="page" id="pg-learn">
+   <div class="phead"><h2>📚 Learn your stack</h2><p>What each app does, what data leaves, and rules that stop your AI from repeating mistakes.</p></div>
+   <div class="card quizcta"><div><b>🎯 60-second quiz</b><span>Can you name what each planet does? Five questions about your own map.</span></div><button class="btn teal" id="quizBtn">Start quiz</button></div>
+   <div class="card"><h3><span>Your stack</span><span id="sc"></span></h3><div id="svcs"></div></div>
+   <div class="card"><h3><span>What leaves your app</span></h3><div id="flows"></div></div>
+   <div class="card"><h3><span>Teach your AI</span><span id="rc"></span></h3><p class="empty" id="rulesTx"></p><button class="btn sm ghost" id="copyRules" style="margin-top:10px">Copy AGENTS.md block</button></div>
+   <p class="foot" id="foot"></p>
+  </div>
+ </section>
 </main>
 <div id="scrim"></div>
 <aside id="drawer" aria-hidden="true"><div id="dHead"><div class="ic" id="dIc"></div><div class="tx"><h2 id="dT"></h2><p id="dS"></p></div><button class="cbtn" id="dX" aria-label="Close"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div><div id="dBody"></div><div id="dFoot"></div></aside>
@@ -469,7 +537,7 @@ function frame(dt){
  // drawables sorted by depth
  const D=[];
  D.push({z:P(0,0,0).z,draw:drawCenter});
- for(const s of vis){const p=P(s.x,s.y+fl(s),s.z);D.push({z:p.z,draw:()=>drawIsland(s,p)});if(s.keys.length&&s.anim>.9&&!s.unused){const[x,y,z]=curve(s,.42),cp=P(x,y,z);D.push({z:cp.z-1,draw:()=>drawChest(s,cp)})}}
+ for(const s of vis){const p=P(s.x,s.y+fl(s),s.z);D.push({z:p.z,draw:()=>drawIsland(s,p)});if(s.keys.length&&s.anim>.9&&!s.unused&&keyStatus(s)==='leak'){const[x,y,z]=curve(s,.42),cp=P(x,y,z);D.push({z:cp.z-1,draw:()=>drawChest(s,cp)})}}
  if(typeof AUTOS!=='undefined')AUTOS.forEach((au,i)=>{const a=i/AUTOS.length*Math.PI*2-time*.06*(RM?0:1)+.3,R=585,y=70+(RM?0:Math.sin(time*.9+i)*6),x=Math.cos(a)*R,z=Math.sin(a)*R,p=P(x,y,z);D.push({z:p.z,draw:()=>drawSat(au,p)})});
  D.sort((a,b)=>b.z-a.z).forEach(d=>d.draw());
  labels(vis);
@@ -488,7 +556,7 @@ function drawSat(au,p){
  ctx.fillStyle='#dfe3ff';rr(-u*.55,-u*.45,u*1.1,u*.9,3);ctx.fill();ctx.fillStyle=c;ctx.beginPath();ctx.arc(0,0,u*.24,0,7);ctx.fill();
  ctx.strokeStyle='#dfe3ff';ctx.lineWidth=1.2;ctx.beginPath();ctx.moveTo(0,-u*.45);ctx.lineTo(0,-u*.95);ctx.stroke();ctx.fillStyle=c;ctx.beginPath();ctx.arc(0,-u*1.0,u*.14,0,7);ctx.fill();
  ctx.restore();
- if(hl||W>=600){ctx.font='800 11px Nunito, system-ui';ctx.textAlign='center';ctx.textBaseline='middle';const t=au.t,w=ctx.measureText(t).width+14;ctx.fillStyle='rgba(10,14,42,.8)';ctx.strokeStyle=c;ctx.lineWidth=1;rr(p.x-w/2,p.y+u*1.3,w,18,8);ctx.fill();ctx.stroke();ctx.fillStyle=on?'#c9ffe0':'#c3c8ee';ctx.fillText(t,p.x,p.y+u*1.3+9)}
+ if(hl){ctx.font='800 11px Inter, system-ui';ctx.textAlign='center';ctx.textBaseline='middle';const t=au.t,w=ctx.measureText(t).width+14;ctx.fillStyle='rgba(10,14,42,.8)';ctx.strokeStyle=c;ctx.lineWidth=1;rr(p.x-w/2,p.y+u*1.3,w,18,8);ctx.fill();ctx.stroke();ctx.fillStyle=on?'#c9ffe0':'#c3c8ee';ctx.fillText(t,p.x,p.y+u*1.3+9)}
  hits.push({type:'sat',auto:au,x:p.x,y:p.y,r:u*1.9,z:p.z});
 }
 function drawCenter(){
@@ -539,12 +607,12 @@ function labels(vis){
  const c=P(0,0,0);items.unshift({center:true,x:c.x,y:c.y+74*c.s+30,z:c.z});
  for(const it of items){
   const s=it.s,name=it.center?S.name:s.name,sub=it.center?'the sun: your project':`${CATS[s.cat].n} · ${UNIT(s.ev.filter(e=>e.p!=='package.json').length||0)}`;
-  const sm=W<600;ctx.font=`800 ${sm?11.5:13}px Nunito, system-ui`;const w1=ctx.measureText(name).width;ctx.font='700 11px Nunito, system-ui';const w2=sm?0:ctx.measureText(sub).width;const w=Math.max(w1,w2)+(sm?14:20),h=sm?22:36;
+  const sm=true;ctx.font=`800 ${sm?11.5:13}px Inter, system-ui`;const w1=ctx.measureText(name).width;ctx.font='700 11px Inter, system-ui';const w2=sm?0:ctx.measureText(sub).width;const w=Math.max(w1,w2)+(sm?14:20),h=sm?22:36;
   let y=it.y,ok=false;for(let t=0;t<4;t++){const box={x:it.x-w/2,y:y-h/2,w,h};if(!placed.some(b=>b.x<box.x+box.w&&box.x<b.x+b.w&&b.y<box.y+box.h&&box.y<b.y+b.h)){ok=true;break}y+=h+4}
   if(!ok||y+h/2>H-ovBottom()||y-h/2<ovTop()||it.x-w/2<4||it.x+w/2>W-4)continue;
   const dim=s&&dimmed(s);ctx.globalAlpha=dim?.25:(s&&s.unused?.6:1);
   ctx.fillStyle='rgba(10,14,42,.86)';ctx.strokeStyle=it.center?'#ffc857':CATS[s.cat].col;ctx.lineWidth=1.3;rr(it.x-w/2,y-h/2,w,h,sm?8:10);ctx.fill();ctx.stroke();
-  ctx.fillStyle='#eef0ff';ctx.font=`800 ${sm?11.5:13}px Nunito, system-ui`;ctx.fillText(name,it.x,sm?y:y-7);if(!sm){ctx.fillStyle='#aab0dd';ctx.font='700 11px Nunito, system-ui';ctx.fillText(sub,it.x,y+8)}ctx.globalAlpha=1;
+  ctx.fillStyle='#eef0ff';ctx.font=`800 ${sm?11.5:13}px Inter, system-ui`;ctx.fillText(name,it.x,sm?y:y-7);if(!sm){ctx.fillStyle='#aab0dd';ctx.font='700 11px Inter, system-ui';ctx.fillText(sub,it.x,y+8)}ctx.globalAlpha=1;
   placed.push({x:it.x-w/2,y:y-h/2,w,h});
  }
 }
@@ -578,6 +646,7 @@ $('#zReset').onclick=()=>{flyTo(null);goal.yaw=-.55};
 
 /* ---------- side + glance ---------- */
 function renderAll(){
+ setTimeout(()=>{const n=openProbs().length;const b=$('#tbFix');if(b){b.textContent=n||'';b.classList.toggle('bad',n>0)}$('#tl').style.display=(S.saves||[]).length>1?'':'none';if(document.body.classList.contains('t-fix'))renderFix()},0);
  $('#pname').textContent=S.name;$('#modeTag').style.display=(S.mode==='demo'||S.mode==='n8n-demo')?'':'none';$('#modeTag').textContent=S.mode==='n8n-demo'?'SAMPLE':'DEMO';$('#pmeta').textContent=S.unit==='node'?'Every app this n8n workflow touches':S.via==='n8n'?'Scanned by your n8n workflow':'Every outside service your app talks to';
  $('#foot').textContent=S.unit==='node'?'Mapped from the workflow JSON on this device. Nothing was uploaded. Keys inside credentials are never in the JSON, so only keys typed into nodes show up.':S.mode==='demo'?'Demo project with sample data. Swaps are options with tradeoffs, not verdicts. Free tiers and prices change, so check each pricing page before switching.':'Mapped from your files on this device. Nothing was uploaded, and .env values were never read. Swaps are options with tradeoffs, not verdicts.';
  const vs=S.services.filter(visSvc),ps=openProbs().sort((a,b)=>SEV[b.kind]-SEV[a.kind]),hs=health(),keysN=vs.filter(s=>s.keys.some(k=>k.where==='server')).length;
@@ -708,11 +777,11 @@ function makeCard(){const c=document.createElement('canvas');c.width=1200;c.heig
  const pts=S.services.filter(x=>visSvc(x)&&x._p).map(x=>x._p);const c0=P(0,40,0);pts.push({x:c0.x,y:c0.y,r:96*c0.s});let x0=Math.min(...pts.map(q=>q.x-q.r))-50,x1=Math.max(...pts.map(q=>q.x+q.r))+50,y0=Math.min(...pts.map(q=>q.y-q.r*1.4))-30,y1=Math.max(...pts.map(q=>q.y+q.r*1.2))+50;x0=Math.max(0,x0);y0=Math.max(0,y0);x1=Math.min(W,x1);y1=Math.min(H,y1);const sw=x1-x0,sh=y1-y0,sc=Math.min(760/sw,590/sh);g.drawImage(cv,x0*DPR,y0*DPR,sw*DPR,sh*DPR,1200-sw*sc-20,(630-sh*sc)/2,sw*sc,sh*sc);
  const fade=g.createLinearGradient(380,0,620,0);fade.addColorStop(0,'rgba(9,11,36,1)');fade.addColorStop(1,'rgba(9,11,36,0)');g.fillStyle=fade;g.fillRect(0,0,620,630);g.fillStyle='rgba(9,11,36,1)';g.fillRect(0,0,380,630);
  const vs=S.services.filter(visSvc),ps=openProbs();g.fillStyle='#3ee0d0';g.font='700 22px JetBrains Mono, monospace';g.fillText('> flowscope',60,110);
- g.fillStyle='#eef0ff';g.font='900 64px Nunito, sans-serif';g.fillText(S.name,60,190);g.font='800 40px Nunito, sans-serif';g.fillText(`runs on ${vs.length} services`,60,250);
- g.fillStyle='#aab0dd';g.font='700 26px Nunito, sans-serif';g.fillText(`${vs.filter(s=>s.keys.some(k=>k.where==='server')).length} secret keys · ${ps.length} problem${ps.length===1?'':'s'}`,60,305);
- const hs=health();g.fillStyle=hs>=80?'#5be39a':hs>=50?'#ffc857':'#ff6b7a';g.font='900 30px Nunito, sans-serif';g.fillText(`Stack health ${hs}`,60,360);
- let x=60;g.font='800 20px Nunito, sans-serif';for(const c of [...new Set(vs.map(s=>s.cat))].slice(0,6)){const t=CATS[c].n,w=g.measureText(t).width+28;if(x+w>560)break;g.fillStyle=CATS[c].col;g.beginPath();g.roundRect?g.roundRect(x,410,w,38,19):g.rect(x,410,w,38);g.fill();g.fillStyle='#fff';g.fillText(t,x+14,436);x+=w+10}
- g.fillStyle='#ff8a5c';g.font='900 24px Nunito, sans-serif';g.fillText('Mapped by Flowscope',60,560);
+ g.fillStyle='#eef0ff';g.font='900 64px Outfit, sans-serif';g.fillText(S.name,60,190);g.font='800 40px Outfit, sans-serif';g.fillText(`runs on ${vs.length} services`,60,250);
+ g.fillStyle='#aab0dd';g.font='700 26px Outfit, sans-serif';g.fillText(`${vs.filter(s=>s.keys.some(k=>k.where==='server')).length} secret keys · ${ps.length} problem${ps.length===1?'':'s'}`,60,305);
+ const hs=health();g.fillStyle=hs>=80?'#5be39a':hs>=50?'#ffc857':'#ff6b7a';g.font='900 30px Outfit, sans-serif';g.fillText(`Stack health ${hs}`,60,360);
+ let x=60;g.font='800 20px Outfit, sans-serif';for(const c of [...new Set(vs.map(s=>s.cat))].slice(0,6)){const t=CATS[c].n,w=g.measureText(t).width+28;if(x+w>560)break;g.fillStyle=CATS[c].col;g.beginPath();g.roundRect?g.roundRect(x,410,w,38,19):g.rect(x,410,w,38);g.fill();g.fillStyle='#fff';g.fillText(t,x+14,436);x+=w+10}
+ g.fillStyle='#ff8a5c';g.font='900 24px Outfit, sans-serif';g.fillText('Mapped by Flowscope',60,560);
  const url=c.toDataURL('image/png');openModal(`<h2>Share your stack</h2><p class="sub">A picture of your map for a README, a post or your demo slides.</p><img src="${url}" alt="Share card"><div class="mrow"><button class="btn ghost" id="sClose">Close</button><a class="btn" download="${esc(S.name)}-stack.png" href="${url}">Download PNG</a></div>`);$('#sClose').onclick=closeModal}
 
 /* ---------- real project mapping ---------- */
@@ -923,13 +992,32 @@ function fixWorkflow(wf){
   if(/chatTrigger/i.test(n.type)&&P.public){P.public=false;did.push(`Made the chat "${n.name}" private.`)}
  }
  for(const[from,c]of Object.entries(w.connections||{}))for(const g of(c.ai_tool||[]))for(const t of g){const tool=w.nodes.find(x=>x.name===from);const target=w.nodes.find(x=>x.name===t.node);if(tool&&ACTION_TOOL.test(tool.type)&&!/mcpTrigger/i.test(target?.type||'')&&!/^(get|getAll|search|read|list)$/i.test(String(tool.parameters?.operation||'')))need.push(`Decide whether "${t.node}" should use "${from}" without asking. If not, put a Send and Wait (human approval) step before it.`)}
- if(!w.settings?.errorWorkflow)need.push('Import "Flowscope: error alerts" from Automations, then set it in this workflow\'s Settings > Error Workflow.');
+ if(!w.settings?.errorWorkflow)need.push('Turn on the Siren agent (Agents tab), then set it in this workflow\'s Settings > Error Workflow.');
  const xs=w.nodes.map(n=>n.position?.[0]||0),ys=w.nodes.map(n=>n.position?.[1]||0);
  w.nodes.push({parameters:{content:`## Fixed by Flowscope\n**Done:**\n${did.map(x=>'- '+x).join('\n')||'- nothing'}\n\n**Still needs you:**\n${need.map(x=>'- '+x).join('\n')||'- nothing'}`,height:Math.min(520,180+28*(did.length+need.length)),width:520},id:'flowscope-fixes',name:'Flowscope fixes',type:'n8n-nodes-base.stickyNote',typeVersion:1,position:[Math.min(...xs,0),Math.min(...ys,0)-Math.min(560,220+28*(did.length+need.length))]});
  w.name=String(w.name||'Workflow').replace(/ \(fixed by Flowscope\)$/,'')+' (fixed by Flowscope)';delete w.active;delete w.id;
  return{w,did,need}}
 
-function autoModal(){
+const AGENT={push:{e:'🛡️',n:'Guard'},errors:{e:'🚨',n:'Siren'},audit:{e:'🕵️',n:'Inspector'},mcp:{e:'🤖',n:'Buddy'},scan:{e:'🔭',n:'Scout'}};
+const N8N_IDS={scan:'FmtmqBrZmjyEHcds',push:'uabOeamLfekau9VS',audit:'MzSGjsJlUN5LguPq',errors:'0s8ZDJy4po1H3FBx',mcp:'x27Y8805w4lU9i8j'};
+function showTab(t){document.body.className=document.body.className.replace(/\bt-\w+/g,'').trim()+' t-'+t;$$('.tabb').forEach(b=>b.classList.toggle('on',b.dataset.tab===t));if(t!=='map'){closeDrawer?.();endTour?.()}if(t==='agents')renderAgents();if(t==='fix')renderFix();try{localStorage.setItem('sm_tab',t)}catch(e){}}
+$$('.tabb').forEach(b=>b.onclick=()=>showTab(b.dataset.tab));
+function renderFix(){const el=$('#fixHero');if(!el)return;if(!S.wf){el.innerHTML=`<div class="fixer"><div class="face">🪄</div><div class="bd"><b class="t">Fixer</b><p class="empty">Map an n8n workflow (the + Add workflow button) and the Fixer will hand you back a repaired copy.</p></div></div>`;return}
+ const fx=fixWorkflow(S.wf);el.innerHTML=`<div class="fixer"><div class="face">🪄</div><div class="bd"><b class="t">Fixer can close ${fx.did.length} hole${fx.did.length===1?'':'s'} in “${esc(S.name)}”</b>
+ ${fx.did.length?`<ul class="fixlist did">${fx.did.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:''}
+ ${fx.need.length?`<div class="when" style="color:var(--gold);font-size:12.5px;font-weight:700">Still needs you</div><ul class="fixlist need">${fx.need.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:''}
+ <div class="mrow" style="justify-content:flex-start"><button class="btn" id="fxCopy">Copy fixed workflow</button><button class="btn ghost" id="fxMap">See it on the map</button><button class="btn ghost" id="fxDl">Download</button></div></div></div>`;
+ $('#fxCopy').onclick=()=>copyText(JSON.stringify(fx.w,null,2),'Fixed workflow copied. In n8n: new workflow, click the canvas, paste.');
+ $('#fxDl').onclick=()=>dl(slug(fx.w.name)+'.json',fx.w);
+ $('#fxMap').onclick=()=>{const before=health();mapN8n(fx.w,{quiet:true});showTab('map');setTimeout(()=>toast(`Stack health ${before} → ${health()}. ${fx.need.length} step${fx.need.length===1?'':'s'} still need a person.`),500)}}
+function renderAgents(){const el=$('#agentsBody');if(!el)return;const email=lsGet('sm_email');const url=lsGet('sm_n8n_url');const base=url.replace(/\/webhook\/.*$/,'');
+ el.innerHTML=`<div class="card"><div class="arow"><div><label class="lbl2">Email for alerts</label><input class="ta" id="aEmail" type="email" placeholder="you@yourmail.com" value="${esc(email)}"></div><div><label class="lbl2">Your n8n scan URL</label><input class="ta" id="aUrl" value="${esc(url)}"></div></div></div>
+ <div class="agrid2">${AUTOS.map(a=>{const ag=AGENT[a.id],on=autoOn(a.id);return`<div class="agent ${on?'on':''}"><div class="top"><div class="face">${ag.e}</div><div class="nm"><b>${ag.n}</b><span>${a.t}</span></div><span class="st ${on?'on':'off'}" style="margin-left:auto">${on?'Running':'Not set up'}</span></div><div class="when">${a.when}</div><p>${a.d}</p><div class="nodes">${a.nodes.map(n=>`<span>${n}</span>`).join('')}</div>
+ <div class="bar"><button class="btn sm" data-copy="${a.id}">Copy to n8n</button>${/flowscope\.app\.n8n\.cloud/.test(base)&&N8N_IDS[a.id]?`<a class="btn ghost sm" target="_blank" rel="noopener" href="${base}/workflow/${N8N_IDS[a.id]}">Open in n8n</a>`:''}<button class="btn ghost sm" data-on="${a.id}">${on?'Turn off':'It’s running'}</button></div></div>`}).join('')}</div>`;
+ const save=()=>{lsSet('sm_email',$('#aEmail').value.trim());lsSet('sm_n8n_url',$('#aUrl').value.trim())};$('#aEmail').onchange=save;$('#aUrl').onchange=save;
+ $$('#agentsBody [data-copy]').forEach(b=>b.onclick=()=>{save();copyText(JSON.stringify(fillWorkflow(b.dataset.copy),null,2),'Copied. In n8n, click an empty canvas and paste (Ctrl+V).')});
+ $$('#agentsBody [data-on]').forEach(b=>b.onclick=()=>{const id=b.dataset.on;lsSet('sm_auto_'+id,autoOn(id)?'':'on');renderWatch();renderAgents()});}
+function autoModalOld(){
  const email=lsGet('sm_email'),url=lsGet('sm_n8n_url');const fx=S.wf?fixWorkflow(S.wf):null;
  $('#mBox').classList.add('wide');
  openModal(`<h2>Automations</h2><p class="sub">Flowscope runs on n8n. Set these up once, and they keep watch for you. Each one is a real n8n workflow: <b>Copy for n8n</b>, then click an empty n8n canvas and paste.</p>
@@ -952,7 +1040,8 @@ function autoModal(){
   $('#fxDl').onclick=()=>dl(slug(fx.w.name)+'.json',fx.w);
   $('#fxMap').onclick=()=>{const before=health();closeModal();mapN8n(fx.w,{quiet:true});setTimeout(()=>toast(`Stack health ${before} → ${health()}. ${fx.need.length} step${fx.need.length===1?'':'s'} left that need a person.`),500)}}
 }
-function renderWatch(){const on=AUTOS.filter(a=>autoOn(a.id)).length;$('#wc').textContent=`${on} of ${AUTOS.length} on`;
+function autoModal(){showTab('agents')}
+function renderWatch(){const on=AUTOS.filter(a=>autoOn(a.id)).length;$('#tbAg').textContent=`${on}/${AUTOS.length}`;if(!$('#watch'))return;$('#wc').textContent=`${on} of ${AUTOS.length} on`;
  $('#watch').innerHTML=AUTOS.map(a=>`<button class="row" data-auto="${a.id}"><span class="aico" style="width:30px;height:30px;border-radius:10px">${aSvg(a.id)}</span><span class="tx"><b>${a.t}</b><span>${a.when}</span></span><span class="st ${autoOn(a.id)?'on':'off'}">${autoOn(a.id)?'Running':'Set up'}</span></button>`).join('');
  $$('#watch [data-auto]').forEach(b=>b.onclick=autoModal)}
 const _closeModal=closeModal;closeModal=function(){$('#mBox').classList.remove('wide');_closeModal()};
@@ -961,8 +1050,8 @@ const _closeModal=closeModal;closeModal=function(){$('#mBox').classList.remove('
 addEventListener('resize',resize);new ResizeObserver(resize).observe(cv);
 loadDemo();resize();mapN8n(SAMPLE_N8N,{demo:true,quiet:true});requestAnimationFrame(loop);
 $('#n8nBtn').onclick=()=>n8nModal('paste');
-$('#autoBtn').onclick=autoModal;renderWatch();
-setTimeout(()=>toast('Sample n8n workflow. Tap a planet or a hazard, or press Tour. Paste your own with the n8n button.'),600);
+renderWatch();{let t='map';try{t=localStorage.getItem('sm_tab')||'map'}catch(e){}showTab(t)}
+setTimeout(()=>toast('Sample n8n workflow. Tap a planet or a hazard, or press Tour. Add your own with + Add workflow.'),600);
 </script>
 </body>
 </html>
