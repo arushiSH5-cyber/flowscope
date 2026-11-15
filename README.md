@@ -1,6 +1,6 @@
 # 🪐 Flowscope
 
-### ▶️ Live app: **https://arushish5-cyber.github.io/flowscope/**
+### ▶️ Live app: **[arushish5-cyber.github.io/flowscope](https://arushish5-cyber.github.io/flowscope/)**
 
 [![Open the live app](https://img.shields.io/badge/Open%20the%20live%20app-ff8a5c?style=for-the-badge)](https://arushish5-cyber.github.io/flowscope/)
 [![Built on n8n](https://img.shields.io/badge/Built%20on-n8n-ea4b71?style=for-the-badge)](https://n8n.io)
@@ -12,23 +12,27 @@
   <a href="https://arushish5-cyber.github.io/flowscope/"><img src="media/flowscope-map.gif" alt="Flowscope: a workflow drawn as a 3D solar system with a smiling sun, orbiting app planets and shooting stars" width="800"></a>
 </p>
 
-<p align="center"><b>🎬 <a href="media/flowscope-demo.mp4">Watch the 60-second demo video</a></b> · the demo workflow, the leaked key, the one-click fix (27 → 74), the agents</p>
+<p align="center"><a href="media/flowscope-film.mp4"><img src="media/film-poster.jpg" alt="Play the 2-minute Flowscope film" width="800"></a><br><b>🎬 <a href="media/flowscope-film.mp4">Watch the 2-minute film</a></b>: the problem, the idea, how it’s built, all 5 n8n workflows, and why it’s different · <a href="media/flowscope-demo.mp4">60-second app demo</a></p>
 
 | 😟 Before: an Apify key is typed into a node (health 27) | 😄 After the 🪄 Fixer (health 74) |
 |---|---|
 | <img src="media/map-27.jpg" alt="Worried sun, health 27"> | <img src="media/map-74.jpg" alt="Happy sun after the fix, health 74"> |
 
-Built at the **n8n Santa Clara University Buildathon** (Nov 15, 2026).
+### ✅ How we know it’s really fixed
+The Fix tab re-runs the same checks on the **fixed workflow’s JSON** and shows real counts, not a guess:
+
+| Check | Before | After |
+|---|---|---|
+| API keys typed into nodes | 1 | **0** ✅ |
+| Webhooks anyone can call | 1 | **0** ✅ |
+| Turned-off nodes left behind | 1 | **0** ✅ |
+| Alerts when it breaks | off | off 👤 needs you |
+
+Paste the fixed copy into n8n and the key is gone from the workflow. You still make a new key, because the old one was already shared.
+
+Built at the **n8n Santa Clara University Buildathon** (Nov 15, 2026). 🔗 **[Live app](https://arushish5-cyber.github.io/flowscope/)** · **[n8n instance](https://flowscope.app.n8n.cloud)** (sign-in needed) · **[Workflow files](workflows)** · **[Film](media/flowscope-film.mp4)**
 
 ---
-
-## 🧑‍⚖️ For judges
-
-| Judging criterion | What to look at |
-|---|---|
-| **Idea · Uniqueness** | n8n scanners already exist (`n8n audit`, FlowGuard, FlowSentry, RiskVoid, audit8n), and **all of them stop at a report**. Flowscope **hands back the fixed workflow**, explains it to beginners as a solar system, covers the code next to the workflow, and lives **inside n8n and your AI tool** (an MCP server). |
-| **Implementation · Does it work?** | 5 real n8n workflows, **live** at `flowscope.app.n8n.cloud`. Tested today: Scout scanned real repos in 6 to 10 s; Guard caught a fake AWS key pushed to GitHub in 2.2 s; the Fixer takes this morning's n8n demo workflow from health **27 → 74**. |
-| **Presentation · Clarity** | One picture: the sun is your project, planets are the apps it uses, and space hazards are the problems. Every fix is written in plain words, step by step, for n8n users. |
 
 **Try it in 60 seconds:**
 1. Open the **[live app](https://arushish5-cyber.github.io/flowscope/)**. **🏠 Home** explains every tab.

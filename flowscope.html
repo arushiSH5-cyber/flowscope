@@ -299,6 +299,7 @@ body.t-home #pg-home{display:flex}
 .wcard .mrow{margin-top:8px;gap:6px}.wcard .x{margin-left:auto;background:none;border:0;color:var(--soft);cursor:pointer;font-size:16px}
 @keyframes bob{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-4px) rotate(2deg)}}
 .wcard .wf svg,.fixer .face svg,.aico svg,.hcard i svg{animation:bob 2.8s ease-in-out infinite}@media (prefers-reduced-motion:reduce){.wcard .wf svg,.fixer .face svg,.aico svg{animation:none}}
+.proof{margin:12px 0;padding:14px 16px;border-radius:14px;background:rgba(62,224,208,.07);border:1px solid rgba(62,224,208,.35);display:flex;flex-direction:column;gap:8px}.proof>b{font-size:16px;color:#7cf0c5}.proof>span{font-size:13px;color:var(--soft)}.proof table{border-collapse:collapse;font-size:13.5px;width:100%}.proof th{text-align:left;color:var(--soft);font-weight:600;padding:4px 6px;border-bottom:1px solid var(--line)}.proof td{padding:6px;border-bottom:1px solid rgba(255,255,255,.05)}
 .vidc{padding:10px}.vidc video{display:block;width:100%;aspect-ratio:16/9;border-radius:12px;background:#000}.vidc p{margin:10px 4px 2px}
 .hlogo{width:84px;height:72px}
 .hero h1{font-family:"Outfit",var(--font);font-size:clamp(30px,5vw,46px);line-height:1.08;font-weight:700;letter-spacing:-.02em}
@@ -382,7 +383,7 @@ body.t-home #pg-home{display:flex}
     <p>Flowscope turns an n8n workflow or a GitHub repo into a solar system, finds the security holes, and gives you n8n agents that keep watch for you.</p>
     <div class="mrow left"><button class="btn" data-go="add">+ Add your workflow</button><button class="btn ghost" data-go="map">🪐 See this morning’s n8n demo workflow</button><button class="btn ghost" onclick="document.getElementById('n8nSec').scrollIntoView({behavior:'smooth'})">❤️ How n8n powers it</button></div>
    </div>
-   <div class="card vidc"><video src="media/flowscope-demo.mp4" poster="media/poster.jpg" controls playsinline preload="none"></video><p class="empty">▶️ 60-second tour: the demo workflow, the leaked key, the one-click fix (27 → 74), the agents and shooting stars.</p></div>
+   <div class="card vidc"><video src="media/flowscope-film.mp4" poster="media/film-poster.jpg" controls playsinline preload="none"></video><p class="empty">▶️ The 2-minute film: the problem, the idea, how it’s built, all 5 n8n workflows, and why it’s different. <a href="film.html" target="_blank" rel="noopener" style="color:var(--teal)">Play it as a live animation</a> · <a href="media/flowscope-demo.mp4" target="_blank" rel="noopener" style="color:var(--teal)">60-second app demo</a></p></div>
    <h3 class="sect" id="n8nSec">❤️ n8n is the heart of Flowscope</h3>
    <div class="card n8nc">
     <p class="empty">This page is only the screen. <b>Everything that talks to the outside world runs in n8n</b>: GitHub, the AI Agent, Gmail, schedules and the MCP server. We have no server of our own. 5 real workflows, live at <b>flowscope.app.n8n.cloud</b>:</p>
@@ -1165,10 +1166,24 @@ function renderInstall(){const box=$('#installBox'),hb=$('#hdrInstall');const st
 async function doInstall(){if(!installEvt)return;installEvt.prompt();await installEvt.userChoice;installEvt=null;renderInstall()}
 $('#hdrInstall').onclick=doInstall;
 if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost'))addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+
+// Proof it's fixed: run the same checks on the original and the fixed workflow JSON, side by side
+function wfChecks(wf){const nodes=(wf&&wf.nodes)||[];const txt=JSON.stringify(nodes.map(n=>n.parameters||{}));let keys=0;for(const l of LIT){const m=txt.match(new RegExp(l.re.source,'g'));if(m)keys+=m.length}
+ const hooks=nodes.filter(n=>/\.webhook$/i.test(n.type||'')&&!n.disabled);const open=hooks.filter(n=>!n.parameters?.authentication||n.parameters.authentication==='none').length;
+ const off=nodes.filter(n=>n.disabled&&!/stickyNote/i.test(n.type)).length;const err=!!(wf&&wf.settings&&wf.settings.errorWorkflow);return{keys,open,hooks:hooks.length,off,err}}
+function proofHTML(a,b){const A=wfChecks(a),B=wfChecks(b);const row=(t,x,y,good)=>`<tr><td>${t}</td><td>${x}</td><td><b>${y}</b></td><td>${good?'✅ Fixed':'👤 Needs you'}</td></tr>`;
+ return `<div class="proof"><b>✅ Proof it’s fixed</b><span>We ran the same checks again on the fixed workflow’s JSON. These are counts, not guesses.</span>
+ <table><tr><th>Check</th><th>Before</th><th>After</th><th></th></tr>
+ ${row('API keys typed into nodes',A.keys,B.keys,B.keys===0)}
+ ${row('Webhooks anyone can call',A.open,B.open,B.open===0)}
+ ${row('Turned-off nodes left behind',A.off,B.off,B.off===0)}
+ ${row('Alerts when it breaks (error workflow)',A.err?'on':'off',B.err?'on':'off',B.err)}
+ </table><span>Paste the fixed copy into n8n and the key is gone from the workflow. Then make a new key, because the old one was already shared.</span></div>`}
 function renderFix(){const el=$('#fixHero');if(!el)return;if(!S.wf){el.innerHTML=`<div class="fixer"><div class="face">${CUTE('fixer')}</div><div class="bd"><b class="t">Fixer</b><p class="empty">Map an n8n workflow (the + Add workflow button) and the Fixer will hand you back a repaired copy.</p></div></div>`;return}
  const fx=fixWorkflow(S.wf);el.innerHTML=`<div class="fixer"><div class="face">${CUTE('fixer')}</div><div class="bd"><b class="t">Fixer can close ${fx.did.length} hole${fx.did.length===1?'':'s'} in “${esc(S.name)}”</b>
  ${fx.did.length?`<ul class="fixlist did">${fx.did.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:''}
  ${fx.need.length?`<div class="when" style="color:var(--gold);font-size:12.5px;font-weight:700">Still needs you</div><ul class="fixlist need">${fx.need.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:''}
+ ${proofHTML(S.wf,fx.w)}
  <div class="mrow" style="justify-content:flex-start"><button class="btn" id="fxCopy">Copy fixed workflow</button><button class="btn ghost" id="fxMap">See it on the map</button><button class="btn ghost" id="fxDl">Download</button></div></div></div>`;
  $('#fxCopy').onclick=()=>copyText(JSON.stringify(fx.w,null,2),'Fixed workflow copied. In n8n: new workflow, click the canvas, paste.');
  $('#fxDl').onclick=()=>dl(slug(fx.w.name)+'.json',fx.w);

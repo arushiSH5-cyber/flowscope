@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Flowscope Film</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400..800&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#06061a;--ink:#f4f1ea;--soft:#b9b3d6;--pink:#ea4b71;--gold:#ffc857;--teal:#3ee0d0;--card:#141235;--line:#2e2a5c}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--ink);font-family:Inter,system-ui,sans-serif;overflow:hidden;height:100%}
+#stage{position:fixed;left:50%;top:50%;width:1280px;height:720px;transform:translate(-50%,-50%) scale(var(--s,1));overflow:hidden;background:radial-gradient(ellipse at 50% 120%,#1b1050 0%,var(--bg) 60%)}
+#stars{position:absolute;inset:0}
+.scene{position:absolute;inset:0;padding:64px 80px 120px;display:flex;flex-direction:column;gap:22px;opacity:0;transform:scale(1.03);transition:opacity .7s ease,transform 1.2s ease;pointer-events:none}
+.scene.on{opacity:1;transform:none}
+h1,h2,h3{font-family:Outfit,sans-serif;letter-spacing:-.02em}
+h2{font-size:52px;line-height:1.05;font-weight:800}
+.eb{font-family:Outfit;font-weight:700;letter-spacing:.18em;font-size:16px;color:var(--gold)}
+.pk{color:var(--pink)}.gd{color:var(--gold)}.tl{color:var(--teal)}
+.rise{opacity:0;transform:translateY(26px)}
+.on .rise{animation:rise .8s cubic-bezier(.2,.8,.2,1) forwards;animation-delay:calc(var(--i,0)*.25s + .2s)}
+@keyframes rise{to{opacity:1;transform:none}}
+#cap{position:absolute;left:80px;right:80px;bottom:30px;min-height:56px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:21px;line-height:1.4;color:#fff;background:rgba(6,6,26,.72);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:10px 22px;backdrop-filter:blur(6px);transition:opacity .3s}
+#brand{position:absolute;top:22px;right:28px;font-family:Outfit;font-weight:700;font-size:15px;color:var(--soft);display:flex;gap:8px;align-items:center;z-index:5}
+#bar{position:absolute;left:0;bottom:0;height:4px;background:linear-gradient(90deg,var(--pink),var(--gold));width:0;z-index:5}
+/* 3D solar system */
+.sys{position:absolute;left:50%;top:50%;width:0;height:0;transform-style:preserve-3d}
+.tilt{transform-style:preserve-3d;transform:rotateX(68deg) rotateZ(-12deg)}
+.sun{position:absolute;width:150px;height:150px;left:-75px;top:-75px;border-radius:50%;background:radial-gradient(circle at 38% 35%,#fff6d1,#ffd166 45%,#ff8a3d 80%,#e8433d);box-shadow:0 0 80px 20px rgba(255,170,60,.55),0 0 200px 60px rgba(255,120,60,.25);animation:pulse 3s ease-in-out infinite}
+.sun i{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-style:normal;font-size:44px}
+@keyframes pulse{50%{box-shadow:0 0 110px 30px rgba(255,170,60,.65),0 0 240px 80px rgba(255,120,60,.3)}}
+.orbit{position:absolute;border:2px solid rgba(167,139,250,.35);border-radius:50%;transform-style:preserve-3d;animation:spin linear infinite}
+.orbit b{position:absolute;top:50%;left:-16px;width:32px;height:32px;margin-top:-16px;border-radius:50%;transform:rotateX(-68deg);box-shadow:0 0 22px currentColor}
+@keyframes spin{to{transform:rotateZ(360deg)}}
+.o1{width:300px;height:300px;left:-150px;top:-150px;animation-duration:7s}.o1 b{background:#5b8cff;color:#5b8cff}
+.o2{width:470px;height:470px;left:-235px;top:-235px;animation-duration:11s}.o2 b{background:#3ee0d0;color:#3ee0d0;width:42px;height:42px;left:-21px;margin-top:-21px}
+.o3{width:650px;height:650px;left:-325px;top:-325px;animation-duration:16s}.o3 b{background:#ea4b71;color:#ea4b71}
+.o4{width:840px;height:840px;left:-420px;top:-420px;animation-duration:23s;border-style:dashed}.o4 b{background:#ffc857;color:#ffc857;width:24px;height:24px;left:-12px;margin-top:-12px}
+.title{position:absolute;left:0;right:0;top:70px;text-align:center}
+.title h1{font-size:110px;font-weight:800;background:linear-gradient(90deg,#fff,#ffd166 50%,#ff8a5c);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 6px 30px rgba(255,140,90,.35))}
+.title p{font-size:26px;color:var(--soft);margin-top:6px}
+/* cards */
+.row{display:flex;gap:22px}
+.card{flex:1;background:linear-gradient(160deg,#1d1a48,#100e2c);border:1px solid var(--line);border-radius:22px;padding:26px;display:flex;flex-direction:column;gap:10px}
+.card .e{font-size:54px}.card h3{font-size:28px}.card p{color:var(--soft);font-size:19px;line-height:1.45}
+/* media frames */
+.frame{position:relative;flex:1;border-radius:20px;overflow:hidden;border:1px solid var(--line);box-shadow:0 30px 80px rgba(0,0,0,.5);background:#0b0a22}
+.frame video,.frame img{width:100%;height:100%;object-fit:cover;display:block}
+.frame.white{background:#f6f5f2}.frame.white img{object-fit:contain}
+.kb{animation:kb 14s ease-out forwards}@keyframes kb{from{transform:scale(1.18) translateX(4%)}to{transform:scale(1) translateX(0)}}
+.chips{display:flex;gap:10px;flex-wrap:wrap}
+.chip{padding:8px 16px;border-radius:99px;background:rgba(255,255,255,.07);border:1px solid var(--line);font-size:18px;font-weight:600}
+.badge{position:absolute;right:22px;top:22px;padding:12px 20px;border-radius:16px;background:var(--pink);color:#1a0b14;font-family:Outfit;font-weight:800;font-size:30px;box-shadow:0 10px 40px rgba(234,75,113,.5)}
+.big{position:absolute;left:30px;bottom:24px;font-family:Outfit;font-weight:800;font-size:96px;line-height:1;text-shadow:0 8px 40px rgba(0,0,0,.6)}
+/* architecture */
+.arch{position:relative;flex:1}
+.node{position:absolute;padding:16px 20px;border-radius:18px;background:linear-gradient(160deg,#1d1a48,#100e2c);border:1px solid var(--line);font-size:19px;font-weight:600;display:flex;gap:10px;align-items:center;opacity:0;transform:scale(.85)}
+.on .node{animation:pop .6s cubic-bezier(.2,1.4,.4,1) forwards;animation-delay:calc(var(--i)*.35s + .3s)}
+@keyframes pop{to{opacity:1;transform:none}}
+.node.heart{background:linear-gradient(160deg,#ff6d8f,#ea4b71);color:#1a0b14;font-size:26px;font-family:Outfit;font-weight:800;border:0;box-shadow:0 0 60px rgba(234,75,113,.55)}
+.node.brain{border-color:var(--gold)}
+.node small{display:block;font-size:14px;font-weight:600;opacity:.75}
+.wire{stroke:url(#wg);stroke-width:3;fill:none;stroke-dasharray:600;stroke-dashoffset:600}
+.on .wire{animation:draw 1s ease forwards;animation-delay:calc(var(--i)*.3s + 1.2s)}
+@keyframes draw{to{stroke-dashoffset:0}}
+.dot{fill:#fff;filter:drop-shadow(0 0 6px #fff);opacity:0}.on .dot{opacity:1;transition:opacity .3s 2.8s}
+/* chat */
+.bubble{padding:14px 18px;border-radius:18px;font-size:20px;max-width:420px}
+.bubble.me{background:#2a2660;align-self:flex-end}.bubble.ai{background:#1a1840;border:1px solid var(--line)}
+.vs{display:grid;grid-template-columns:1fr 1fr;gap:22px;flex:1}
+.vs .card{justify-content:flex-start}.vs li{list-style:none;font-size:22px;padding:8px 0;color:var(--soft)}.vs li b{color:var(--ink)}
+.quote{font-family:Outfit;font-weight:800;font-size:46px;text-align:center;line-height:1.15}
+</style></head><body>
+<div id="stage">
+<canvas id="stars"></canvas>
+<div id="brand">🪐 Flowscope · built on <span class="pk">n8n</span></div>
+
+<!-- 1 title -->
+<section class="scene" data-k="title">
+ <div class="sys" style="top:58%"><div class="tilt"><div class="orbit o4"><b></b></div><div class="orbit o3"><b></b></div><div class="orbit o2"><b></b></div><div class="orbit o1"><b></b></div><div class="sun" style="transform:rotateX(-68deg)"><i>😊</i></div></div></div>
+ <div class="title"><h1 class="rise">Flowscope</h1><p class="rise" style="--i:1">See what your automations touch. <span class="gd">Fix what’s exposed.</span> Let <span class="pk">n8n</span> keep watch.</p></div>
+</section>
+
+<!-- 2 problem -->
+<section class="scene">
+ <p class="eb rise">THE PROBLEM</p>
+ <h2 class="rise" style="--i:1">A dozen apps, wired together in an afternoon.<br><span class="gd">Nobody can see them all.</span></h2>
+ <div class="row" style="margin-top:14px">
+  <div class="card rise" style="--i:2"><div class="e">🔑</div><h3>Keys pasted into nodes</h3><p>Share or export the workflow and the key goes with it.</p></div>
+  <div class="card rise" style="--i:3"><div class="e">🚪</div><h3>Webhooks left open</h3><p>Anyone with the URL can run your workflow.</p></div>
+  <div class="card rise" style="--i:4"><div class="e">🤫</div><h3>Silent failures</h3><p>It breaks at 3 a.m. and nobody hears about it.</p></div>
+ </div>
+</section>
+
+<!-- 3 map -->
+<section class="scene" data-k="map">
+ <p class="eb rise">THE IDEA</p>
+ <div class="frame rise" style="--i:1"><video muted playsinline preload="auto" src="media/flowscope-demo.mp4" data-from="15.2" data-to="19.8"></video></div>
+ <div class="chips rise" style="--i:2"><span class="chip">☀️ Sun = your workflow</span><span class="chip">🪐 Planets = the apps it uses</span><span class="chip">☄️ Hazards = problems</span></div>
+</section>
+
+<!-- 4 fix -->
+<section class="scene" data-k="fix">
+ <p class="eb rise">THE 🪄 FIXER</p>
+ <div class="row" style="flex:1">
+  <div class="frame rise" style="--i:1"><video muted playsinline preload="auto" src="media/flowscope-demo.mp4" data-from="20.4" data-to="26.8"></video><div class="big" style="color:#ff6b7a">27</div></div>
+  <div class="frame rise" style="--i:3"><video muted playsinline preload="auto" src="media/flowscope-demo.mp4" data-from="36.3" data-to="42" data-delay="4.5"></video><div class="big gd">74</div></div>
+ </div>
+ <div class="chips rise" style="--i:4"><span class="chip">Others: a report</span><span class="chip" style="border-color:var(--gold)">Flowscope: the fixed workflow, ready to paste back into n8n</span></div>
+</section>
+
+<!-- 5 architecture -->
+<section class="scene">
+ <p class="eb rise">HOW IT’S BUILT</p>
+ <h2 class="rise" style="--i:1;font-size:44px">🧠 Brain in your browser. <span class="pk">❤️ Heart in n8n.</span></h2>
+ <div class="arch">
+  <svg width="1120" height="400" style="position:absolute;inset:0" aria-hidden="true"><defs><linearGradient id="wg"><stop offset="0" stop-color="#ffc857"/><stop offset="1" stop-color="#ea4b71"/></linearGradient></defs>
+   <path class="wire" style="--i:0" d="M270 200 C330 200 360 200 420 200"/>
+   <path class="wire" style="--i:1" d="M640 200 C720 200 740 40 820 40"/>
+   <path class="wire" style="--i:2" d="M640 200 C720 200 740 120 820 120"/>
+   <path class="wire" style="--i:3" d="M640 200 C720 200 740 200 820 200"/>
+   <path class="wire" style="--i:4" d="M640 200 C720 200 740 280 820 280"/>
+   <path class="wire" style="--i:5" d="M640 200 C720 200 740 360 820 360"/>
+   <circle class="dot" r="5"><animateMotion dur="1.6s" repeatCount="indefinite" path="M640 200 C720 200 740 40 820 40"/></circle>
+   <circle class="dot" r="5"><animateMotion dur="1.9s" repeatCount="indefinite" path="M640 200 C720 200 740 200 820 200"/></circle>
+   <circle class="dot" r="5"><animateMotion dur="1.7s" repeatCount="indefinite" path="M640 200 C720 200 740 360 820 360"/></circle>
+   <circle class="dot" r="5"><animateMotion dur="1.2s" repeatCount="indefinite" path="M270 200 C330 200 360 200 420 200"/></circle>
+  </svg>
+  <div class="node brain" style="--i:0;left:0;top:140px;width:270px">🧠<div>Brain: rules in your browser<small>reads · scores · writes the fix</small></div></div>
+  <div class="node heart" style="--i:1;left:420px;top:150px;width:220px;justify-content:center">❤️ n8n<small style="display:block;color:#1a0b14">5 workflows</small></div>
+  <div class="node" style="--i:2;left:820px;top:12px">🐙 GitHub API</div>
+  <div class="node" style="--i:3;left:820px;top:92px">🧠 AI Agent node</div>
+  <div class="node" style="--i:4;left:820px;top:172px">📧 Gmail alerts</div>
+  <div class="node" style="--i:5;left:820px;top:252px">⏰ Every Monday</div>
+  <div class="node" style="--i:6;left:820px;top:332px">🤖 MCP: Claude &amp; Cursor</div>
+ </div>
+</section>
+
+<!-- 6 scout -->
+<section class="scene">
+ <p class="eb rise">🔭 SCOUT · REPO SCANNER · LIVE</p>
+ <div class="frame white rise" style="--i:1"><img class="kb" src="media/n8n-scan.png" alt=""></div>
+ <div class="chips rise" style="--i:2"><span class="chip">Webhook</span><span class="chip">HTTP Request: GitHub</span><span class="chip">Code</span><span class="chip" style="border-color:var(--pink)">AI Agent</span><span class="chip">Respond to Webhook</span></div>
+</section>
+
+<!-- 7 guard -->
+<section class="scene">
+ <p class="eb rise">🛡️ GUARD · EVERY GIT PUSH · LIVE</p>
+ <div class="frame white rise" style="--i:1"><img class="kb" src="media/n8n-push.png" alt=""><div class="badge">caught a key in 2.2 s</div></div>
+</section>
+
+<!-- 8 siren + inspector -->
+<section class="scene">
+ <p class="eb rise">🚨 SIREN &amp; 🕵️ INSPECTOR</p>
+ <div class="row" style="flex:1">
+  <div class="frame white rise" style="--i:1"><img class="kb" src="media/n8n-errors.png" alt=""></div>
+  <div class="frame white rise" style="--i:2"><img class="kb" src="media/n8n-audit.png" alt=""></div>
+ </div>
+ <div class="chips rise" style="--i:3"><span class="chip">Error Trigger → Gmail</span><span class="chip">Schedule → n8n API → Code → Gmail</span></div>
+</section>
+
+<!-- 9 buddy -->
+<section class="scene">
+ <p class="eb rise">🤖 BUDDY · MCP SERVER</p>
+ <div class="row" style="flex:1">
+  <div class="frame white rise" style="--i:1;flex:1.4"><img class="kb" src="media/n8n-mcp.png" alt=""></div>
+  <div style="flex:1;display:flex;flex-direction:column;gap:14px;justify-content:center">
+   <div class="bubble me rise" style="--i:2">Claude, scan my repo for leaked keys</div>
+   <div class="bubble ai rise" style="--i:4">🪐 Calling Flowscope through n8n… 2 keys found, here’s how to fix them.</div>
+  </div>
+ </div>
+</section>
+
+<!-- 10 projects -->
+<section class="scene">
+ <p class="eb rise">🛰️ FOR VIBE CODERS AND STUDENTS</p>
+ <div class="frame rise" style="--i:1"><img class="kb" src="media/projects.png" alt="" style="object-fit:contain;background:#0b0a22"></div>
+ <div class="chips rise" style="--i:2"><span class="chip">🟢 Alive</span><span class="chip">🟡 Getting quiet</span><span class="chip">🔴 Forgotten, keys and all</span></div>
+</section>
+
+<!-- 11 why not claude -->
+<section class="scene">
+ <p class="eb rise">WHY NOT JUST ASK AN AI?</p>
+ <div class="vs">
+  <div class="card rise" style="--i:1"><h3>💬 An AI chat</h3><ul><li>Runs when <b>you remember</b> to ask</li><li>You paste your keys in</li><li>Gives advice to copy by hand</li></ul></div>
+  <div class="card rise" style="--i:2;border-color:var(--pink)"><h3>🪐 Flowscope</h3><ul><li>Runs on <b>every push, failure, Monday</b></li><li>Checks in your browser</li><li>Hands back the <b>fixed workflow</b></li></ul></div>
+ </div>
+ <p class="quote rise" style="--i:3">Claude is who you ask. <span class="pk">Flowscope is who’s watching.</span></p>
+</section>
+
+<!-- 12 close -->
+<section class="scene" data-k="close">
+ <div class="sys" style="top:60%"><div class="tilt"><div class="orbit o4"><b></b></div><div class="orbit o3"><b></b></div><div class="orbit o2"><b></b></div><div class="orbit o1"><b></b></div><div class="sun" style="transform:rotateX(-68deg)"><i>😄</i></div></div></div>
+ <div class="title" style="top:60px"><h1 class="rise" style="font-size:72px">Other scanners report.<br>Flowscope fixes.</h1><p class="rise" style="--i:1">Built on <span class="pk">n8n</span>, and it checks n8n · arushish5-cyber.github.io/flowscope</p></div>
+</section>
+
+<div id="cap"></div>
+<div id="bar"></div>
+</div>
+<script>
+const CAPS=["Meet Flowscope. It shows you everything your n8n automations touch, fixes what’s exposed, and keeps watch, so you don’t have to.",
+"One person can now wire a dozen apps together in an afternoon. But keys get pasted into nodes, webhooks get left open, and when a workflow breaks at 3 a.m., nobody hears about it.",
+"So we turned every workflow into a solar system. The sun is your workflow. Every planet is an app it uses. Bigger and closer means used more. Every problem is a space hazard.",
+"This comet is a leaked key, typed straight into a node. Other scanners stop at a report. Our Fixer hands back the repaired workflow: health goes from 27 to 74.",
+"The brain runs in your browser: rules that read the workflow, score it and write the fix. Instant, private, same answer every time. The heart is n8n: everything that touches the outside world runs as an n8n workflow. No server of our own.",
+"Scout scans any GitHub repo. A webhook calls the GitHub API, Code nodes pick the files, and n8n’s AI Agent explains the stack.",
+"Guard runs on every git push and checks each new line for leaked keys. Today it caught one in 2.2 seconds.",
+"Siren catches failures with n8n’s Error Trigger and emails you. Inspector audits every workflow each Monday through the n8n API.",
+"And Buddy is an MCP server, so Claude or Cursor can call Flowscope right from chat.",
+"It’s for vibe coders and students too. Add your repos, and Flowscope tells you which projects are alive, and which ones you forgot, keys and all.",
+"Why not just ask an AI? A chat only helps when you remember to ask. Claude is who you ask. Flowscope is who’s watching.",
+"Other scanners report. Flowscope fixes. Built on n8n, and it checks n8n."];
+// Durations (seconds) per scene: from ?d=... when recording, else defaults that match the narration
+const q=new URLSearchParams(location.search);
+const DUR=(q.get('d')||'9.2,11.7,11.4,11.4,17.6,9.6,7.8,9.5,6.3,9.4,8.8,8.5').split(',').map(Number);
+const scenes=[...document.querySelectorAll('.scene')];
+if(q.has('rec'))document.querySelectorAll('video').forEach((v,i)=>{const d=+v.dataset.to-+v.dataset.from;v.src='media/_c'+(i+1)+'.webm';v.dataset.from=0;v.dataset.to=d});
+const fit=()=>{const s=Math.min(innerWidth/1280,innerHeight/720);document.getElementById('stage').style.setProperty('--s',s)};fit();addEventListener('resize',fit);
+// 3D warp starfield
+const c=document.getElementById('stars'),g=c.getContext('2d');c.width=1280;c.height=720;
+const S=[...Array(420)].map(()=>({x:(Math.random()-.5)*2,y:(Math.random()-.5)*2,z:Math.random()}));
+let speed=.0018;
+function stars(){g.fillStyle='rgba(6,6,26,.55)';g.fillRect(0,0,1280,720);for(const s of S){s.z-=speed;if(s.z<=.01){s.x=(Math.random()-.5)*2;s.y=(Math.random()-.5)*2;s.z=1}
+ const px=640+s.x/s.z*320,py=360+s.y/s.z*320,k=1-s.z,r=.4+k*k*2.4;if(px<0||px>1280||py<0||py>720)continue;g.globalAlpha=Math.min(1,.2+k);g.fillStyle=k>.8?'#ffe9b8':'#dfe4ff';g.beginPath();g.arc(px,py,r,0,7);g.fill()}g.globalAlpha=1;requestAnimationFrame(stars)}stars();
+// timeline
+let t0=0,cur=-1;const total=DUR.reduce((a,b)=>a+b,0);
+function show(i){scenes.forEach((s,j)=>s.classList.toggle('on',j===i));document.getElementById('cap').textContent=CAPS[i]||'';
+ speed=(i===0||i===11)?.0045:.0016;
+ scenes[i]?.querySelectorAll('video').forEach(v=>{const from=+v.dataset.from,to=+v.dataset.to,delay=+(v.dataset.delay||0);v.pause();v.currentTime=from;
+  const span=Math.max(1,DUR[i]-delay-.4);v.playbackRate=Math.max(.5,Math.min(1,(to-from)/span));setTimeout(()=>v.play().catch(()=>{}),delay*1000)})}
+function tick(){const t=(performance.now()-t0)/1000;let acc=0,i=0;for(;i<DUR.length;i++){acc+=DUR[i];if(t<acc)break}
+ if(i!==cur){cur=i;show(i)}document.getElementById('bar').style.width=Math.min(100,t/total*100)+'%';if(t<total+1)requestAnimationFrame(tick)}
+window.go=()=>{t0=performance.now();cur=-1;requestAnimationFrame(tick)};
+if(!q.has('rec'))addEventListener('load',()=>setTimeout(go,400));
+</script>
+</body></html>
