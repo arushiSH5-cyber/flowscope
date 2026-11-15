@@ -5,6 +5,7 @@
   "scripts": {
     "lint": "node scripts/stack-map-lint.mjs",
     "lint:strict": "node scripts/stack-map-lint.mjs --strict",
-    "hooks": "git config core.hooksPath .githooks"
+    "hooks": "git config core.hooksPath .githooks",
+    "embed": "node scripts/embed-workflows.mjs"
   }
 }

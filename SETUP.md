@@ -1,6 +1,6 @@
 # Stack Map × n8n: setup, demo and pitch
 
-**One line:** Stack Map shows every app your automations and code touch as a 3D map, and finds the security holes. n8n is both the engine and a target.
+**One line:** Stack Map shows every app your automations and code touch as a sunny 3D island map, fixes the holes for you, and keeps watch with n8n automations. n8n is both the engine and a target. Pitch, competitors and money: see `PITCH.md`.
 
 Files (all in `~/Downloads/stack-map`):
 - `stack-map.html`: the app (one file, open it in Chrome). `index.html` forwards to it for GitHub Pages.
@@ -8,6 +8,9 @@ Files (all in `~/Downloads/stack-map`):
 - `workflows/stack-map-mcp-server.json`: **n8n MCP server**. Claude, Cursor or any MCP client can scan repos, audit workflows and check code for keys
 - `workflows/stack-map-push-guard.json`: n8n workflow that checks every GitHub push and emails you about leaked keys
 - `workflows/stack-map-weekly-audit.json`: n8n workflow that audits all your n8n workflows every Monday
+- `workflows/stack-map-error-alert.json`: emails you when any workflow fails (set it as the Error Workflow everywhere)
+- **Easiest way to get any of them:** in the app, **Automations** → type your email → **Copy for n8n** → click an empty n8n canvas → Ctrl+V. Your email is already filled in.
+- After editing a workflow file, run `node scripts/embed-workflows.mjs` so the app gets the new copy (CI checks this).
 - `scripts/stack-map-lint.mjs`: **Stack Map lint**, the same checks as a command and in GitHub Actions (`.github/workflows/stack-map-lint.yml`) and a pre-commit hook (`.githooks/pre-commit`)
 
 **GitHub rule:** nothing gets committed or pushed with a time before 12:30 PM on Nov 15.
@@ -119,18 +122,20 @@ What runs automatically once set up:
 
 **0:20 The map.** Stack Map opens on a sample lead-gen workflow. "Every island is an app this workflow touches. Currents show which way data flows. Chests are keys." Press **Tour** (15 seconds, auto-plays).
 
-**0:45 The problems.** Health score 27, five creatures:
+**0:45 The problems (and the lighthouse).** The lighthouse beam is red because a key leaked. Health score 27, five creatures:
 - the shark: an Apify token typed straight into the URL of an HTTP node, so anyone you share the workflow with has it
 - an unsubscribe webhook anyone can call
 - an AI agent that can send email with no human approving it
 - a turned-off Gemini node still wired in
 - no error workflow
 
-Tap the shark: the exact field, the n8n steps to fix it, and a reminder to rotate the key. Mark it fixed, and the health score goes up.
+Tap the shark: the exact field, the n8n steps to fix it, and a reminder to rotate the key.
 
-**1:30 Your workflow, live.** "Give me any workflow." Ctrl+A, Ctrl+C in n8n, paste, map. Best moment: use a judge's or the morning demo workflow if someone offers one. Otherwise paste our own scan workflow and show it flagging *our own* open webhook: "we ran it on ourselves."
+**1:10 Fix it for me (the wow moment).** Open **Automations**: "Other scanners stop at a report. We hand you the fixed workflow." Show the list of fixes, press **See it on the map**, and health goes **27 → 74**. "And it tells you the 2 things that still need a human." Press **Copy fixed workflow** and paste it into n8n, so they see the sticky note listing every change.
 
-**2:00 n8n as the engine.** Switch to the n8n editor. "This workflow takes a GitHub repo, pulls the files, and an AI Agent explains the stack in plain words." Run the scan from the app, and the 3D map plus the agent's summary appear.
+**1:40 Your workflow, live.** "Give me any workflow." Ctrl+A, Ctrl+C in n8n, paste, map. Best moment: use a judge's or the morning demo workflow if someone offers one. Otherwise paste our own scan workflow and show it flagging *our own* open webhook: "we ran it on ourselves."
+
+**2:00 n8n as the engine.** Back in **Automations**: "Everything you just saw is n8n. Six workflows, one click each to copy." Switch to the n8n editor. "This workflow takes a GitHub repo, pulls the files, and an AI Agent explains the stack in plain words." Run the scan from the app, and the 3D map plus the agent's summary appear.
 
 **2:15 MCP: it's in your AI tool too.** In Claude or Cursor: "Audit this n8n workflow" (paste one), then the health score and fixes come back from our n8n MCP server. "Your AI assistant can check its own work before it ships."
 
@@ -144,7 +149,7 @@ Then the GitHub commit page: the lint Action's notes on the exact lines.
 
 ## Why it scores well
 
-- **Idea / uniqueness:** existing tools list a project's services for security teams. None of them maps an *n8n workflow* or teaches a beginner in plain words, and none shows it in 3D.
+- **Idea / uniqueness:** n8n scanners exist (n8n audit, FlowGuard, FlowSentry, RiskVoid, audit8n), but they all stop at a report. Stack Map **returns the fixed workflow**, explains it to beginners as a map, covers the code too, and runs inside n8n and your AI tool (MCP).
 - **Implementation / does it work:** a real n8n MCP server (MCP Server Trigger + HTTP Request Tool + Code Tools), real parsing of any pasted workflow JSON, real repo scans through n8n (HTTP Request, Code, AI Agent, Respond to Webhook), a real push webhook with an email alert, and a real audit through the n8n API. No fake data outside the clearly labeled sample.
 - **Presentation / clarity:** one health score, one picture, one creature per problem, and steps written for n8n users.
 

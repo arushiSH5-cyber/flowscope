@@ -3,15 +3,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#081524">
+<meta name="theme-color" content="#fffaf0">
 <title>Stack Map</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 <style>
 :root{
- --bg:#081524;--bg2:#0b1b2e;--panel:#10233a;--panel2:#152c48;--line:#1f3a5a;--line2:#2a4b70;
- --ink:#eef3ff;--soft:#a3b5cf;--mute:#7088a6;
- --pink:#f5a3bf;--teal:#7bd9ce;--gold:#f0ca7e;--lav:#9fa7e5;--bad:#ff8d8d;--good:#8fd99f;--btnInk:#17142b;
+ --bg:#f6f0e2;--bg2:#fffaf0;--panel:#ffffff;--panel2:#f4eee1;--line:#e8dcc4;--line2:#d9c9a8;
+ --ink:#12304a;--soft:#4a6479;--mute:#76889a;
+ --pink:#e8513a;--teal:#0b8f8a;--gold:#c98a00;--lav:#5b6fd0;--bad:#d93d42;--good:#2a8f52;--btnInk:#ffffff;
+ --sky:#9fdcf7;--sea:#1ea5bf;--sand:#f1dca8;
  --font:"Nunito",ui-rounded,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
 }
@@ -21,9 +22,9 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 button:disabled{opacity:.5;cursor:default}
 code,.mono{font-family:var(--mono);font-size:.9em}
 svg.i{width:18px;height:18px;flex:none}
-.btn{text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 16px;border-radius:14px;font-weight:800;font-size:14.5px;background:var(--pink);color:var(--btnInk);box-shadow:0 3px 0 #b8728c;white-space:nowrap;transition:transform .12s}
-.btn:active{transform:translateY(2px);box-shadow:0 1px 0 #b8728c}
-.btn.teal{background:var(--teal);box-shadow:0 3px 0 #3a9a90}
+.btn{text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 16px;border-radius:14px;font-weight:800;font-size:14.5px;background:var(--pink);color:var(--btnInk);box-shadow:0 3px 0 #b33a26;white-space:nowrap;transition:transform .12s}
+.btn:active{transform:translateY(2px);box-shadow:0 1px 0 #b33a26}
+.btn.teal{background:var(--teal);box-shadow:0 3px 0 #06605c}
 .btn.ghost{background:var(--panel2);color:var(--ink);box-shadow:none;border:1px solid var(--line2)}
 .btn.ghost:hover{border-color:var(--teal)}
 .btn.sm{padding:7px 12px;font-size:13.5px;border-radius:11px}
@@ -38,12 +39,12 @@ svg.i{width:18px;height:18px;flex:none}
 #top .ttl span{font-size:12.5px;color:var(--soft);display:flex;gap:8px;align-items:center;white-space:nowrap;overflow:hidden}
 #top .acts{margin-left:auto;display:flex;gap:8px}
 #app{display:grid;grid-template-columns:minmax(0,1fr) 380px;height:calc(100vh - 62px);height:calc(100dvh - 62px)}
-#stage{position:relative;overflow:hidden;background:radial-gradient(ellipse at 50% 0%,#14365a 0%,#0a1d33 55%,#06111f 100%)}
+#stage{position:relative;overflow:hidden;background:linear-gradient(180deg,#8fd3f4 0%,#c9eefb 16%,#e9f9fd 21%,#6fd0dc 23%,#38b6cc 48%,#1c97b6 78%,#147fa0 100%)}
 #cv{position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:grab}
 #cv.drag{cursor:grabbing}#cv.hov{cursor:pointer}
 #ov{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:space-between;padding:14px;pointer-events:none;gap:10px}
 #ov>*{pointer-events:auto}
-#glance{align-self:flex-start;display:flex;gap:14px;align-items:center;background:rgba(9,22,40,.78);backdrop-filter:blur(8px);border:1px solid var(--line2);border-radius:18px;padding:12px 16px;max-width:min(620px,100%)}
+#glance{align-self:flex-start;display:flex;gap:14px;align-items:center;background:rgba(255,251,242,.9);backdrop-filter:blur(8px);border:1px solid var(--line2);border-radius:18px;box-shadow:0 8px 24px rgba(10,70,100,.18);padding:12px 16px;max-width:min(620px,100%)}
 #ring{width:58px;height:58px;flex:none;position:relative}
 #ring svg{width:100%;height:100%;transform:rotate(-90deg)}
 #ring b{position:absolute;inset:0;display:grid;place-items:center;font-size:17px;font-weight:900}
@@ -53,13 +54,13 @@ svg.i{width:18px;height:18px;flex:none}
 #bottom{display:flex;flex-direction:column;gap:10px}
 #brow{display:flex;gap:10px;align-items:flex-end;justify-content:space-between}
 #chips{display:flex;gap:6px;flex-wrap:wrap;min-width:0}
-.chip{flex:none;white-space:nowrap;display:inline-flex;align-items:center;gap:6px;padding:6px 11px;border-radius:999px;background:rgba(16,35,58,.85);border:1px solid var(--line2);font-size:12.5px;font-weight:800;color:var(--soft)}
+.chip{flex:none;white-space:nowrap;display:inline-flex;align-items:center;gap:6px;padding:6px 11px;border-radius:999px;background:rgba(255,251,242,.92);border:1px solid var(--line2);font-size:12.5px;font-weight:800;color:var(--soft)}
 .chip i{width:9px;height:9px;border-radius:50%}
 .chip.on{color:var(--ink);border-color:var(--ink)}
 #ctrls{display:flex;gap:6px;flex:none}
-.cbtn{width:38px;height:38px;border-radius:12px;background:rgba(16,35,58,.9);border:1px solid var(--line2);display:grid;place-items:center}
+.cbtn{width:38px;height:38px;border-radius:12px;background:rgba(255,251,242,.92);border:1px solid var(--line2);display:grid;place-items:center}
 .cbtn:hover{border-color:var(--teal)}
-#tl{background:rgba(9,22,40,.82);backdrop-filter:blur(8px);border:1px solid var(--line2);border-radius:16px;padding:10px 14px}
+#tl{background:rgba(255,251,242,.9);box-shadow:0 8px 24px rgba(10,70,100,.18);backdrop-filter:blur(8px);border:1px solid var(--line2);border-radius:16px;padding:10px 14px}
 #tlHead{display:flex;justify-content:space-between;gap:10px;font-size:13px;margin-bottom:8px;align-items:baseline}
 #tlHead b{font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #tlHead span{color:var(--soft);white-space:nowrap}
@@ -69,12 +70,12 @@ svg.i{width:18px;height:18px;flex:none}
 .tick.bad{border-color:var(--bad)}.tick.fix{border-color:var(--good);background:color-mix(in srgb,var(--good) 30%,var(--bg))}
 .tick.on{transform:scale(1.35);background:var(--ink)}
 .tick:hover{transform:scale(1.25)}
-#tip{position:absolute;pointer-events:none;background:#eef3ff;color:#0b1b2e;padding:7px 11px;border-radius:10px;font-size:13px;font-weight:800;max-width:280px;line-height:1.35;opacity:0;transition:opacity .12s;z-index:5;box-shadow:0 8px 24px rgba(0,0,0,.35)}
-#tip small{display:block;font-weight:700;color:#3d5576;font-size:12px}
+#tip{position:absolute;pointer-events:none;background:#12304a;color:#fffaf0;padding:7px 11px;border-radius:10px;font-size:13px;font-weight:800;max-width:280px;line-height:1.35;opacity:0;transition:opacity .12s;z-index:5;box-shadow:0 8px 24px rgba(0,0,0,.35)}
+#tip small{display:block;font-weight:700;color:#bfe3ee;font-size:12px}
 #cap{position:absolute;left:50%;top:5%;transform:translateX(-50%);text-align:center;pointer-events:none;opacity:0;transition:opacity .3s;width:min(640px,90%)}
-#cap .k{font-family:var(--mono);font-size:12.5px;color:var(--teal);letter-spacing:.06em}
-#cap .t{font-size:clamp(24px,4vw,40px);font-weight:900;text-shadow:0 4px 30px rgba(0,0,0,.6);margin:4px 0}
-#cap .s{font-size:15px;color:var(--soft);text-shadow:0 2px 12px rgba(0,0,0,.8)}
+#cap .k{font-family:var(--mono);font-size:12.5px;color:#fff6d6;letter-spacing:.06em}
+#cap .t{font-size:clamp(24px,4vw,40px);font-weight:900;color:#fff;text-shadow:0 2px 18px rgba(8,60,90,.55);margin:4px 0}
+#cap .s{font-size:15px;color:#fff;text-shadow:0 1px 10px rgba(8,60,90,.7)}
 #skipTour{position:absolute;top:14px;right:14px;display:none;z-index:7}
 #stage.touring #ov{opacity:0;pointer-events:none}#stage.touring #ov>*{pointer-events:none}
 #ov{transition:opacity .3s}
@@ -90,7 +91,7 @@ svg.i{width:18px;height:18px;flex:none}
 .row .tx b{font-size:14px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .row .tx span{font-size:12.5px;color:var(--soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .dot{width:9px;height:9px;border-radius:50%;flex:none}
-.sico{width:30px;height:30px;border-radius:10px;display:grid;place-items:center;color:#0b1b2e}
+.sico{width:30px;height:30px;border-radius:10px;display:grid;place-items:center;color:#fff}
 .sico svg{width:17px;height:17px}
 .catlbl{font-size:11.5px;color:var(--mute);font-weight:800;margin:8px 2px 2px;text-transform:uppercase;letter-spacing:.08em}
 .flow{display:flex;align-items:center;gap:8px;font-size:13.5px;padding:7px 2px;border-bottom:1px dashed var(--line)}
@@ -101,7 +102,7 @@ svg.i{width:18px;height:18px;flex:none}
 .foot{color:var(--mute);font-size:12px;line-height:1.45;padding:0 4px 6px}
 
 /* drawer */
-#scrim{position:fixed;inset:0;background:rgba(3,9,18,.5);opacity:0;pointer-events:none;transition:opacity .2s;z-index:60}
+#scrim{position:fixed;inset:0;background:rgba(18,48,74,.32);opacity:0;pointer-events:none;transition:opacity .2s;z-index:60}
 #scrim.on{opacity:1;pointer-events:auto}
 #drawer{position:fixed;top:0;right:0;bottom:0;width:min(560px,100%);background:var(--bg2);border-left:1px solid var(--line);z-index:61;transform:translateX(103%);transition:transform .28s cubic-bezier(.3,1,.4,1),visibility 0s .28s;display:flex;flex-direction:column;visibility:hidden}
 #drawer.on{transform:none;visibility:visible;transition:transform .28s cubic-bezier(.3,1,.4,1)}
@@ -116,7 +117,7 @@ svg.i{width:18px;height:18px;flex:none}
 .sec h4{font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--soft);margin-bottom:8px;font-weight:900}
 .lead{font-size:16px;line-height:1.5}
 .lead mark{background:none;color:var(--pink);font-weight:900}
-.code{background:#06101d;border:1px solid var(--line);border-radius:12px;overflow:hidden;font-family:var(--mono);font-size:12.5px}
+.code{background:#fbf8f1;border:1px solid var(--line);border-radius:12px;overflow:hidden;font-family:var(--mono);font-size:12.5px}
 .code .fh{display:flex;justify-content:space-between;padding:7px 12px;background:var(--panel);border-bottom:1px solid var(--line);color:var(--soft);font-size:12px}
 .code .ln{display:flex;white-space:pre;overflow-x:auto}
 .code .ln i{font-style:normal;color:var(--mute);width:38px;flex:none;text-align:right;padding-right:10px;user-select:none}
@@ -129,7 +130,7 @@ svg.i{width:18px;height:18px;flex:none}
 .note.good{border-color:color-mix(in srgb,var(--good) 45%,transparent);background:color-mix(in srgb,var(--good) 8%,var(--panel))}
 .note.warn{border-color:color-mix(in srgb,var(--gold) 45%,transparent);background:color-mix(in srgb,var(--gold) 7%,var(--panel))}
 .note b{display:block;margin-bottom:2px}
-.rule{font-family:var(--mono);font-size:13px;line-height:1.5;background:#06101d;border:1px solid var(--line);border-radius:12px;padding:11px 13px;margin:8px 0}
+.rule{font-family:var(--mono);font-size:13px;line-height:1.5;background:#fbf8f1;border:1px solid var(--line);border-radius:12px;padding:11px 13px;margin:8px 0}
 .files{display:flex;flex-wrap:wrap;gap:6px}
 .fchip{font-family:var(--mono);font-size:12px;padding:5px 9px;border-radius:9px;background:var(--panel2);border:1px solid var(--line2)}
 .fchip:hover,.fchip.on{border-color:var(--teal)}
@@ -159,12 +160,12 @@ svg.i{width:18px;height:18px;flex:none}
 
 ol.steps{padding-left:22px;display:flex;flex-direction:column;gap:6px;font-size:14.5px;line-height:1.45}
 .tabs{display:flex;gap:6px;flex-wrap:wrap}.tab{padding:8px 12px;border-radius:11px;background:var(--panel2);border:1px solid var(--line2);font-weight:800;font-size:13.5px;color:var(--soft)}.tab.on{color:var(--ink);border-color:var(--pink)}
-.ta{width:100%;background:#06101d;border:1px solid var(--line2);border-radius:12px;color:var(--ink);padding:10px 12px;font-family:var(--mono);font-size:13px;resize:vertical}
+.ta{width:100%;background:#fbf8f1;border:1px solid var(--line2);border-radius:12px;color:var(--ink);padding:10px 12px;font-family:var(--mono);font-size:13px;resize:vertical}
 .lbl2{font-size:12px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:var(--soft);margin-top:4px;display:block}
 #tabBody{display:flex;flex-direction:column;gap:10px}
 @media (max-width:440px){#top .ttl{display:none}#top .acts{margin-left:auto}}
 /* modal */
-#modal{position:fixed;inset:0;z-index:80;display:none;place-items:center;background:rgba(3,9,18,.6);padding:16px}
+#modal{position:fixed;inset:0;z-index:80;display:none;place-items:center;background:rgba(18,48,74,.4);padding:16px}
 #modal.on{display:grid}
 #mBox{background:var(--bg2);border:1px solid var(--line2);border-radius:22px;padding:20px;width:min(560px,100%);max-height:90vh;overflow:auto;display:flex;flex-direction:column;gap:14px}
 #mBox h2{font-size:20px;font-weight:900}
@@ -173,9 +174,9 @@ ol.steps{padding-left:22px;display:flex;flex-direction:column;gap:6px;font-size:
 .mrow{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
 .qbar{display:flex;gap:5px}.qbar i{flex:1;height:6px;border-radius:3px;background:var(--line2)}.qbar i.ok{background:var(--good)}.qbar i.no{background:var(--bad)}.qbar i.cur{background:var(--ink)}
 
-#toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,16px);background:var(--ink);color:var(--bg);padding:11px 18px;border-radius:14px;font-weight:800;font-size:14px;opacity:0;pointer-events:none;transition:.22s;z-index:95;max-width:min(92vw,560px);text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.4)}
+#toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,16px);background:var(--ink);color:var(--bg);padding:11px 18px;border-radius:14px;font-weight:800;font-size:14px;opacity:0;pointer-events:none;transition:.22s;z-index:95;max-width:min(92vw,560px);text-align:center;box-shadow:0 10px 30px rgba(10,60,90,.3)}
 #toast.on{opacity:1;transform:translate(-50%,0)}
-#busy{position:fixed;inset:0;z-index:90;display:none;place-items:center;background:rgba(3,9,18,.7);font-size:17px;font-weight:800}
+#busy{position:fixed;inset:0;z-index:90;display:none;place-items:center;background:rgba(255,250,240,.82);font-size:17px;font-weight:800}
 #busy.on{display:grid}
 
 @media (max-width:980px){
@@ -198,6 +199,26 @@ ol.steps{padding-left:22px;display:flex;flex-direction:column;gap:6px;font-size:
  #ctrls{display:none}
  #tlHead span{display:none}
 }
+/* automations */
+#mBox.wide{width:min(860px,100%)}
+.agrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}
+.acard{border:1px solid var(--line);border-radius:16px;padding:13px;background:var(--panel);display:flex;flex-direction:column;gap:7px}
+.acard.hero{grid-column:1/-1;border-color:color-mix(in srgb,var(--pink) 45%,var(--line));background:linear-gradient(135deg,#fff6ef,#fff)}
+.acard .hd{display:flex;align-items:center;gap:10px}
+.acard .hd b{font-size:15.5px;font-weight:900;flex:1}
+.acard .when{font-size:12px;font-weight:900;color:var(--teal);text-transform:uppercase;letter-spacing:.06em}
+.acard p{font-size:13.5px;line-height:1.45;color:var(--soft)}
+.acard .nodes{display:flex;gap:5px;flex-wrap:wrap}
+.acard .nodes span{font-size:11.5px;font-weight:800;padding:2px 8px;border-radius:999px;background:var(--panel2);border:1px solid var(--line);color:var(--soft)}
+.acard .mrow{justify-content:flex-start;margin-top:auto}
+.aico{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:var(--panel2);color:var(--teal);flex:none}
+.aico svg{width:20px;height:20px}
+.st.on{color:var(--good);background:color-mix(in srgb,var(--good) 15%,transparent)}
+.st.off{color:var(--mute);background:var(--panel2)}
+.fixlist{display:flex;flex-direction:column;gap:5px;font-size:13.5px;line-height:1.45;padding-left:18px}
+.fixlist.need li::marker{color:var(--gold)}.fixlist.did li::marker{color:var(--good)}
+.arow{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media (max-width:560px){.arow{grid-template-columns:1fr}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
@@ -206,8 +227,9 @@ ol.steps{padding-left:22px;display:flex;flex-direction:column;gap:6px;font-size:
  <div class="logo" id="logo"></div>
  <div class="ttl"><b>Stack Map</b><span><span id="pname">bean-there</span><span class="tag demo" id="modeTag">DEMO</span><span class="opt-hide" id="pmeta">Every outside service your app talks to</span></span></div>
  <div class="acts">
-  <button class="btn teal" id="mapBtn" title="Map my project"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><span class="lbl">Map my project</span></button>
-  <button class="btn" id="n8nBtn" title="n8n"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="4.5" cy="12" r="2.2"/><circle cx="11.5" cy="12" r="2.2"/><circle cx="19" cy="6.5" r="2.2"/><circle cx="19" cy="17.5" r="2.2"/><path d="M6.7 12h2.6M13.5 11l3.6-3.4M13.5 13l3.6 3.4"/></svg><span class="lbl">n8n</span></button>
+  <button class="btn" id="autoBtn" title="Automations"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 21l1-12h2l1 12M9 9h6M10 9V6h4v3M12 3v1M5 6l2 1M19 6l-2 1M4 21h16"/></svg><span class="lbl">Automations</span></button>
+  <button class="btn ghost" id="mapBtn" title="Map my project"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><span class="lbl">Map my project</span></button>
+  <button class="btn teal" id="n8nBtn" title="n8n"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="4.5" cy="12" r="2.2"/><circle cx="11.5" cy="12" r="2.2"/><circle cx="19" cy="6.5" r="2.2"/><circle cx="19" cy="17.5" r="2.2"/><path d="M6.7 12h2.6M13.5 11l3.6-3.4M13.5 13l3.6 3.4"/></svg><span class="lbl">n8n</span></button>
   <button class="btn ghost" id="tourBtn" title="30-second tour"><svg class="i" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l10.5-6.5z"/></svg><span class="lbl">Tour</span></button>
   <button class="btn ghost" id="quizBtn" title="Quiz"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .9-1 1.7M12 17h.01"/></svg><span class="lbl">Quiz</span></button>
   <button class="btn ghost" id="shareBtn" title="Share card"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 8l5-5 5 5M5 14v5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5"/></svg><span class="lbl">Share</span></button>
@@ -231,6 +253,7 @@ ol.steps{padding-left:22px;display:flex;flex-direction:column;gap:6px;font-size:
   </div>
  </section>
  <aside id="side">
+  <div class="card" id="watchCard"><h3><span>Keeping watch</span><span id="wc"></span></h3><div class="rows" id="watch"></div></div>
   <div class="card"><h3><span>Right now</span><span id="pc"></span></h3><div class="rows" id="probs"></div></div>
   <div class="card"><h3><span>Your stack</span><span id="sc"></span></h3><div id="svcs"></div></div>
   <div class="card"><h3><span>What leaves your app</span></h3><div id="flows"></div></div>
@@ -254,27 +277,27 @@ const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 /* ---------- art ---------- */
 const OUT='#3f2d4f';
-const REGEN=(mood='happy')=>`<svg viewBox="0 0 140 120" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><g stroke="${OUT}" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"><path d="M34 44C20 30 8 34 10 42c2 7 14 9 26 8z" fill="#f5a3bf"/><path d="M30 60C12 56 4 64 8 70c5 6 16 2 25-4z" fill="#f5a3bf"/><path d="M34 76C20 82 18 94 25 96c7 2 13-8 16-16z" fill="#f5a3bf"/><path d="M106 44c14-14 26-10 24-2-2 7-14 9-26 8z" fill="#f5a3bf"/><path d="M110 60c18-4 26 4 22 10-5 6-16 2-25-4z" fill="#f5a3bf"/><path d="M106 76c14 6 16 18 9 20-7 2-13-8-16-16z" fill="#f5a3bf"/><ellipse cx="70" cy="64" rx="42" ry="36" fill="#fff1f6"/></g><ellipse cx="44" cy="74" rx="8" ry="4.5" fill="#f5a3bf" opacity=".55"/><ellipse cx="96" cy="74" rx="8" ry="4.5" fill="#f5a3bf" opacity=".55"/><circle cx="54" cy="62" r="5.4" fill="#2b1f3a"/><circle cx="86" cy="62" r="5.4" fill="#2b1f3a"/><circle cx="55.8" cy="60.2" r="1.8" fill="#fff"/><circle cx="87.8" cy="60.2" r="1.8" fill="#fff"/>${mood==='worried'?`<path d="M62 80q8-5 16 0" fill="none" stroke="${OUT}" stroke-width="2.6" stroke-linecap="round"/>`:`<path d="M61 76q9 8 18 0" fill="none" stroke="${OUT}" stroke-width="2.6" stroke-linecap="round"/>`}</svg>`;
+const LIGHTHOUSE=(mood='happy')=>`<svg viewBox="0 0 140 120" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><g stroke="#12304a" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"><path d="M26 113c10-12 30-16 44-16s34 4 44 16z" fill="#f1dca8"/><path d="M60 40h20l4 68H56z" fill="#fffaf0"/><path d="M58.8 60h22.4l.8 14H58z" fill="#e8513a"/><path d="M57.3 86h25.4l.8 14H56.5z" fill="#e8513a"/><rect x="66" y="94" width="8" height="14" rx="3" fill="#12304a"/><rect x="61" y="20" width="18" height="14" rx="2" fill="${mood==='worried'?'#ff8a70':'#ffd54a'}"/><path d="M57 20l13-12 13 12z" fill="#e8513a"/><rect x="55" y="34" width="30" height="6" rx="2" fill="#12304a"/></g><circle cx="70" cy="27" r="3.2" fill="#fff"/></svg>`;
 const SHARK=`<svg viewBox="0 0 64 48" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><g stroke="#24324a" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M27 15l5-9 5 10z" fill="#8daac4"/><path d="M6 25c6-8 18-11 30-10 9 1 15 4 19 8l5-4-1 7 2 7-6-3c-4 4-11 7-19 7C24 37 12 33 6 25z" fill="#8daac4"/></g><path d="M16 30c9 4 20 4 29 1-6 5-21 6-29-1z" fill="#d7e3ef"/><circle cx="44" cy="23" r="2.2" fill="#24324a"/></svg>`;
 const JELLY=`<svg viewBox="0 0 48 52" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><g stroke="#3a2a55" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 24C8 12 15 6 24 6s16 6 16 18c-4 2-8-1-10 1-3 2-9 2-12 0-2-2-6 1-10-1z" fill="#d6c1ff"/><path d="M14 27c-1 6 2 9 0 15M20 28c0 7 3 10 1 17M28 28c0 7-3 10-1 17M34 27c1 6-2 9 0 15" fill="none" opacity=".8"/></g><circle cx="19" cy="18" r="1.8" fill="#3a2a55"/><circle cx="29" cy="18" r="1.8" fill="#3a2a55"/></svg>`;
 const URCHIN=`<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><g stroke="#3d2a52" stroke-width="2.2" stroke-linecap="round">${Array.from({length:14},(_,i)=>{const a=i/14*Math.PI*2;return`<path d="M${(24+Math.cos(a)*10).toFixed(1)} ${(26+Math.sin(a)*10).toFixed(1)}L${(24+Math.cos(a)*19).toFixed(1)} ${(26+Math.sin(a)*19).toFixed(1)}"/>`}).join('')}<circle cx="24" cy="26" r="11" fill="#e8c27a"/></g><circle cx="20" cy="25" r="1.7" fill="#3d2a52"/><circle cx="28" cy="25" r="1.7" fill="#3d2a52"/></svg>`;
 const GHOST=`<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><path d="M10 40V22a14 14 0 0 1 28 0v18l-5-4-4 4-5-4-5 4-4-4z" fill="#c9d4e3" stroke="#4a5d78" stroke-width="2" stroke-linejoin="round"/><circle cx="19" cy="22" r="2" fill="#4a5d78"/><circle cx="29" cy="22" r="2" fill="#4a5d78"/></svg>`;
 const CRIT={shark:SHARK,jelly:JELLY,urchin:URCHIN,ghost:GHOST};
 const img=s=>{const i=new Image();i.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(s);return i};
-const IMG={shark:img(SHARK),jelly:img(JELLY),urchin:img(URCHIN),ghost:img(GHOST),regen:img(REGEN()),regenW:img(REGEN('worried'))};
-$('#logo').innerHTML=REGEN();
+const IMG={shark:img(SHARK),jelly:img(JELLY),urchin:img(URCHIN),ghost:img(GHOST),regen:img(LIGHTHOUSE()),regenW:img(LIGHTHOUSE('worried'))};
+$('#logo').innerHTML=LIGHTHOUSE();
 
 const CATS={
- host:{n:'Hosting',ring:0,col:'#9fa7e5',ic:'M4 4h16v6H4zM4 14h16v6H4zM8 7h.01M8 17h.01'},
- db:{n:'Database',ring:0,col:'#7bd9ce',ic:'M4 6c0-1.7 3.6-3 8-3s8 1.3 8 3-3.6 3-8 3-8-1.3-8-3zM4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3'},
- auth:{n:'Login',ring:1,col:'#f0ca7e',ic:'M6 11h12v10H6zM8 11V7a4 4 0 0 1 8 0v4M12 15v2'},
- pay:{n:'Payments',ring:1,col:'#8fd99f',ic:'M3 6h18v12H3zM3 10h18M7 15h4'},
- ai:{n:'AI',ring:1,col:'#f5a3bf',ic:'M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8zM18 15l.8 2.2L21 18l-2.2.8L18 21l-.8-2.2L15 18l2.2-.8z'},
- msg:{n:'Email & texts',ring:2,col:'#8ec5ff',ic:'M3 6h18v12H3zM3 7l9 6 9-6'},
- analytics:{n:'Analytics',ring:2,col:'#c7a6ff',ic:'M5 20V11M10 20V5M15 20v-7M20 20V9'},
- monitor:{n:'Error tracking',ring:2,col:'#ffb38a',ic:'M3 12h4l2-5 4 10 2-5h6'},
- storage:{n:'Files & images',ring:2,col:'#9be3b8',ic:'M4 5h16v14H4zM4 16l5-5 4 4 3-3 4 4M15 9h.01'},
- other:{n:'Other APIs',ring:2,col:'#b8c4d6',ic:'M9 3v5M15 3v5M6 8h12v3a6 6 0 0 1-12 0zM12 17v4'},
+ host:{n:'Hosting',ring:0,col:'#5b6fd0',ic:'M4 4h16v6H4zM4 14h16v6H4zM8 7h.01M8 17h.01'},
+ db:{n:'Database',ring:0,col:'#0b9e98',ic:'M4 6c0-1.7 3.6-3 8-3s8 1.3 8 3-3.6 3-8 3-8-1.3-8-3zM4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3'},
+ auth:{n:'Login',ring:1,col:'#e3a008',ic:'M6 11h12v10H6zM8 11V7a4 4 0 0 1 8 0v4M12 15v2'},
+ pay:{n:'Payments',ring:1,col:'#2fa35e',ic:'M3 6h18v12H3zM3 10h18M7 15h4'},
+ ai:{n:'AI',ring:1,col:'#ef5f7a',ic:'M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8zM18 15l.8 2.2L21 18l-2.2.8L18 21l-.8-2.2L15 18l2.2-.8z'},
+ msg:{n:'Email & texts',ring:2,col:'#2e86d6',ic:'M3 6h18v12H3zM3 7l9 6 9-6'},
+ analytics:{n:'Analytics',ring:2,col:'#9161dd',ic:'M5 20V11M10 20V5M15 20v-7M20 20V9'},
+ monitor:{n:'Error tracking',ring:2,col:'#f07f2e',ic:'M3 12h4l2-5 4 10 2-5h6'},
+ storage:{n:'Files & images',ring:2,col:'#3fb36f',ic:'M4 5h16v14H4zM4 16l5-5 4 4 3-3 4 4M15 9h.01'},
+ other:{n:'Other APIs',ring:2,col:'#7d8fa3',ic:'M9 3v5M15 3v5M6 8h12v3a6 6 0 0 1-12 0zM12 17v4'},
 };
 const catSvg=(c,size=17)=>`<svg viewBox="0 0 24 24" width="${size}" height="${size}" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="${CATS[c].ic}"/></svg>`;
 const sIco=s=>`<span class="sico" style="background:${CATS[s.cat].col}">${catSvg(s.cat)}</span>`;
@@ -376,6 +399,7 @@ const DEMO={
 /* ---------- state ---------- */
 const S={mode:'demo',name:'',services:[],problems:[],saves:[],view:0,filter:null,rules:[],handle:null,files:null};
 function loadDemo(){
+ S.wf=null;
  S.mode='demo';S.unit='file';S.via=null;S.summary=null;S.name=DEMO.name;S.handle=null;
  S.services=Object.entries(DEMO.services).map(([id,o])=>({...CAT_BY_ID[id],ev:o.ev,from:o.from,to:Infinity,unused:!!o.unused,anim:0}));
  S.saves=DEMO.saves.map((s,i)=>({...s,kind:'ai',adds:S.services.filter(x=>x.from===i).map(x=>x.id)}));
@@ -419,14 +443,15 @@ function frame(dt){
  for(const s of S.services){const t=visSvc(s)?1:0;s.anim=lerp(s.anim,t,1-Math.exp(-dt*4));if(Math.abs(s.anim-t)<.002)s.anim=t}
  ctx.setTransform(DPR,0,0,DPR,0,0);ctx.clearRect(0,0,W,H);hits=[];
  // light rays
- if(!RM){ctx.save();ctx.globalCompositeOperation='lighter';for(let i=0;i<5;i++){const x=W*(.15+i*.18)+Math.sin(time*.2+i)*30;const g=ctx.createLinearGradient(x,0,x+80,H);g.addColorStop(0,'rgba(140,200,255,.06)');g.addColorStop(1,'rgba(140,200,255,0)');ctx.fillStyle=g;ctx.beginPath();ctx.moveTo(x-30,0);ctx.lineTo(x+40,0);ctx.lineTo(x+180,H);ctx.lineTo(x+20,H);ctx.fill()}ctx.restore()}
+ {const sx=W*.86,sy=Math.max(40,H*.07);const g=ctx.createRadialGradient(sx,sy,0,sx,sy,170);g.addColorStop(0,'rgba(255,248,214,.95)');g.addColorStop(.18,'rgba(255,236,170,.7)');g.addColorStop(1,'rgba(255,236,170,0)');ctx.fillStyle=g;ctx.beginPath();ctx.arc(sx,sy,170,0,7);ctx.fill();ctx.fillStyle='#fff6cf';ctx.beginPath();ctx.arc(sx,sy,26,0,7);ctx.fill();
+  if(!RM){ctx.fillStyle='rgba(255,255,255,.75)';for(let i=0;i<3;i++){const cx=((time*8+i*W*.4)%(W+240))-120,cy=H*.05+i*22;for(const[dx,dy,r]of[[0,0,16],[18,-8,20],[38,0,15],[20,6,16]]){ctx.beginPath();ctx.arc(cx+dx,cy+dy,r,0,7);ctx.fill()}}}}
  // floor rings
  const FY=-90;ctx.lineWidth=1;
- RINGS.forEach((R,r)=>{ctx.beginPath();for(let i=0;i<=72;i++){const a=i/72*Math.PI*2,p=P(Math.cos(a)*R,FY,Math.sin(a)*R);i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y)}ctx.strokeStyle=`rgba(123,217,206,${.10-r*.02})`;ctx.setLineDash([4,6]);ctx.stroke();ctx.setLineDash([])});
+ RINGS.forEach((R,r)=>{ctx.beginPath();for(let i=0;i<=72;i++){const a=i/72*Math.PI*2,p=P(Math.cos(a)*R,FY,Math.sin(a)*R);i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y)}ctx.strokeStyle=`rgba(255,255,255,${.5-r*.12})`;ctx.setLineDash([4,6]);ctx.stroke();ctx.setLineDash([])});
  // seafloor glow
- {const p=P(0,FY,0);const g=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,640*p.s);g.addColorStop(0,'rgba(60,140,170,.22)');g.addColorStop(1,'rgba(60,140,170,0)');ctx.fillStyle=g;ctx.beginPath();ctx.ellipse(p.x,p.y,640*p.s,640*p.s*Math.sin(cam.pitch),0,0,Math.PI*2);ctx.fill()}
+ {const p=P(0,FY,0);const g=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,640*p.s);g.addColorStop(0,'rgba(200,250,245,.55)');g.addColorStop(1,'rgba(200,250,245,0)');ctx.fillStyle=g;ctx.beginPath();ctx.ellipse(p.x,p.y,640*p.s,640*p.s*Math.sin(cam.pitch),0,0,Math.PI*2);ctx.fill()}
  // caustic specks
- if(!RM){ctx.fillStyle='rgba(180,230,255,.08)';for(let i=0;i<40;i++){const a=i*2.39996,R=60+((i*53)%560),p=P(Math.cos(a+time*.03)*R,FY,Math.sin(a+time*.03)*R);ctx.beginPath();ctx.arc(p.x,p.y,(1.5+Math.sin(time*2+i)*1)*p.s*3,0,7);ctx.fill()}}
+ if(!RM){ctx.strokeStyle='rgba(255,255,255,.7)';ctx.lineCap='round';for(let i=0;i<46;i++){const a=i*2.39996,R=60+((i*53)%600),p=P(Math.cos(a+time*.03)*R,FY,Math.sin(a+time*.03)*R),tw=Math.max(0,Math.sin(time*1.6+i*1.3));if(tw<.15)continue;ctx.globalAlpha=tw;ctx.lineWidth=Math.max(1,2*p.s);ctx.beginPath();ctx.moveTo(p.x-7*p.s*2,p.y);ctx.lineTo(p.x+7*p.s*2,p.y);ctx.stroke()}ctx.globalAlpha=1}
 
  const vis=S.services.filter(s=>s.anim>.01);
  // currents
@@ -448,17 +473,18 @@ function frame(dt){
  labels(vis);
  // leaving sharks
  leaving=leaving.filter(l=>time-l.t<1.6);for(const l of leaving){const u=(time-l.t)/1.6;ctx.globalAlpha=1-u;const x=l.x+u*u*W*.6,y=l.y-u*60;ctx.drawImage(IMG.shark,x-28,y-21,56,42);ctx.globalAlpha=1}
- bursts=bursts.filter(b=>time-b.t<1.2);for(const b of bursts){const u=(time-b.t)/1.2;for(let i=0;i<22;i++){const a=i/22*Math.PI*2;ctx.fillStyle=i%2?'#7bd9ce':'#f5a3bf';ctx.globalAlpha=1-u;ctx.beginPath();ctx.arc(b.x+Math.cos(a)*u*120,b.y+Math.sin(a)*u*120-u*20,4*(1-u)+1,0,7);ctx.fill()}ctx.globalAlpha=1}
+ bursts=bursts.filter(b=>time-b.t<1.2);for(const b of bursts){const u=(time-b.t)/1.2;for(let i=0;i<22;i++){const a=i/22*Math.PI*2;ctx.fillStyle=i%2?'#0b8f8a':'#e8513a';ctx.globalAlpha=1-u;ctx.beginPath();ctx.arc(b.x+Math.cos(a)*u*120,b.y+Math.sin(a)*u*120-u*20,4*(1-u)+1,0,7);ctx.fill()}ctx.globalAlpha=1}
 }
 function rockBody(cx,cy,r,top,side){ctx.beginPath();ctx.moveTo(cx-r,cy);ctx.bezierCurveTo(cx-r*.95,cy+r*.55,cx-r*.35,cy+r*.95,cx,cy+r*1.02);ctx.bezierCurveTo(cx+r*.35,cy+r*.95,cx+r*.95,cy+r*.55,cx+r,cy);ctx.closePath();const g=ctx.createLinearGradient(cx-r,cy,cx+r,cy+r);g.addColorStop(0,side[0]);g.addColorStop(1,side[1]);ctx.fillStyle=g;ctx.fill();ctx.beginPath();ctx.ellipse(cx,cy,r,r*.36,0,0,Math.PI*2);const g2=ctx.createLinearGradient(cx,cy-r*.36,cx,cy+r*.36);g2.addColorStop(0,top[0]);g2.addColorStop(1,top[1]);ctx.fillStyle=g2;ctx.fill()}
-function shadow(x,z,r){const p=P(x,-90,z);ctx.fillStyle='rgba(0,8,20,.38)';ctx.beginPath();ctx.ellipse(p.x,p.y,r*p.s,r*p.s*Math.max(.18,Math.sin(cam.pitch)),0,0,Math.PI*2);ctx.fill()}
+function shadow(x,z,r){const p=P(x,-90,z);ctx.fillStyle='rgba(8,80,110,.22)';ctx.beginPath();ctx.ellipse(p.x,p.y,r*p.s,r*p.s*Math.max(.18,Math.sin(cam.pitch)),0,0,Math.PI*2);ctx.fill()}
 function drawCenter(){
  const p=P(0,40,0),r=96*p.s,ps=openProbs(),worried=ps.some(x=>x.kind==='shark');
  shadow(0,0,110);
- rockBody(p.x,p.y,r,['#3b6b8f','#244a6b'],['#1a3557','#0a1828']);
- ctx.strokeStyle='rgba(245,163,191,.55)';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(p.x,p.y,r,r*.36,0,0,Math.PI*2);ctx.stroke();
- for(let i=0;i<6;i++){const a=i/6*Math.PI*2+.4,cx=p.x+Math.cos(a)*r*.68,cy=p.y+Math.sin(a)*r*.22;ctx.strokeStyle='#f5a3bf';ctx.lineCap='round';ctx.lineWidth=Math.max(2,5*p.s);const sw=RM?0:Math.sin(time*1.5+i)*3*p.s;ctx.beginPath();ctx.moveTo(cx,cy);ctx.quadraticCurveTo(cx+sw,cy-14*p.s,cx+sw*1.6,cy-26*p.s);ctx.stroke();ctx.fillStyle='#ffd0e0';ctx.beginPath();ctx.arc(cx+sw*1.6,cy-26*p.s,4*p.s,0,7);ctx.fill()}
- const u=r*1.05,bob=RM?0:Math.sin(time*2)*3*p.s;ctx.drawImage(worried?IMG.regenW:IMG.regen,p.x-u/2,p.y-u*.78+bob,u,u*.857);
+ ctx.strokeStyle='rgba(255,255,255,.85)';ctx.lineWidth=3;ctx.beginPath();ctx.ellipse(p.x,p.y+r*.1,r*1.12,r*.42,0,0,Math.PI*2);ctx.stroke();
+ rockBody(p.x,p.y,r,['#f7e6b8','#ead08f'],['#d9b77c','#a77f45']);
+ ctx.strokeStyle='rgba(232,81,58,.5)';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(p.x,p.y,r,r*.36,0,0,Math.PI*2);ctx.stroke();
+ {const lx=p.x,ly=p.y-r*1.2*.62,a=RM?.6:time*.9,L=Math.max(W,H)*.55,c=worried?'232,81,58':'255,226,120';const dx=Math.cos(a),dy=Math.sin(a)*.32,nx=-dy,ny=dx,hw=.16;const g=ctx.createRadialGradient(lx,ly,0,lx,ly,L);g.addColorStop(0,`rgba(${c},.55)`);g.addColorStop(1,`rgba(${c},0)`);ctx.fillStyle=g;ctx.beginPath();ctx.moveTo(lx,ly);ctx.lineTo(lx+(dx+nx*hw)*L,ly+(dy+ny*hw*.32)*L);ctx.lineTo(lx+(dx-nx*hw)*L,ly+(dy-ny*hw*.32)*L);ctx.closePath();ctx.fill()}
+ const u=r*1.2;ctx.drawImage(worried?IMG.regenW:IMG.regen,p.x-u/2,p.y-u*.8,u,u*.857);
  hits.push({type:'center',x:p.x,y:p.y-r*.2,r:r*.9,z:p.z});
  const ap=ps.filter(x=>!x.svc);ap.forEach((pr,i)=>{const sz=34*p.s*1.4;ctx.drawImage(IMG[pr.kind],p.x+r*.6+i*sz,p.y-r*.9,sz,sz);hits.push({type:'prob',prob:pr,x:p.x+r*.6+i*sz+sz/2,y:p.y-r*.9+sz/2,r:sz*.6,z:p.z-5})});
 }
@@ -467,26 +493,27 @@ function drawIsland(s,p){
  ctx.save();ctx.globalAlpha=(dim?.22:s.unused?.5:1)*Math.min(1,a*1.4);
  shadow(s.x,s.z,66*e);
  const yy=p.y+(1-e)*60*p.s;
- rockBody(p.x,yy,r,[mix(col,'#1e3a58',.55),mix(col,'#0f2238',.75)],['#18304e','#081626']);
+ ctx.strokeStyle='rgba(255,255,255,.8)';ctx.lineWidth=2.4;ctx.beginPath();ctx.ellipse(p.x,yy+r*.08,r*1.14,r*.42,0,0,Math.PI*2);ctx.stroke();
+ rockBody(p.x,yy,r,[mix(col,'#f4e2b0',.72),'#e8cd8c'],['#d8b679','#a37b43']);
  ctx.strokeStyle=col;ctx.globalAlpha*=hl?1:.55;ctx.lineWidth=hl?3:1.6;ctx.beginPath();ctx.ellipse(p.x,yy,r,r*.36,0,0,Math.PI*2);ctx.stroke();ctx.globalAlpha=(dim?.22:s.unused?.5:1)*Math.min(1,a*1.4);
  // token
  const tr=r*.52,ty=yy-r*.62-(RM?0:Math.sin(time*1.6+s.ph)*3*p.s);
  if(!dim&&!s.unused){ctx.save();ctx.globalCompositeOperation='lighter';const g=ctx.createRadialGradient(p.x,ty,0,p.x,ty,tr*2.2);g.addColorStop(0,col+'66');g.addColorStop(1,col+'00');ctx.fillStyle=g;ctx.beginPath();ctx.arc(p.x,ty,tr*2.2,0,7);ctx.fill();ctx.restore()}
  ctx.fillStyle=mix(col,'#000',.45);ctx.beginPath();ctx.ellipse(p.x,ty+tr*.14,tr,tr,0,0,Math.PI*2);ctx.fill();
  const g3=ctx.createRadialGradient(p.x-tr*.35,ty-tr*.4,tr*.1,p.x,ty,tr);g3.addColorStop(0,mix(col,'#fff',.45));g3.addColorStop(1,col);ctx.fillStyle=g3;ctx.beginPath();ctx.arc(p.x,ty,tr,0,7);ctx.fill();
- ctx.save();ctx.translate(p.x-tr*.62,ty-tr*.62);ctx.scale(tr*1.24/24,tr*1.24/24);ctx.strokeStyle='#0b1b2e';ctx.lineWidth=2.3;ctx.lineCap='round';ctx.lineJoin='round';ctx.stroke(PATHS[s.cat]);ctx.restore();
+ ctx.save();ctx.translate(p.x-tr*.62,ty-tr*.62);ctx.scale(tr*1.24/24,tr*1.24/24);ctx.strokeStyle='#ffffff';ctx.lineWidth=2.3;ctx.lineCap='round';ctx.lineJoin='round';ctx.stroke(PATHS[s.cat]);ctx.restore();
  ctx.restore();
  s._p={x:p.x,y:yy,r,s:p.s,ty,tr};
  hits.push({type:'svc',svc:s,x:p.x,y:yy-r*.3,r:r*1.05,z:p.z});
  // problems on island
  const ps=openProbs().filter(x=>x.svc===s.id&&x.kind!=='shark');
  ps.forEach((pr,i)=>{const sz=Math.max(22,40*p.s*1.3),bx=p.x+r*.72+i*sz*.8,by=ty-tr*1.1+(RM?0:Math.sin(time*2.2+i)*3);ctx.save();ctx.globalAlpha=dim?.3:1;
-  if(!dim){ctx.strokeStyle=pr.kind==='ghost'?'rgba(200,212,227,.6)':'rgba(255,141,141,.8)';ctx.lineWidth=2;ctx.beginPath();ctx.arc(bx+sz/2,by+sz/2,sz*.62+(RM?0:Math.sin(time*4)*2),0,7);ctx.stroke()}
+  if(!dim){ctx.strokeStyle=pr.kind==='ghost'?'rgba(255,255,255,.8)':'rgba(217,61,66,.85)';ctx.lineWidth=2;ctx.beginPath();ctx.arc(bx+sz/2,by+sz/2,sz*.62+(RM?0:Math.sin(time*4)*2),0,7);ctx.stroke()}
   ctx.drawImage(IMG[pr.kind],bx,by,sz,sz);ctx.restore();hits.push({type:'prob',prob:pr,x:bx+sz/2,y:by+sz/2,r:sz*.65,z:p.z-10})});
 }
 function drawChest(s,p){
  const st=keyStatus(s),u=clamp(11*p.s*1.3,7,13),dim=dimmed(s);ctx.save();ctx.globalAlpha=dim?.2:1;
- const col=st==='leak'?'#ff8d8d':st==='miss'?'#f0ca7e':'#7bd9ce';
+ const col=st==='leak'?'#d93d42':st==='miss'?'#e3a008':'#0b8f8a';
  if(st==='leak'&&!dim){ctx.save();ctx.globalCompositeOperation='lighter';const g=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,u*3);g.addColorStop(0,'rgba(255,100,100,.5)');g.addColorStop(1,'rgba(255,100,100,0)');ctx.fillStyle=g;ctx.beginPath();ctx.arc(p.x,p.y,u*3,0,7);ctx.fill();ctx.restore()}
  ctx.fillStyle='#5a3d22';ctx.strokeStyle=col;ctx.lineWidth=2;rr(p.x-u,p.y-u*.35,u*2,u*1.15,3);ctx.fill();ctx.stroke();
  ctx.save();ctx.translate(p.x-u,p.y-u*.35);if(st==='leak')ctx.rotate(-.7);ctx.fillStyle='#7a5530';rr(0,-u*.6,u*2,u*.6,3);ctx.fill();ctx.stroke();ctx.restore();
@@ -497,15 +524,15 @@ function drawChest(s,p){
 function labels(vis){
  const placed=[];ctx.textAlign='center';ctx.textBaseline='middle';
  const items=vis.filter(s=>s._p&&s.anim>.6).map(s=>({s,x:s._p.x,y:s._p.y+s._p.r*1.12+12,z:P(s.x,s.y,s.z).z})).sort((a,b)=>a.z-b.z);
- const c=P(0,40,0);items.unshift({center:true,x:c.x,y:c.y+96*c.s*1.1+14,z:c.z});
+ const c=P(0,40,0);items.unshift({center:true,x:c.x,y:c.y+96*c.s*1.1+22,z:c.z});
  for(const it of items){
   const s=it.s,name=it.center?S.name:s.name,sub=it.center?'your app':`${CATS[s.cat].n} · ${UNIT(s.ev.filter(e=>e.p!=='package.json').length||0)}`;
   const sm=W<600;ctx.font=`800 ${sm?11.5:13}px Nunito, system-ui`;const w1=ctx.measureText(name).width;ctx.font='700 11px Nunito, system-ui';const w2=sm?0:ctx.measureText(sub).width;const w=Math.max(w1,w2)+(sm?14:20),h=sm?22:36;
   let y=it.y,ok=false;for(let t=0;t<4;t++){const box={x:it.x-w/2,y:y-h/2,w,h};if(!placed.some(b=>b.x<box.x+box.w&&box.x<b.x+b.w&&b.y<box.y+box.h&&box.y<b.y+b.h)){ok=true;break}y+=h+4}
   if(!ok||y+h/2>H-ovBottom()||y-h/2<ovTop()||it.x-w/2<4||it.x+w/2>W-4)continue;
   const dim=s&&dimmed(s);ctx.globalAlpha=dim?.25:(s&&s.unused?.6:1);
-  ctx.fillStyle='rgba(8,21,36,.86)';ctx.strokeStyle=it.center?'#f5a3bf':CATS[s.cat].col;ctx.lineWidth=1.3;rr(it.x-w/2,y-h/2,w,h,sm?8:10);ctx.fill();ctx.stroke();
-  ctx.fillStyle='#eef3ff';ctx.font=`800 ${sm?11.5:13}px Nunito, system-ui`;ctx.fillText(name,it.x,sm?y:y-7);if(!sm){ctx.fillStyle='#a3b5cf';ctx.font='700 11px Nunito, system-ui';ctx.fillText(sub,it.x,y+8)}ctx.globalAlpha=1;
+  ctx.fillStyle='rgba(255,251,242,.95)';ctx.strokeStyle=it.center?'#e8513a':CATS[s.cat].col;ctx.lineWidth=1.3;rr(it.x-w/2,y-h/2,w,h,sm?8:10);ctx.fill();ctx.stroke();
+  ctx.fillStyle='#12304a';ctx.font=`800 ${sm?11.5:13}px Nunito, system-ui`;ctx.fillText(name,it.x,sm?y:y-7);if(!sm){ctx.fillStyle='#4a6479';ctx.font='700 11px Nunito, system-ui';ctx.fillText(sub,it.x,y+8)}ctx.globalAlpha=1;
   placed.push({x:it.x-w/2,y:y-h/2,w,h});
  }
 }
@@ -542,7 +569,7 @@ function renderAll(){
  $('#pname').textContent=S.name;$('#modeTag').style.display=(S.mode==='demo'||S.mode==='n8n-demo')?'':'none';$('#modeTag').textContent=S.mode==='n8n-demo'?'SAMPLE':'DEMO';$('#pmeta').textContent=S.unit==='node'?'Every app this n8n workflow touches':S.via==='n8n'?'Scanned by your n8n workflow':'Every outside service your app talks to';
  $('#foot').textContent=S.unit==='node'?'Mapped from the workflow JSON on this device. Nothing was uploaded. Keys inside credentials are never in the JSON, so only keys typed into nodes show up.':S.mode==='demo'?'Demo project with sample data. Swaps are options with tradeoffs, not verdicts. Free tiers and prices change, so check each pricing page before switching.':'Mapped from your files on this device. Nothing was uploaded, and .env values were never read. Swaps are options with tradeoffs, not verdicts.';
  const vs=S.services.filter(visSvc),ps=openProbs().sort((a,b)=>SEV[b.kind]-SEV[a.kind]),hs=health(),keysN=vs.filter(s=>s.keys.some(k=>k.where==='server')).length;
- const col=hs>=80?'#8fd99f':hs>=50?'#f0ca7e':'#ff8d8d',C=2*Math.PI*24;
+ const col=hs>=80?'#2a8f52':hs>=50?'#c98a00':'#d93d42',C=2*Math.PI*24;
  $('#ring').innerHTML=`<svg viewBox="0 0 58 58"><circle cx="29" cy="29" r="24" fill="none" stroke="#2a4b70" stroke-width="6"/><circle cx="29" cy="29" r="24" fill="none" stroke="${col}" stroke-width="6" stroke-linecap="round" stroke-dasharray="${C*hs/100} ${C}"/></svg><b style="color:${col}">${hs}</b>`;
  $('#gH').innerHTML=`${esc(S.name)} ${S.unit==='node'?'touches':'talks to'} <em>${vs.length} ${S.unit==='node'?'app':'service'}${vs.length===1?'':'s'}</em>`;
  const leaks=ps.filter(p=>p.kind==='shark').length;
@@ -628,7 +655,7 @@ function applyFix(p){
  const left=openProbs().length;toast(left?`Fixed. Save ${i+1} created. ${left} left.`:`All fixed. Stack health ${health()}.`);
 }
 function openOverview(){flyTo(null);const vs=S.services.filter(visSvc);
- openDrawer(`<span style="width:46px;height:42px;display:block">${REGEN(openProbs().some(p=>p.kind==='shark')?'worried':'happy')}</span>`,S.name,S.unit==='node'?'Your workflow and every app it touches':'Your app and everything it connects to',
+ openDrawer(`<span style="width:46px;height:42px;display:block">${LIGHTHOUSE(openProbs().some(p=>p.kind==='shark')?'worried':'happy')}</span>`,S.name,S.unit==='node'?'Your workflow and every app it touches':'Your app and everything it connects to',
  `<p class="lead">${S.unit==='node'?'This workflow touches':'Your app talks to'} <mark>${vs.length} outside ${S.unit==='node'?'apps':'services'}</mark>. Each one is another account to secure, another key to protect, and another place your users' data goes.</p>
  ${S.summary?`<div class="note good" style="white-space:pre-wrap"><b>Your n8n AI Agent says</b>${esc(S.summary)}</div>`:''}
  <div class="sec"><h4>By job</h4>${Object.keys(CATS).filter(c=>vs.some(s=>s.cat===c)).map(c=>`<div class="flow"><span class="sico" style="background:${CATS[c].col};width:26px;height:26px">${catSvg(c,15)}</span><span class="d">${CATS[c].n}</span><b>${vs.filter(s=>s.cat===c).map(s=>esc(s.name)).join(', ')}</b></div>`).join('')}</div>
@@ -643,7 +670,7 @@ function startTour(){closeDrawer();const vs=S.services.filter(visSvc);if(!vs.len
  const ps=openProbs();steps.push({k:'> stack-map --health',t:`Stack health ${health()}`,s:ps.length?`${ps.length} problem${ps.length>1?'s':''} to fix. Tap any creature to see how.`:'Everything is wired up safely.',go:()=>{flyTo(null)}});
  tour={steps,i:-1,timer:0};$('#stage').classList.add('touring');$('#skipTour').style.display='inline-flex';nextTour();
 }
-function nextTour(){if(!tour)return;tour.i++;const st=tour.steps[tour.i];if(!st){endTour();return}st.go();$('#capK').textContent=st.k;$('#capT').textContent=st.t;$('#capT').style.color=st.bad?'#ff8d8d':'';$('#capS').textContent=st.s;$('#cap').style.opacity=1;tour.timer=setTimeout(nextTour,tour.i===0?3200:2200)}
+function nextTour(){if(!tour)return;tour.i++;const st=tour.steps[tour.i];if(!st){endTour();return}st.go();$('#capK').textContent=st.k;$('#capT').textContent=st.t;$('#capT').style.color=st.bad?'#d93d42':'';$('#capS').textContent=st.s;$('#cap').style.opacity=1;tour.timer=setTimeout(nextTour,tour.i===0?3200:2200)}
 function endTour(){if(!tour)return;clearTimeout(tour.timer);tour=null;$('#stage').classList.remove('touring');$('#cap').style.opacity=0;$('#skipTour').style.display='none'}
 $('#tourBtn').onclick=startTour;$('#skipTour').onclick=endTour;
 
@@ -665,15 +692,15 @@ $('#quizBtn').onclick=quiz;
 /* ---------- share card ---------- */
 $('#shareBtn').onclick=()=>{closeDrawer();endTour();flyTo(null);goal.yaw=-.55;cam.ox=goal.ox=0;toast('Framing your map...');setTimeout(makeCard,1100)};
 function makeCard(){const c=document.createElement('canvas');c.width=1200;c.height=630;const g=c.getContext('2d');
- const bg=g.createLinearGradient(0,0,0,630);bg.addColorStop(0,'#14365a');bg.addColorStop(1,'#06111f');g.fillStyle=bg;g.fillRect(0,0,1200,630);
+ const bg=g.createLinearGradient(0,0,0,630);bg.addColorStop(0,'#8fd3f4');bg.addColorStop(.3,'#6fd0dc');bg.addColorStop(1,'#147fa0');g.fillStyle=bg;g.fillRect(0,0,1200,630);
  const pts=S.services.filter(x=>visSvc(x)&&x._p).map(x=>x._p);const c0=P(0,40,0);pts.push({x:c0.x,y:c0.y,r:96*c0.s});let x0=Math.min(...pts.map(q=>q.x-q.r))-50,x1=Math.max(...pts.map(q=>q.x+q.r))+50,y0=Math.min(...pts.map(q=>q.y-q.r*1.4))-30,y1=Math.max(...pts.map(q=>q.y+q.r*1.2))+50;x0=Math.max(0,x0);y0=Math.max(0,y0);x1=Math.min(W,x1);y1=Math.min(H,y1);const sw=x1-x0,sh=y1-y0,sc=Math.min(760/sw,590/sh);g.drawImage(cv,x0*DPR,y0*DPR,sw*DPR,sh*DPR,1200-sw*sc-20,(630-sh*sc)/2,sw*sc,sh*sc);
- const fade=g.createLinearGradient(380,0,620,0);fade.addColorStop(0,'rgba(8,21,36,1)');fade.addColorStop(1,'rgba(8,21,36,0)');g.fillStyle=fade;g.fillRect(0,0,620,630);g.fillStyle='rgba(8,21,36,1)';g.fillRect(0,0,380,630);
- const vs=S.services.filter(visSvc),ps=openProbs();g.fillStyle='#7bd9ce';g.font='700 22px JetBrains Mono, monospace';g.fillText('> stack-map',60,110);
- g.fillStyle='#eef3ff';g.font='900 64px Nunito, sans-serif';g.fillText(S.name,60,190);g.font='800 40px Nunito, sans-serif';g.fillText(`runs on ${vs.length} services`,60,250);
- g.fillStyle='#a3b5cf';g.font='700 26px Nunito, sans-serif';g.fillText(`${vs.filter(s=>s.keys.some(k=>k.where==='server')).length} secret keys · ${ps.length} problem${ps.length===1?'':'s'}`,60,305);
- const hs=health();g.fillStyle=hs>=80?'#8fd99f':hs>=50?'#f0ca7e':'#ff8d8d';g.font='900 30px Nunito, sans-serif';g.fillText(`Stack health ${hs}`,60,360);
- let x=60;g.font='800 20px Nunito, sans-serif';for(const c of [...new Set(vs.map(s=>s.cat))].slice(0,6)){const t=CATS[c].n,w=g.measureText(t).width+28;if(x+w>560)break;g.fillStyle=CATS[c].col;g.beginPath();g.roundRect?g.roundRect(x,410,w,38,19):g.rect(x,410,w,38);g.fill();g.fillStyle='#0b1b2e';g.fillText(t,x+14,436);x+=w+10}
- g.fillStyle='#f5a3bf';g.font='900 24px Nunito, sans-serif';g.fillText('Mapped by Stack Map',60,560);
+ const fade=g.createLinearGradient(380,0,620,0);fade.addColorStop(0,'rgba(255,250,240,1)');fade.addColorStop(1,'rgba(255,250,240,0)');g.fillStyle=fade;g.fillRect(0,0,620,630);g.fillStyle='rgba(255,250,240,1)';g.fillRect(0,0,380,630);
+ const vs=S.services.filter(visSvc),ps=openProbs();g.fillStyle='#0b8f8a';g.font='700 22px JetBrains Mono, monospace';g.fillText('> stack-map',60,110);
+ g.fillStyle='#12304a';g.font='900 64px Nunito, sans-serif';g.fillText(S.name,60,190);g.font='800 40px Nunito, sans-serif';g.fillText(`runs on ${vs.length} services`,60,250);
+ g.fillStyle='#4a6479';g.font='700 26px Nunito, sans-serif';g.fillText(`${vs.filter(s=>s.keys.some(k=>k.where==='server')).length} secret keys · ${ps.length} problem${ps.length===1?'':'s'}`,60,305);
+ const hs=health();g.fillStyle=hs>=80?'#2a8f52':hs>=50?'#c98a00':'#d93d42';g.font='900 30px Nunito, sans-serif';g.fillText(`Stack health ${hs}`,60,360);
+ let x=60;g.font='800 20px Nunito, sans-serif';for(const c of [...new Set(vs.map(s=>s.cat))].slice(0,6)){const t=CATS[c].n,w=g.measureText(t).width+28;if(x+w>560)break;g.fillStyle=CATS[c].col;g.beginPath();g.roundRect?g.roundRect(x,410,w,38,19):g.rect(x,410,w,38);g.fill();g.fillStyle='#fff';g.fillText(t,x+14,436);x+=w+10}
+ g.fillStyle='#e8513a';g.font='900 24px Nunito, sans-serif';g.fillText('Mapped by Stack Map',60,560);
  const url=c.toDataURL('image/png');openModal(`<h2>Share your stack</h2><p class="sub">A picture of your map for a README, a post or your demo slides.</p><img src="${url}" alt="Share card"><div class="mrow"><button class="btn ghost" id="sClose">Close</button><a class="btn" download="${esc(S.name)}-stack.png" href="${url}">Download PNG</a></div>`);$('#sClose').onclick=closeModal}
 
 /* ---------- real project mapping ---------- */
@@ -689,6 +716,7 @@ const IGNORE_ENV=new Set(['NODE_ENV','MODE','DEV','PROD','SSR','BASE_URL','PORT'
 const LIT=[{re:/sk-ant-[A-Za-z0-9_-]{20,}/,svc:'anthropic',n:'Anthropic key'},{re:/sk-(?:proj-)?[A-Za-z0-9_-]{24,}/,svc:'openai',n:'OpenAI key'},{re:/[sr]k_live_[A-Za-z0-9]{16,}/,svc:'stripe',n:'Stripe live key'},{re:/AKIA[0-9A-Z]{16}/,svc:'s3',n:'AWS access key'},{re:/re_[A-Za-z0-9]{8,}_[A-Za-z0-9]{12,}/,svc:'resend',n:'Resend key'},{re:/gh[pousr]_[A-Za-z0-9]{30,}/,svc:null,n:'GitHub token'},{re:/AIza[0-9A-Za-z_-]{35}/,svc:'gemini',n:'Google API key'},{re:/gsk_[A-Za-z0-9]{30,}/,svc:'groq',n:'Groq key'}];
 function maskSecrets(t){let s=String(t);for(const l of LIT)s=s.replace(new RegExp(l.re.source,'g'),m=>m.slice(0,7)+'•'.repeat(8));return s}
 function mapProject(files,name,opts={}){
+ S.wf=null;
  const deps={};const pkgs=files.filter(f=>/(^|\/)package\.json$/.test(f.p));for(const f of pkgs){try{const j=JSON.parse(f.t);Object.assign(deps,j.dependencies||{},j.devDependencies||{})}catch(e){}}
  const pyReq=files.filter(f=>/(^|\/)(requirements[^/]*\.txt|pyproject\.toml)$/.test(f.p)).map(f=>f.t.toLowerCase()).join('\n');
  const code=files.filter(f=>/\.(m?[jt]sx?|cjs|py|vue|svelte|astro)$/.test(f.p));
@@ -756,6 +784,7 @@ function n8nSvcFor(node){
  if(/httpRequest/i.test(node.type)){const url=String(node.parameters?.url||'');const c=CATALOG.find(c=>(c.urls||[]).some(u=>url.includes(u)));if(c)return c;const host=(url.match(/https?:\/\/([^/?'"\s}]+)/)||[])[1];if(!host)return null;return{id:'http:'+host,name:host,cat:'other',does:'Called with an HTTP Request node.',data:'Whatever this node sends',dir:'both',keys:[],site:'https://'+host,swaps:[]}}
  for(const[re,id]of N8N_SVC)if(re.test(node.type))return CAT_BY_ID[id];return null}
 function mapN8n(wf,opts={}){
+ S.wf=JSON.parse(JSON.stringify(wf));
  const nodes=wf.nodes||[],conns=wf.connections||{};if(!nodes.length){toast('That doesn’t look like an n8n workflow. Copy it with Ctrl+A, Ctrl+C in n8n.');return false}
  const svcMap=new Map(),probs=[];let n=0;
  const pretty=node=>JSON.stringify(node.parameters||{},null,2).split('\n');
@@ -831,10 +860,95 @@ async function scanViaN8n(url,repo){
  catch(e){toast(e.name==='AbortError'?'n8n took too long. Try a smaller repo.':(/Failed to fetch/.test(e.message)?'Could not reach n8n. Check the URL, that the workflow is active, and Allowed Origins (CORS) is *.':e.message))}
  finally{$('#busy').classList.remove('on');$('#busy').textContent='Mapping your project...'}}
 
+/* WORKFLOWS:BEGIN (generated by scripts/embed-workflows.mjs, do not edit) */
+const WORKFLOWS={"scan":{"name":"Stack Map: scan a GitHub repo","nodes":[{"parameters":{"httpMethod":"POST","path":"stack-map-scan","responseMode":"responseNode","options":{"allowedOrigins":"*"}},"id":"9a4747cb-fb2f-417a-9e50-ed4c25a680a0","name":"Stack Map asks","type":"n8n-nodes-base.webhook","typeVersion":2,"position":[0,300],"webhookId":"5fb738c3-8bda-4f35-beda-eb0e6d248bdf"},{"parameters":{"url":"={{ 'https://api.github.com/repos/' + String($json.body.repo || '').trim().replace(/^https?:\\/\\/github\\.com\\//,'').replace(/\\.git$/,'').replace(/\\/+$/,'') }}","sendHeaders":true,"headerParameters":{"parameters":[{"name":"User-Agent","value":"stack-map"},{"name":"Accept","value":"application/vnd.github+json"}]},"options":{}},"id":"28ad2f9b-05f2-4a33-a76e-92613b181832","name":"Get repo","type":"n8n-nodes-base.httpRequest","typeVersion":4.2,"position":[220,300]},{"parameters":{"url":"={{ 'https://api.github.com/repos/' + $json.full_name + '/git/trees/' + $json.default_branch + '?recursive=1' }}","sendHeaders":true,"headerParameters":{"parameters":[{"name":"User-Agent","value":"stack-map"},{"name":"Accept","value":"application/vnd.github+json"}]},"options":{}},"id":"7a6c8b65-779b-4e38-a5de-405481eb7542","name":"Get file list","type":"n8n-nodes-base.httpRequest","typeVersion":4.2,"position":[440,300]},{"parameters":{"jsCode":"// Pick the files Stack Map needs. Never downloads .env files.\nconst repo = $('Get repo').first().json;\nconst tree = $input.first().json.tree || [];\nconst SKIP = /(^|\\/)(node_modules|\\.git|dist|build|\\.next|\\.vercel|coverage|vendor|venv|\\.venv|__pycache__)\\//;\nconst WANT = /(\\.(m?[jt]sx?|cjs|json|toml|ya?ml|py|vue|svelte|astro|sql|jsonc)|(^|\\/)requirements[^\\/]*\\.txt|(^|\\/)\\.env\\.(example|sample|template))$/;\nconst SECRET_ENV = /(^|\\/)\\.env($|\\.(?!example$|sample$|template$))/;\nconst files = tree\n  .filter(f => f.type === 'blob' && WANT.test(f.path) && !SKIP.test(f.path) && !SECRET_ENV.test(f.path) && (f.size || 0) < 200000)\n  .sort((a, b) => score(b.path) - score(a.path))\n  .slice(0, 80);\nfunction score(p) { return (/package\\.json$/.test(p) ? 100 : 0) + (/\\.env\\./.test(p) ? 90 : 0) + (/^(src|app|api|lib|pages|server|supabase)\\//.test(p) ? 20 : 0) - p.split('/').length; }\nreturn files.map(f => ({ json: { path: f.path, raw: `https://raw.githubusercontent.com/${repo.full_name}/${repo.default_branch}/${f.path}` } }));"},"id":"736ee916-024e-4d5d-b3fd-a20881994c69","name":"Pick files","type":"n8n-nodes-base.code","typeVersion":2,"position":[660,300]},{"parameters":{"url":"={{ $json.raw }}","options":{"response":{"response":{"responseFormat":"text","outputPropertyName":"data"}}}},"id":"7a468351-14a3-44b6-ad13-ac3940c0ade2","name":"Download files","type":"n8n-nodes-base.httpRequest","typeVersion":4.2,"position":[880,300]},{"parameters":{"jsCode":"// Bundle the downloaded files for Stack Map and run a quick key check for the AI.\nconst picked = $('Pick files').all();\nconst repo = $('Get repo').first().json;\nconst files = $input.all().map((it, i) => ({ p: picked[i].json.path, t: String(it.json.data ?? '') }));\nconst KEYS = [/sk-(?:proj-)?[A-Za-z0-9_-]{24,}/, /[sr]k_live_[A-Za-z0-9]{16,}/, /AKIA[0-9A-Z]{16}/, /gh[pousr]_[A-Za-z0-9]{30,}/, /AIza[0-9A-Za-z_-]{35}/, /sk-ant-[A-Za-z0-9_-]{20,}/];\nconst quick = [];\nfor (const f of files) f.t.split('\\n').forEach((ln, i) => { if (KEYS.some(r => r.test(ln))) quick.push(`Possible secret key in ${f.p} line ${i + 1}`); if (/(VITE_|NEXT_PUBLIC_|REACT_APP_)\\w*(SECRET|SERVICE_ROLE|OPENAI|STRIPE_SECRET)/.test(ln)) quick.push(`Secret read in browser code: ${f.p} line ${i + 1}`); });\nconst pkg = files.find(f => /(^|\\/)package\\.json$/.test(f.p));\nconst envEx = files.find(f => /\\.env\\.(example|sample|template)$/.test(f.p));\nreturn [{ json: {\n  name: repo.name, repo: repo.full_name, branch: repo.default_branch, description: repo.description || '',\n  files, fileCount: files.length, quick: quick.slice(0, 20),\n  packageJson: pkg ? pkg.t.slice(0, 4000) : 'none',\n  envNames: envEx ? envEx.t.split('\\n').map(l => l.split('=')[0].trim()).filter(Boolean).join(', ') : 'none',\n  paths: files.map(f => f.p).join('\\n').slice(0, 4000)\n} }];"},"id":"11e2d93a-61e9-4fdd-9903-abd6bb6d5172","name":"Package for Stack Map","type":"n8n-nodes-base.code","typeVersion":2,"position":[1100,300]},{"parameters":{"promptType":"define","text":"=You are explaining a code project to a beginner who built it with AI tools.\n\nRepo: {{ $json.repo }} ({{ $json.description }})\npackage.json:\n{{ $json.packageJson }}\n\nEnvironment variable names (values hidden): {{ $json.envNames }}\n\nFiles:\n{{ $json.paths }}\n\nQuick key check found: {{ $json.quick.join('; ') || 'nothing' }}\n\nWrite, in plain words, under 170 words, no emoji, no markdown headings:\n1. One sentence on what this app does.\n2. Every outside service it talks to and what data goes there, one short line each.\n3. The top 3 safety risks with a one-line fix each. If the key check found something, put it first.","options":{"systemMessage":"You are Stack Map, a friendly security guide for people who build apps with AI. Be concrete, short and kind. Never print secret values."}},"id":"eabe4d83-978e-4bcb-8d71-0bf6d8ef09cf","name":"Explain the stack","type":"@n8n/n8n-nodes-langchain.agent","typeVersion":1.7,"position":[1320,300]},{"parameters":{"model":{"__rl":true,"mode":"list","value":"gpt-4o-mini"},"options":{}},"id":"4144d39d-c659-403c-bb58-7b3aa73db0a1","name":"OpenAI Chat Model","type":"@n8n/n8n-nodes-langchain.lmChatOpenAi","typeVersion":1.2,"position":[1320,520]},{"parameters":{"jsCode":"const pack = $('Package for Stack Map').first().json;\nconst lite = String($('Stack Map asks').first().json.body?.lite || '') === '1';\n// lite=1 is for MCP clients: send the summary and file paths, not every file's contents.\nreturn [{ json: { name: pack.name, repo: pack.repo, branch: pack.branch, ...(lite ? { paths: pack.files.map(f => f.p) } : { files: pack.files }), quick: pack.quick, summary: $json.output || '' } }];"},"id":"0da154dc-7fd2-4ac8-9d0b-1f4da40ef072","name":"Merge answer","type":"n8n-nodes-base.code","typeVersion":2,"position":[1580,300]},{"parameters":{"respondWith":"firstIncomingItem","options":{"responseHeaders":{"entries":[{"name":"Access-Control-Allow-Origin","value":"*"}]}}},"id":"b87276d5-c8dc-4e10-9574-4690aa3db651","name":"Send to Stack Map","type":"n8n-nodes-base.respondToWebhook","typeVersion":1.1,"position":[1800,300]},{"parameters":{"content":"## Stack Map: scan a GitHub repo\n1. Pick your OpenAI credential in **OpenAI Chat Model** (or swap in any chat model).\n2. Activate the workflow and copy the **Production URL** from **Stack Map asks**.\n3. Paste it into Stack Map under **n8n > Scan a GitHub repo**.\n\nPublic repos work with no GitHub key. If GitHub says *rate limit*, add a **Header Auth** credential (Authorization: Bearer your-token) to the two GitHub nodes. Use a credential, never paste the token into the URL.","height":300,"width":420},"id":"4bd7f17f-abbe-45d3-9367-7df366c316eb","name":"Setup note","type":"n8n-nodes-base.stickyNote","typeVersion":1,"position":[-40,-20]}],"connections":{"Stack Map asks":{"main":[[{"node":"Get repo","type":"main","index":0}]]},"Get repo":{"main":[[{"node":"Get file list","type":"main","index":0}]]},"Get file list":{"main":[[{"node":"Pick files","type":"main","index":0}]]},"Pick files":{"main":[[{"node":"Download files","type":"main","index":0}]]},"Download files":{"main":[[{"node":"Package for Stack Map","type":"main","index":0}]]},"Package for Stack Map":{"main":[[{"node":"Explain the stack","type":"main","index":0}]]},"Explain the stack":{"main":[[{"node":"Merge answer","type":"main","index":0}]]},"Merge answer":{"main":[[{"node":"Send to Stack Map","type":"main","index":0}]]},"OpenAI Chat Model":{"ai_languageModel":[[{"node":"Explain the stack","type":"ai_languageModel","index":0}]]}},"settings":{"executionOrder":"v1"},"pinData":{}},"mcp":{"name":"Stack Map: MCP server","nodes":[{"parameters":{"authentication":"bearerAuth","path":"stack-map"},"id":"4245d54e-5933-43cb-bcfd-5617e9e3086d","name":"Stack Map MCP","type":"@n8n/n8n-nodes-langchain.mcpTrigger","typeVersion":1,"position":[460,200],"webhookId":"e058d066-9c93-4857-bc18-c06c894cc562"},{"parameters":{"toolDescription":"Scan a public GitHub repo with Stack Map. Returns what the app does, every outside service it talks to, and the top safety risks. Input: the repo as owner/name, for example vercel/next.js.","method":"POST","url":"https://YOUR-NAME.app.n8n.cloud/webhook/stack-map-scan","sendBody":true,"contentType":"form-urlencoded","bodyParameters":{"parameters":[{"name":"repo","value":"={{ $fromAI('repo', 'GitHub repo as owner/name', 'string') }}"},{"name":"lite","value":"1"}]},"options":{"timeout":120000}},"id":"686fc0aa-e82f-4c67-ac77-001c8fe13a7e","name":"scan_github_repo","type":"n8n-nodes-base.httpRequestTool","typeVersion":4.2,"position":[200,460]},{"parameters":{"name":"audit_n8n_workflow","description":"Audit an n8n workflow for security holes: keys typed into nodes, webhooks or MCP servers with no lock, AI agents that can send or change things with no human approval, and no error workflow. Input: the full workflow JSON as text (what you get from Ctrl+A, Ctrl+C in the n8n editor). Returns a health score and numbered fixes.","jsCode":"// Input: an n8n workflow as JSON text. Output: plain-language problems.\nlet wf;\ntry { wf = JSON.parse(query); } catch (e) { return 'That is not valid JSON. In n8n, select all nodes (Ctrl+A), copy (Ctrl+C) and pass the copied text.'; }\nif (wf.data && wf.data.nodes) wf = wf.data;\nif (Array.isArray(wf)) wf = wf[0];\nconst nodes = wf.nodes || [];\nconst KEYS = [/sk-(?:proj-)?[A-Za-z0-9_-]{24,}/, /sk-ant-[A-Za-z0-9_-]{20,}/, /[sr]k_live_[A-Za-z0-9]{16,}/, /AKIA[0-9A-Z]{16}/, /gh[pousr]_[A-Za-z0-9]{30,}/, /AIza[0-9A-Za-z_-]{35}/, /apify_api_[A-Za-z0-9]{20,}/, /xox[bp]-[A-Za-z0-9-]{20,}/];\nconst ACTION = /gmail|slack|googleSheets|airtable|notion|postgres|supabase|telegram|discord|httpRequest|hubspot|microsoftOutlook/i;\nconst out = [];\nfor (const n of nodes) {\n  if (n.disabled || /stickyNote/.test(n.type)) { if (n.disabled) out.push(`\"${n.name}\" is turned off but still in the workflow. Delete it once things work.`); continue; }\n  const p = JSON.stringify(n.parameters || {});\n  const auth = n.parameters?.authentication;\n  if (KEYS.some(r => r.test(p))) out.push(`Key typed straight into \"${n.name}\". Move it into an n8n credential, then make a new key and delete the old one.`);\n  if (/\\.webhook$/i.test(n.type) && (!auth || auth === 'none')) out.push(`Webhook \"${n.name}\" has no authentication. Set Authentication to Header Auth.`);\n  if (/mcpTrigger/i.test(n.type) && (!auth || auth === 'none')) out.push(`MCP server \"${n.name}\" has no authentication. Anyone with the URL can call its tools. Set Bearer Auth.`);\n  if (/chatTrigger/i.test(n.type) && n.parameters?.public) out.push(`Chat \"${n.name}\" is public. Anyone can spend your AI credits.`);\n}\nfor (const [from, c] of Object.entries(wf.connections || {})) for (const group of (c.ai_tool || [])) for (const t of group) {\n  const tool = nodes.find(n => n.name === from);\n  const target = nodes.find(n => n.name === t.node);\n  if (target && /mcpTrigger/i.test(target.type)) continue; // MCP clients ask the user before each call\n  if (tool && !tool.disabled && ACTION.test(tool.type) && !/^(get|getAll|search|read|list)$/i.test(String(tool.parameters?.operation || ''))) out.push(`AI agent \"${t.node}\" can use \"${from}\" on its own. Add a human approval step before it sends or changes anything.`);\n}\nif (!wf.settings?.errorWorkflow) out.push('No error workflow. If this breaks, nobody hears about it. Add one in workflow settings.');\nconst score = Math.max(0, 100 - out.length * 15);\nreturn out.length ? `Stack Map health score ${score}/100 for \"${wf.name || 'this workflow'}\" (${nodes.length} nodes). ${out.length} thing${out.length > 1 ? 's' : ''} to fix:\\n` + out.map((o, i) => `${i + 1}. ${o}`).join('\\n') : `Stack Map health score 100/100 for \"${wf.name || 'this workflow'}\". Nothing to fix.`;"},"id":"17022fe1-36bf-42d4-bbdd-bfbe3aaf49a0","name":"audit_n8n_workflow","type":"@n8n/n8n-nodes-langchain.toolCode","typeVersion":1.1,"position":[460,460]},{"parameters":{"name":"check_code_for_keys","description":"Check code or a git diff for leaked API keys (OpenAI, Anthropic, Stripe, AWS, GitHub, Google, Apify, Slack) and secrets read in browser code. Use before every commit. Input: the code or diff as text. Returns line numbers, never the key values.","jsCode":"// Input: code or a git diff. Output: leaked keys by line. Never repeats the key itself.\nconst RULES = [\n  [/sk-(?:proj-)?[A-Za-z0-9_-]{24,}/, 'OpenAI key'], [/sk-ant-[A-Za-z0-9_-]{20,}/, 'Anthropic key'], [/[sr]k_live_[A-Za-z0-9]{16,}/, 'Stripe live key'],\n  [/AKIA[0-9A-Z]{16}/, 'AWS access key'], [/gh[pousr]_[A-Za-z0-9]{30,}/, 'GitHub token'], [/AIza[0-9A-Za-z_-]{35}/, 'Google API key'],\n  [/apify_api_[A-Za-z0-9]{20,}/, 'Apify token'], [/xox[bp]-[A-Za-z0-9-]{20,}/, 'Slack token'],\n  [/(VITE_|NEXT_PUBLIC_|REACT_APP_|EXPO_PUBLIC_)\\w*(SECRET|SERVICE_ROLE|OPENAI|ANTHROPIC|STRIPE_SECRET|RESEND)/, 'secret read in browser code'],\n  [/dangerouslyAllowBrowser\\s*:\\s*true/, 'AI SDK allowed in the browser'],\n];\nconst found = [];\nString(query || '').split('\\n').forEach((ln, i) => { if (ln.startsWith('-')) return; for (const [re, what] of RULES) if (re.test(ln)) found.push(`Line ${i + 1}: ${what}`); });\nreturn found.length ? `Stack Map found ${found.length} problem${found.length > 1 ? 's' : ''}:\\n${found.join('\\n')}\\n\\nFix: make a new key in that service and delete the old one, move it into .env, and read it only in server code.` : 'Stack Map found no leaked keys in this code.';"},"id":"a8f05418-f7a2-4584-a1dc-d7158d22e215","name":"check_code_for_keys","type":"@n8n/n8n-nodes-langchain.toolCode","typeVersion":1.1,"position":[720,460]},{"parameters":{"content":"## Stack Map: MCP server\nLets Claude, Cursor or any MCP client use Stack Map as tools.\n\n1. In **Stack Map MCP**, create a **Bearer Auth** credential with a long random token. Never leave an MCP server on None: Stack Map flags that.\n2. In **scan_github_repo**, replace YOUR-NAME in the URL with the Production URL of the scan-repo workflow (it must be Active).\n3. Activate this workflow and copy the **Production URL** of **Stack Map MCP**.\n4. Add it to your MCP client (see SETUP.md, step 7).","height":340,"width":460},"id":"c785e3df-642c-4f70-8564-004203e8e4a7","name":"Setup note","type":"n8n-nodes-base.stickyNote","typeVersion":1,"position":[-80,-60]}],"connections":{"scan_github_repo":{"ai_tool":[[{"node":"Stack Map MCP","type":"ai_tool","index":0}]]},"audit_n8n_workflow":{"ai_tool":[[{"node":"Stack Map MCP","type":"ai_tool","index":0}]]},"check_code_for_keys":{"ai_tool":[[{"node":"Stack Map MCP","type":"ai_tool","index":0}]]}},"settings":{"executionOrder":"v1"},"pinData":{}},"push":{"name":"Stack Map: push guard","nodes":[{"parameters":{"httpMethod":"POST","path":"stack-map-push","responseMode":"onReceived","options":{}},"id":"5716c49e-49e6-4084-a1ef-190d53e1604f","name":"GitHub push","type":"n8n-nodes-base.webhook","typeVersion":2,"position":[0,300],"webhookId":"cbc2b440-d6e1-4d36-af3a-cf5e4e48c930"},{"parameters":{"url":"={{ 'https://api.github.com/repos/' + $json.body.repository.full_name + '/compare/' + $json.body.before + '...' + $json.body.after }}","sendHeaders":true,"headerParameters":{"parameters":[{"name":"User-Agent","value":"stack-map"},{"name":"Accept","value":"application/vnd.github+json"}]},"options":{}},"id":"74baefb6-f522-49f8-8b0e-f6d7ec02086f","name":"Get the changes","type":"n8n-nodes-base.httpRequest","typeVersion":4.2,"position":[240,300]},{"parameters":{"jsCode":"// Check every line added in this push for leaked keys and risky patterns.\nconst push = $('GitHub push').first().json.body || {};\nconst files = $input.first().json.files || [];\nconst RULES = [\n  { re: /sk-(?:proj-)?[A-Za-z0-9_-]{24,}/, what: 'OpenAI key pasted in code' },\n  { re: /sk-ant-[A-Za-z0-9_-]{20,}/, what: 'Anthropic key pasted in code' },\n  { re: /[sr]k_live_[A-Za-z0-9]{16,}/, what: 'Stripe live key pasted in code' },\n  { re: /AKIA[0-9A-Z]{16}/, what: 'AWS access key pasted in code' },\n  { re: /gh[pousr]_[A-Za-z0-9]{30,}/, what: 'GitHub token pasted in code' },\n  { re: /AIza[0-9A-Za-z_-]{35}/, what: 'Google API key pasted in code' },\n  { re: /(VITE_|NEXT_PUBLIC_|REACT_APP_|EXPO_PUBLIC_)\\w*(SECRET|SERVICE_ROLE|OPENAI|ANTHROPIC|STRIPE_SECRET|RESEND)/, what: 'Secret key read in browser code' },\n  { re: /dangerouslyAllowBrowser\\s*:\\s*true/, what: 'AI SDK allowed to run in the browser (sends your key to visitors)' },\n];\nconst found = [];\nfor (const f of files) {\n  if (/(^|\\/)\\.env($|\\.(?!example|sample))/.test(f.filename)) found.push({ file: f.filename, line: '-', what: '.env file was committed. Every key in it is now public.' });\n  let n = 0;\n  for (const ln of String(f.patch || '').split('\\n')) {\n    const m = ln.match(/^@@ -\\d+(?:,\\d+)? \\+(\\d+)/); if (m) { n = +m[1] - 1; continue; }\n    if (ln.startsWith('-')) continue; n++;\n    if (!ln.startsWith('+')) continue;\n    for (const r of RULES) if (r.re.test(ln)) found.push({ file: f.filename, line: n, what: r.what });\n  }\n}\nif (!found.length) return [];\nconst repo = push.repository?.full_name || 'your repo';\nconst who = push.pusher?.name || 'someone';\nconst text = `Stack Map found ${found.length} problem${found.length > 1 ? 's' : ''} in the push by ${who} to ${repo}:\\n\\n` +\n  found.map(f => `- ${f.what} (${f.file}, line ${f.line})`).join('\\n') +\n  `\\n\\nWhat to do now:\\n1. Make a new key in that service's dashboard and delete the old one. Removing it from the code does not undo a leak.\\n2. Move keys into .env and read them only in server code.\\n3. Add this rule to AGENTS.md so your AI stops doing it: \"Never put API keys in code or in VITE_/NEXT_PUBLIC_ variables.\"\\n\\nCommit: ${push.compare || ''}`;\nreturn [{ json: { repo, count: found.length, findings: found, subject: `Stack Map: ${found.length} leaked key${found.length > 1 ? 's' : ''} in ${repo}`, text } }];"},"id":"c5705077-d0e3-4088-b8bf-cbc0bbf47612","name":"Check added lines","type":"n8n-nodes-base.code","typeVersion":2,"position":[480,300]},{"parameters":{"sendTo":"you@example.com","subject":"={{ $json.subject }}","emailType":"text","message":"={{ $json.text }}","options":{}},"id":"dfdb8506-1edb-459d-a8e0-bfb7e3670236","name":"Email me","type":"n8n-nodes-base.gmail","typeVersion":2.1,"position":[720,300]},{"parameters":{"content":"## Stack Map: push guard\n1. Activate, then copy the **Production URL** of **GitHub push**.\n2. GitHub repo > Settings > Webhooks > Add webhook. Payload URL = that URL, content type **application/json**, event **Just the push event**.\n3. In **Email me**, connect Gmail and put your address. (Or swap in Slack / Discord.)\n\nFor real use, add a webhook secret in GitHub and check the X-Hub-Signature-256 header, so strangers can't trigger this.","height":320,"width":440},"id":"3d578aec-d15e-44d2-a10c-b4de2ab1229f","name":"Setup note","type":"n8n-nodes-base.stickyNote","typeVersion":1,"position":[-40,-40]}],"connections":{"GitHub push":{"main":[[{"node":"Get the changes","type":"main","index":0}]]},"Get the changes":{"main":[[{"node":"Check added lines","type":"main","index":0}]]},"Check added lines":{"main":[[{"node":"Email me","type":"main","index":0}]]}},"settings":{"executionOrder":"v1"},"pinData":{}},"audit":{"name":"Stack Map: weekly n8n audit","nodes":[{"parameters":{"rule":{"interval":[{"field":"weeks","triggerAtDay":[1],"triggerAtHour":9}]}},"id":"6502e054-9748-42e9-aee4-5cfda5789baa","name":"Every Monday 9am","type":"n8n-nodes-base.scheduleTrigger","typeVersion":1.2,"position":[0,300]},{"parameters":{"filters":{},"requestOptions":{}},"id":"84594e3e-8d71-4906-b6e4-64fb6490fc9b","name":"Get all workflows","type":"n8n-nodes-base.n8n","typeVersion":1,"position":[240,300]},{"parameters":{"jsCode":"// Audit every workflow in this n8n for the same holes Stack Map shows in 3D.\nconst KEYS = [/sk-(?:proj-)?[A-Za-z0-9_-]{24,}/, /sk-ant-[A-Za-z0-9_-]{20,}/, /[sr]k_live_[A-Za-z0-9]{16,}/, /AKIA[0-9A-Z]{16}/, /gh[pousr]_[A-Za-z0-9]{30,}/, /AIza[0-9A-Za-z_-]{35}/, /apify_api_[A-Za-z0-9]{20,}/, /xox[bp]-[A-Za-z0-9-]{20,}/];\nconst ACTION = /gmail|slack|googleSheets|airtable|notion|postgres|supabase|telegram|discord|httpRequest|hubspot|microsoftOutlook/i;\nconst lines = []; let total = 0;\nfor (const item of $input.all()) {\n  const wf = item.json; const nodes = wf.nodes || []; const out = [];\n  for (const n of nodes) {\n    const p = JSON.stringify(n.parameters || {});\n    if (KEYS.some(r => r.test(p))) out.push(`Key typed straight into node \"${n.name}\". Move it into a credential and rotate it.`);\n    if (/\\.webhook$/i.test(n.type) && !n.disabled && (!n.parameters?.authentication || n.parameters.authentication === 'none')) out.push(`Webhook \"${n.name}\" has no authentication. Anyone with the URL can run this workflow.`);\n  }\n  const conns = wf.connections || {};\n  for (const [from, c] of Object.entries(conns)) for (const group of (c.ai_tool || [])) for (const t of group) {\n    const tool = nodes.find(n => n.name === from);\n    if (tool && ACTION.test(tool.type)) out.push(`AI agent \"${t.node}\" can use \"${from}\" on its own. Add a human approval step for actions that send or change things.`);\n  }\n  if (wf.active && !wf.settings?.errorWorkflow) out.push('No error workflow. If this breaks, nobody hears about it.');\n  if (out.length) { total += out.length; lines.push(`${wf.name}${wf.active ? '' : ' (inactive)'}\\n` + out.map(o => '  - ' + o).join('\\n')); }\n}\nconst text = total ? `Stack Map checked ${$input.all().length} workflows and found ${total} things to fix:\\n\\n${lines.join('\\n\\n')}\\n\\nPaste any workflow into Stack Map to see it in 3D with step-by-step fixes.` : `Stack Map checked ${$input.all().length} workflows. All clear.`;\nreturn [{ json: { total, subject: total ? `Stack Map: ${total} things to fix in your n8n` : 'Stack Map: your n8n is all clear', text } }];"},"id":"dfcf40bc-5ae8-45f7-80b3-e37376add3ae","name":"Audit workflows","type":"n8n-nodes-base.code","typeVersion":2,"position":[480,300]},{"parameters":{"sendTo":"you@example.com","subject":"={{ $json.subject }}","emailType":"text","message":"={{ $json.text }}","options":{}},"id":"ee803681-2419-43d9-a725-0ee41154b890","name":"Email me","type":"n8n-nodes-base.gmail","typeVersion":2.1,"position":[720,300]},{"parameters":{"content":"## Stack Map: weekly n8n audit\n1. In **Get all workflows**, add an **n8n API** credential (Settings > n8n API > Create an API key).\n2. Connect Gmail in **Email me** and set your address.\n3. Click **Execute workflow** to run it now, then activate it for every Monday.","height":260,"width":420},"id":"e3dd4d01-5a1a-4c53-8370-600dafea68fa","name":"Setup note","type":"n8n-nodes-base.stickyNote","typeVersion":1,"position":[-40,-40]}],"connections":{"Every Monday 9am":{"main":[[{"node":"Get all workflows","type":"main","index":0}]]},"Get all workflows":{"main":[[{"node":"Audit workflows","type":"main","index":0}]]},"Audit workflows":{"main":[[{"node":"Email me","type":"main","index":0}]]}},"settings":{"executionOrder":"v1"},"pinData":{}},"errors":{"name":"Stack Map: error alerts","nodes":[{"parameters":{},"id":"e71a4f22-fba2-490c-85eb-b17a6adf2f7d","name":"A workflow failed","type":"n8n-nodes-base.errorTrigger","typeVersion":1,"position":[0,300]},{"parameters":{"sendTo":"you@example.com","subject":"=Stack Map: \"{{ $json.workflow.name }}\" just failed","emailType":"text","message":"=Your n8n workflow \"{{ $json.workflow.name }}\" stopped with an error.\n\nWhat broke: {{ $json.execution.error.message }}\nLast step that ran: {{ $json.execution.lastNodeExecuted }}\nSee the run: {{ $json.execution.url }}\n\nCommon causes: an expired key or credential, an API that changed, or a webhook getting data it didn't expect.","options":{}},"id":"8d13bc28-c6e1-4355-b4cf-1ab0c460423e","name":"Email me","type":"n8n-nodes-base.gmail","typeVersion":2.1,"position":[260,300]},{"parameters":{"content":"## Stack Map: error alerts\n1. Connect Gmail in **Email me** (or swap in Slack / Discord).\n2. Save this workflow.\n3. In every other workflow: **Settings > Error Workflow** > pick **Stack Map: error alerts**.\n\nNow when anything breaks, you hear about it in minutes, not from an angry user.","height":300,"width":420},"id":"85fb61b5-9270-47c1-ba7a-a1f0b7341ab5","name":"Setup note","type":"n8n-nodes-base.stickyNote","typeVersion":1,"position":[-60,-60]}],"connections":{"A workflow failed":{"main":[[{"node":"Email me","type":"main","index":0}]]}},"settings":{"executionOrder":"v1"},"pinData":{}}};
+/* WORKFLOWS:END */
+
+/* ---------- automations ---------- */
+const AICO={
+ fix:'M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.4-.6-.6-2.4z',
+ push:'M12 3v12M7 8l5-5 5 5M5 15v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4',
+ audit:'M4 5h16v15H4zM4 9h16M9 3v4M15 3v4M8 14l2.5 2.5L16 12',
+ errors:'M12 4l9 16H3zM12 10v4M12 17h.01',
+ mcp:'M8 7V3M16 7V3M6 7h12v4a6 6 0 0 1-12 0zM12 17v4',
+ scan:'M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14zM21 21l-5-5'};
+const aSvg=k=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="${AICO[k]}"/></svg>`;
+const AUTOS=[
+ {id:'push',t:'Push guard',when:'Every git push',d:'Checks every line added in a push for leaked keys and secrets read in browser code. Emails you the file, the line, and what to do.',nodes:['Webhook','HTTP Request','Code','Gmail'],needs:'email'},
+ {id:'errors',t:'Error alerts',when:'Whenever a workflow fails',d:'Any workflow that breaks emails you what failed and a link to the run. Fixes the "nobody hears when this breaks" problem everywhere at once.',nodes:['Error Trigger','Gmail'],needs:'email'},
+ {id:'audit',t:'Weekly audit',when:'Every Monday 9am',d:'Reads every workflow in your n8n through the n8n API and emails you a list of what to fix.',nodes:['Schedule','n8n API','Code','Gmail'],needs:'email'},
+ {id:'mcp',t:'MCP server',when:'Whenever your AI asks',d:'Claude, Cursor or any MCP client can scan a repo, audit a workflow, and check code for keys before it commits.',nodes:['MCP Server Trigger','HTTP Request Tool','Code Tool'],needs:'url'},
+ {id:'scan',t:'Repo scanner',when:'When you press Scan',d:'Your n8n reads a GitHub repo and an AI Agent explains the stack. Powers "Scan a GitHub repo" and the MCP scan tool.',nodes:['Webhook','HTTP Request','Code','AI Agent'],needs:''}];
+const autoOn=id=>lsGet('sm_auto_'+id)==='on';
+function fillWorkflow(id){
+ const w=JSON.parse(JSON.stringify(WORKFLOWS[id]||{}));const email=lsGet('sm_email').trim(),url=lsGet('sm_n8n_url').trim();
+ for(const n of w.nodes||[]){if(email&&n.parameters&&n.parameters.sendTo==='you@example.com')n.parameters.sendTo=email;if(url&&n.parameters&&/YOUR-NAME\.app\.n8n\.cloud/.test(n.parameters.url||''))n.parameters.url=url}
+ return w}
+function dl(name,obj){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(obj,null,2)],{type:'application/json'}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000)}
+const slug=s=>String(s||'workflow').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'workflow';
+
+// Fix it for me: returns a repaired copy of the mapped workflow plus what changed and what still needs a person.
+function fixWorkflow(wf){
+ const w=JSON.parse(JSON.stringify(wf)),did=[],need=[];const gone=new Set();
+ const isKey=v=>typeof v==='string'&&!v.startsWith('=')&&LIT.some(l=>l.re.test(v));
+ const secretName=k=>/auth|key|token|secret|password/i.test(k||'');
+ w.nodes=(w.nodes||[]).filter(n=>{if(n.disabled&&!/stickyNote/i.test(n.type)){gone.add(n.name);did.push(`Deleted the turned-off node "${n.name}".`);return false}return true});
+ for(const k of Object.keys(w.connections||{})){if(gone.has(k)){delete w.connections[k];continue}for(const t of Object.keys(w.connections[k]))w.connections[k][t]=(w.connections[k][t]||[]).map(g=>(g||[]).filter(c=>!gone.has(c.node)))}
+ for(const n of w.nodes){
+  const P=n.parameters||(n.parameters={});let took=false,inQuery=false;
+  if(typeof P.url==='string'){const u=P.url.replace(/([?&])([\w.-]+)=([^&#'"\s]*)/g,(m,sep,k,v)=>{if(isKey(v)||(secretName(k)&&v.length>12&&!v.startsWith('{'))){took=true;inQuery=true;return sep==='?'?'?':''}return m}).replace(/\?&/,'?').replace(/[?&]$/,'');P.url=u}
+  for(const box of['headerParameters','queryParameters']){const arr=P[box]?.parameters;if(!Array.isArray(arr))continue;const keep=arr.filter(h=>!(isKey(String(h.value||''))||(secretName(h.name)&&h.value&&!String(h.value).startsWith('=')&&String(h.value).length>12)));if(keep.length!==arr.length){took=true;if(box==='queryParameters')inQuery=true;P[box].parameters=keep;if(!keep.length){delete P[box];P[box==='headerParameters'?'sendHeaders':'sendQuery']=false}}}
+  const walk=o=>{for(const k of Object.keys(o)){const v=o[k];if(isKey(v)){let t=v;for(const l of LIT)t=t.replace(new RegExp(l.re.source,'g'),'');o[k]=t;took=true}else if(v&&typeof v==='object')walk(v)}};walk(P);
+  if(took){
+   if(/httpRequest/i.test(n.type)){P.authentication='genericCredentialType';P.genericAuthType=inQuery?'httpQueryAuth':'httpHeaderAuth'}
+   n.notes='Stack Map: the key was removed from this node. Pick or create a credential here, then make a new key in that service (the old one was in the workflow).';n.notesInFlow=true;
+   did.push(`Took the key out of "${n.name}"${/httpRequest/i.test(n.type)?` and set it to use a ${inQuery?'Query':'Header'} Auth credential`:''}.`);
+   need.push(`Make a new key for "${n.name}" and delete the old one. Removing it from the workflow does not undo the leak.`)}
+  const auth=P.authentication;
+  if(/\.webhook$/i.test(n.type)&&(!auth||auth==='none')){P.authentication='headerAuth';n.notes='Stack Map: locked with Header Auth. Create the credential and send that header from whatever calls this URL.';n.notesInFlow=true;did.push(`Locked the webhook "${n.name}" with Header Auth.`);need.push(`Create the Header Auth credential for "${n.name}" and send that header from the caller.`)}
+  if(/mcpTrigger/i.test(n.type)&&(!auth||auth==='none')){P.authentication='bearerAuth';did.push(`Locked the MCP server "${n.name}" with Bearer Auth.`);need.push(`Create the Bearer Auth credential for "${n.name}" and give the token to your MCP client.`)}
+  if(/chatTrigger/i.test(n.type)&&P.public){P.public=false;did.push(`Made the chat "${n.name}" private.`)}
+ }
+ for(const[from,c]of Object.entries(w.connections||{}))for(const g of(c.ai_tool||[]))for(const t of g){const tool=w.nodes.find(x=>x.name===from);const target=w.nodes.find(x=>x.name===t.node);if(tool&&ACTION_TOOL.test(tool.type)&&!/mcpTrigger/i.test(target?.type||'')&&!/^(get|getAll|search|read|list)$/i.test(String(tool.parameters?.operation||'')))need.push(`Decide whether "${t.node}" should use "${from}" without asking. If not, put a Send and Wait (human approval) step before it.`)}
+ if(!w.settings?.errorWorkflow)need.push('Import "Stack Map: error alerts" from Automations, then set it in this workflow\'s Settings > Error Workflow.');
+ const xs=w.nodes.map(n=>n.position?.[0]||0),ys=w.nodes.map(n=>n.position?.[1]||0);
+ w.nodes.push({parameters:{content:`## Fixed by Stack Map\n**Done:**\n${did.map(x=>'- '+x).join('\n')||'- nothing'}\n\n**Still needs you:**\n${need.map(x=>'- '+x).join('\n')||'- nothing'}`,height:Math.min(520,180+28*(did.length+need.length)),width:520},id:'stackmap-fixes',name:'Stack Map fixes',type:'n8n-nodes-base.stickyNote',typeVersion:1,position:[Math.min(...xs,0),Math.min(...ys,0)-Math.min(560,220+28*(did.length+need.length))]});
+ w.name=String(w.name||'Workflow').replace(/ \(fixed by Stack Map\)$/,'')+' (fixed by Stack Map)';delete w.active;delete w.id;
+ return{w,did,need}}
+
+function autoModal(){
+ const email=lsGet('sm_email'),url=lsGet('sm_n8n_url');const fx=S.wf?fixWorkflow(S.wf):null;
+ $('#mBox').classList.add('wide');
+ openModal(`<h2>Automations</h2><p class="sub">Stack Map runs on n8n. Set these up once, and they keep watch for you. Each one is a real n8n workflow: <b>Copy for n8n</b>, then click an empty n8n canvas and paste.</p>
+ <div class="arow"><div><label class="lbl2">Email for alerts</label><input class="ta" id="aEmail" type="email" placeholder="you@yourmail.com" value="${esc(email)}"></div><div><label class="lbl2">Repo scanner URL (optional)</label><input class="ta" id="aUrl" placeholder="https://you.app.n8n.cloud/webhook/stack-map-scan" value="${esc(url)}"></div></div>
+ <div class="agrid">
+ ${fx?`<div class="acard hero"><div class="hd"><span class="aico" style="color:var(--pink)">${aSvg('fix')}</span><b>Fix it for me: ${esc(S.name)}</b><span class="st ${fx.did.length?'on':'off'}">${fx.did.length} fix${fx.did.length===1?'':'es'} ready</span></div>
+  <p>Stack Map rewrote this workflow so the holes are closed. Paste it into n8n as a new workflow, so your original stays untouched.</p>
+  ${fx.did.length?`<ul class="fixlist did">${fx.did.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:''}
+  ${fx.need.length?`<div class="when" style="color:var(--gold)">Still needs you</div><ul class="fixlist need">${fx.need.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:''}
+  <div class="mrow"><button class="btn" id="fxCopy">Copy fixed workflow</button><button class="btn ghost" id="fxMap">See it on the map</button><button class="btn ghost" id="fxDl">Download</button></div></div>`:''}
+ ${AUTOS.map(a=>`<div class="acard"><div class="hd"><span class="aico">${aSvg(a.id)}</span><b>${a.t}</b><span class="st ${autoOn(a.id)?'on':'off'}">${autoOn(a.id)?'Running':'Not set up'}</span></div><div class="when">${a.when}</div><p>${a.d}</p><div class="nodes">${a.nodes.map(n=>`<span>${n}</span>`).join('')}</div>
+  <div class="mrow"><button class="btn sm" data-copy="${a.id}">Copy for n8n</button><button class="btn ghost sm" data-dl="${a.id}">Download</button><button class="btn ghost sm" data-on="${a.id}">${autoOn(a.id)?'Mark off':'It’s running'}</button></div></div>`).join('')}
+ </div><div class="mrow"><button class="btn ghost" id="aClose">Close</button></div>`);
+ const save=()=>{lsSet('sm_email',$('#aEmail').value.trim());lsSet('sm_n8n_url',$('#aUrl').value.trim())};
+ $('#aEmail').onchange=save;$('#aUrl').onchange=save;$('#aClose').onclick=()=>{save();closeModal()};
+ $$('[data-copy]').forEach(b=>b.onclick=()=>{save();const id=b.dataset.copy;if(AUTOS.find(a=>a.id===id).needs==='email'&&!lsGet('sm_email'))toast('Copied. Add your email above first if you want it filled in for you.');copyText(JSON.stringify(fillWorkflow(id),null,2),lsGet('sm_email')||AUTOS.find(a=>a.id===id).needs!=='email'?'Copied. In n8n, click an empty canvas and paste (Ctrl+V).':'')});
+ $$('[data-dl]').forEach(b=>b.onclick=()=>{save();dl(WORKFLOWS[b.dataset.dl].name.replace(/[^a-z0-9]+/gi,'-').toLowerCase()+'.json',fillWorkflow(b.dataset.dl))});
+ $$('[data-on]').forEach(b=>b.onclick=()=>{save();const id=b.dataset.on;lsSet('sm_auto_'+id,autoOn(id)?'':'on');renderWatch();autoModal()});
+ if(fx){$('#fxCopy').onclick=()=>copyText(JSON.stringify(fx.w,null,2),'Fixed workflow copied. In n8n: new workflow, click the canvas, paste.');
+  $('#fxDl').onclick=()=>dl(slug(fx.w.name)+'.json',fx.w);
+  $('#fxMap').onclick=()=>{const before=health();closeModal();mapN8n(fx.w,{quiet:true});setTimeout(()=>toast(`Stack health ${before} → ${health()}. ${fx.need.length} step${fx.need.length===1?'':'s'} left that need a person.`),500)}}
+}
+function renderWatch(){const on=AUTOS.filter(a=>autoOn(a.id)).length;$('#wc').textContent=`${on} of ${AUTOS.length} on`;
+ $('#watch').innerHTML=AUTOS.map(a=>`<button class="row" data-auto="${a.id}"><span class="aico" style="width:30px;height:30px;border-radius:10px">${aSvg(a.id)}</span><span class="tx"><b>${a.t}</b><span>${a.when}</span></span><span class="st ${autoOn(a.id)?'on':'off'}">${autoOn(a.id)?'Running':'Set up'}</span></button>`).join('');
+ $$('#watch [data-auto]').forEach(b=>b.onclick=autoModal)}
+const _closeModal=closeModal;closeModal=function(){$('#mBox').classList.remove('wide');_closeModal()};
+
 /* ---------- boot ---------- */
 addEventListener('resize',resize);new ResizeObserver(resize).observe(cv);
 loadDemo();resize();mapN8n(SAMPLE_N8N,{demo:true,quiet:true});requestAnimationFrame(loop);
 $('#n8nBtn').onclick=()=>n8nModal('paste');
+$('#autoBtn').onclick=autoModal;renderWatch();
 setTimeout(()=>toast('Sample n8n workflow. Tap an island or a creature, or press Tour. Paste your own with the n8n button.'),600);
 </script>
 </body>
