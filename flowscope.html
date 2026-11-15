@@ -288,6 +288,7 @@ body.t-fix #pg-fix,body.t-agents #pg-agents,body.t-learn #pg-learn{display:flex}
 body.t-home #pg-home{display:flex}
 .mrow.left{justify-content:flex-start}
 .hero{padding:26px 4px 8px;display:flex;flex-direction:column;gap:14px}
+.vidc{padding:10px}.vidc video{display:block;width:100%;aspect-ratio:16/9;border-radius:12px;background:#000}.vidc p{margin:10px 4px 2px}
 .hlogo{width:84px;height:72px}
 .hero h1{font-family:"Outfit",var(--font);font-size:clamp(30px,5vw,46px);line-height:1.08;font-weight:700;letter-spacing:-.02em}
 .hero h1 span{background:linear-gradient(90deg,#ffc857,#ff8a5c);-webkit-background-clip:text;background-clip:text;color:transparent}
@@ -370,6 +371,7 @@ body.t-home #pg-home{display:flex}
     <p>Flowscope turns an n8n workflow or a GitHub repo into a solar system, finds the security holes, and gives you n8n agents that keep watch for you.</p>
     <div class="mrow left"><button class="btn" data-go="add">+ Add your workflow</button><button class="btn ghost" data-go="map">🪐 See this morning’s n8n demo workflow</button></div>
    </div>
+   <div class="card vidc"><video src="media/flowscope-demo.mp4" poster="media/poster.jpg" controls muted playsinline preload="none"></video><p class="empty">▶️ 60-second tour: the demo workflow, the leaked key, the one-click fix (27 → 74), the agents and shooting stars.</p></div>
    <h3 class="sect">How it works</h3>
    <div class="how">
     <div><b>1</b><i>➕</i><strong>Add</strong><span>Paste an n8n workflow or scan a GitHub repo</span></div>

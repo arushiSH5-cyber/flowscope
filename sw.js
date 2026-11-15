@@ -1,6 +1,6 @@
 // Flowscope service worker: works offline, but always tries the network first for the app
 // so a new version shows up right away. Calls to n8n (POST) are never cached.
-const CACHE = 'flowscope-v1';
+const CACHE = 'flowscope-v2';
 const SHELL = ['./', './flowscope.html', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png'];
 
 self.addEventListener('install', e => {
@@ -18,6 +18,7 @@ self.addEventListener('fetch', e => {
   const isPage = req.mode === 'navigate' || url.pathname.endsWith('.html');
   const isFont = /fonts\.(googleapis|gstatic)\.com$/.test(url.hostname);
   if (url.origin !== location.origin && !isFont) return;
+  if (url.pathname.includes('/media/')) return; // let videos stream straight from the network
   if (isPage) {
     e.respondWith(fetch(req).then(res => { const copy = res.clone(); caches.open(CACHE).then(c => c.put(req, copy)); return res; })
       .catch(() => caches.match(req, { ignoreSearch: true }).then(r => r || caches.match('./flowscope.html'))));

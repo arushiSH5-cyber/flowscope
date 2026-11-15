@@ -8,6 +8,16 @@
 
 **See every app your n8n automations touch as a 3D solar system, fix what's exposed in one click, and let n8n agents keep watch.**
 
+<p align="center">
+  <a href="https://arushish5-cyber.github.io/flowscope/"><img src="media/flowscope-map.gif" alt="Flowscope: a workflow drawn as a 3D solar system with a smiling sun, orbiting app planets and shooting stars" width="800"></a>
+</p>
+
+<p align="center"><b>🎬 <a href="media/flowscope-demo.mp4">Watch the 60-second demo video</a></b> · the demo workflow, the leaked key, the one-click fix (27 → 74), the agents</p>
+
+| 😟 Before: an Apify key is typed into a node (health 27) | 😄 After the 🪄 Fixer (health 74) |
+|---|---|
+| <img src="media/map-27.jpg" alt="Worried sun, health 27"> | <img src="media/map-74.jpg" alt="Happy sun after the fix, health 74"> |
+
 Built at the **n8n Santa Clara University Buildathon** (Nov 15, 2026).
 
 ---
