@@ -78,6 +78,33 @@ Judging (from the host deck) covers **Idea / Uniqueness**, **Implementation / Do
 | 2:30 | **Agents** tab, then click space for shooting stars | "They keep watch: every push, every failure, every Monday." |
 | 2:50 | Last slide | "Other scanners report. Flowscope fixes. Built on n8n, and it checks n8n." |
 
+## 🔌 Showing n8n to judges (have these tabs open before 4:00)
+
+Sign in to n8n in the browser you present from, then open these tabs in order:
+1. **Flowscope app**: https://arushish5-cyber.github.io/flowscope/
+2. **n8n Overview** (all 5 workflows): https://flowscope.app.n8n.cloud/home/workflows
+3. **Scout's executions**: open *Flowscope: scan repo* → **Executions** tab
+4. **Guard's catch**: open *Flowscope: push guard* (https://flowscope.app.n8n.cloud/workflow/uabOeamLfekau9VS) → **Executions** → the run that caught the fake AWS key → click **Check added lines** to show its output
+
+### The live n8n moment (about 40 seconds)
+| Do | Say |
+|---|---|
+| In the app: Home → **🧗 GitUp** | "This button calls my n8n workflow's webhook." |
+| While it loads, switch to **tab 3** (Scout executions) and refresh | "Here's the run happening right now in n8n." |
+| Click the newest run: Webhook → HTTP Request → Code → **AI Agent** → Respond, all green | "n8n downloads the repo from GitHub, the AI Agent node reads it, and Respond to Webhook sends the map back." |
+| Back to the app: the GitUp solar system appears | "Everything you see came out of that n8n run." |
+| **Tab 4**: Guard's run that caught the key | "Every git push hits this n8n webhook. It caught a fake AWS key in 2.2 seconds." |
+
+### "How is n8n central to this?"
+- **n8n is the whole backend.** The app is one static page. Everything that touches the outside world runs in n8n: the GitHub API, the AI, email, schedules and the MCP server. We have **no server of our own**.
+- **We use the n8n features that matter most:** Webhook + Respond to Webhook, **AI Agent** (on n8n's built-in AI credits, so we needed no OpenAI key), Code, HTTP Request, Error Trigger, Schedule Trigger, the n8n API, and **MCP Server Trigger**.
+- **It's built for n8n users too.** Flowscope reads n8n workflow JSON, and the Fixer hands back an **n8n workflow you paste straight back into n8n**.
+- **Without n8n,** Scout, Guard, Siren, Inspector and Buddy don't exist; you'd just have a picture.
+
+### If they ask about errors
+- n8n emailed us that **push guard ran into an error**. That happened when we deleted our test branch: GitHub sends a "branch deleted" push with no code in it. **This is exactly the problem Siren solves**, and the Fix tab flags it as *"Nobody hears when this breaks."* The repo copy now skips deleted branches. To fix the n8n copy: open push guard → double-click **Get the changes** → **Settings** → **On Error** → *Continue* → save.
+- GitHub's **"Flowscope lint failed"** email at 1:57 PM was our **deliberate test**: we pushed a fake AWS key on a test branch, and the lint Action blocked it, just as it should.
+
 ## ❓ Likely judge questions
 - **"Isn't this just n8n audit?"** n8n audit is instance-wide and for owners. We work per workflow, for beginners, visually, we **fix** it, and we cover the code too.
 - **"Does it see my keys?"** Pasted workflows stay in the browser. Keys stored in n8n credentials never appear in the workflow JSON. Our key checker reports line numbers, never key values.
