@@ -22,7 +22,7 @@ Judging (from the host deck) covers **Idea / Uniqueness**, **Implementation / Do
 
 ### The app (`flowscope.html`)
 - **Tabs:** 🏠 Home · 🪐 Map · 🛠️ Fix · 🤖 Agents · 📚 Learn. On phones they become a bottom tab bar.
-- **Home:** what Flowscope does, how it works in 4 steps, where everything is, **Built on n8n** (the real node chains), **Try a real project** (GitUp, The Coop, Otto), and how to install.
+- **Home:** what Flowscope does, how it works in 4 steps, where everything is, **Built on n8n** (the real node chains), **Try a real project** (The Coop, Otto, Flowscope), and how to install.
 - **Map:** black starfield, twinkling stars, shooting stars (**click empty space** to launch more), a kawaii Sun that looks worried when a key leaked and smiles after the fix, orbiting planets (bigger and closer = used more), and 5 n8n agent satellites.
 - **Cute drawn characters, all original:** agents 🛡️ Guard, 🚨 Siren, 🕵️ Inspector, 🤖 Buddy, 🔭 Scout and 🪄 Fixer; hazards: comet (leaked key), UFO (open door), black hole (silent failure), satellite (dead node).
 - **Fix:** the Fixer returns a repaired n8n workflow. This morning's demo workflow goes from **27 → 74**.
@@ -73,7 +73,7 @@ Judging (from the host deck) covers **Idea / Uniqueness**, **Implementation / Do
 | 0:20 | App → Home → **See this morning's n8n demo workflow** | "This is the Lead Machine from this morning. The sun is the workflow; planets are the apps it uses." |
 | 0:40 | Tap the **comet** | "An Apify key typed into a node. Anyone you share this with gets it." |
 | 1:00 | **Fix** tab → **See it on the map** | "Other scanners stop at a report. We hand you the fixed workflow. 27 → 74, and the sun smiles." |
-| 1:30 | Home → **🧗 GitUp** | "Our n8n reads a real repo and an AI Agent explains it, live." |
+| 1:30 | Home → **🐔 The Coop** | "Our n8n reads a real repo and an AI Agent explains it, live." |
 | 2:00 | Switch to n8n: Scout and Guard **Published** | "Five real n8n workflows. Guard caught a leaked key in 2.2 seconds today." |
 | 2:30 | **Agents** tab, then click space for shooting stars | "They keep watch: every push, every failure, every Monday." |
 | 2:50 | Last slide | "Other scanners report. Flowscope fixes. Built on n8n, and it checks n8n." |
@@ -89,10 +89,10 @@ Sign in to n8n in the browser you present from, then open these tabs in order:
 ### The live n8n moment (about 40 seconds)
 | Do | Say |
 |---|---|
-| In the app: Home → **🧗 GitUp** | "This button calls my n8n workflow's webhook." |
+| In the app: Home → **🐔 The Coop** | "This button calls my n8n workflow's webhook." |
 | While it loads, switch to **tab 3** (Scout executions) and refresh | "Here's the run happening right now in n8n." |
 | Click the newest run: Webhook → HTTP Request → Code → **AI Agent** → Respond, all green | "n8n downloads the repo from GitHub, the AI Agent node reads it, and Respond to Webhook sends the map back." |
-| Back to the app: the GitUp solar system appears | "Everything you see came out of that n8n run." |
+| Back to the app: The Coop solar system appears | "Everything you see came out of that n8n run." |
 | **Tab 4**: Guard's run that caught the key | "Every git push hits this n8n webhook. It caught a fake AWS key in 2.2 seconds." |
 
 ### "How is n8n central to this?"

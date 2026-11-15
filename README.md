@@ -34,7 +34,7 @@ Built at the **n8n Santa Clara University Buildathon** (Nov 15, 2026).
 1. Open the **[live app](https://arushish5-cyber.github.io/flowscope/)**. **🏠 Home** explains every tab.
 2. Press **🪐 See this morning's n8n demo workflow**: the Lead Machine (Apify, Gemini, OpenRouter, Sheets, Gmail). The sun looks worried because an Apify key is typed into a node.
 3. Open **🛠️ Fix**, then **See it on the map**, and health goes **27 → 74**.
-4. On Home, under **Try a real project**, press **🧗 GitUp**. Our n8n reads the real repo and an AI Agent explains it live.
+4. On Home, under **Try a real project**, press **🐔 The Coop**. Our n8n reads the real repo and an AI Agent explains it live.
 5. Click empty space for shooting stars ✨.
 
 ---
