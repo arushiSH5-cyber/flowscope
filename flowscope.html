@@ -309,6 +309,13 @@ body.t-home #pg-home{display:flex}
 .hcard span{color:var(--soft);font-size:14px;line-height:1.5}
 .hcard em{font-style:normal;color:var(--teal);font-weight:600;font-size:14px;margin-top:4px}
 .installc div{display:flex;flex-direction:column;gap:6px}.installc b{font-size:16px}.installc span{color:var(--soft);font-size:14px;line-height:1.5}
+.n8nc{display:flex;flex-direction:column;gap:10px}
+.flowrow{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:13px}
+.flowrow b{font-family:"Outfit",var(--font);font-size:15px;width:110px;flex:none}
+.flowrow span{padding:4px 10px;border-radius:9px;background:var(--panel2);border:1px solid var(--line2);color:var(--ink);font-weight:500}
+.flowrow span.ai{border-color:#a78bfa;background:rgba(167,139,250,.14)}
+.flowrow i{font-style:normal;color:var(--mute)}
+.flowrow em.live{font-style:normal;color:var(--good);font-weight:600;margin-left:auto;font-size:12.5px}
 @media (max-width:860px){
  .how{grid-template-columns:1fr 1fr}
  .hgrid{grid-template-columns:1fr}
@@ -376,6 +383,16 @@ body.t-home #pg-home{display:flex}
     <button class="hcard" data-go="fix"><i>🛠️</i><b>Fix <small id="hFix"></small></b><span>Every problem with steps written for n8n, plus the 🪄 Fixer that hands back a repaired workflow.</span><em>Open Fix →</em></button>
     <button class="hcard" data-go="agents"><i>🤖</i><b>Agents <small id="hAg"></small></b><span>5 real n8n workflows: Guard, Siren, Inspector, Buddy and Scout. Set one up and it keeps watch.</span><em>Open Agents →</em></button>
     <button class="hcard" data-go="learn"><i>📚</i><b>Learn</b><span>A 60-second quiz, what each app does, and rules that stop your AI from repeating mistakes.</span><em>Open Learn →</em></button>
+   </div>
+   <h3 class="sect">Built on n8n</h3>
+   <div class="card n8nc">
+    <p class="empty">Every agent is a real n8n workflow, live at <b>flowscope.app.n8n.cloud</b>. These are the actual nodes:</p>
+    <div class="flowrow"><b>🔭 Scout</b><span>Webhook</span><i>→</i><span>HTTP Request</span><i>→</i><span>Code</span><i>→</i><span class="ai">AI Agent</span><i>→</i><span>Respond to Webhook</span><em class="live">● live</em></div>
+    <div class="flowrow"><b>🛡️ Guard</b><span>GitHub Webhook</span><i>→</i><span>HTTP Request</span><i>→</i><span>Code</span><i>→</i><span>Gmail</span><em class="live">● live</em></div>
+    <div class="flowrow"><b>🤖 Buddy</b><span class="ai">MCP Server Trigger</span><i>→</i><span>HTTP Request Tool</span><i>+</i><span>Code Tools</span></div>
+    <div class="flowrow"><b>🚨 Siren</b><span>Error Trigger</span><i>→</i><span>Gmail</span></div>
+    <div class="flowrow"><b>🕵️ Inspector</b><span>Schedule</span><i>→</i><span>n8n API</span><i>→</i><span>Code</span><i>→</i><span>Gmail</span></div>
+    <div class="flowrow"><b>🪄 Fixer</b><span>Your workflow JSON</span><i>→</i><span>repaired n8n workflow</span><i>→</i><span>paste back into n8n</span></div>
    </div>
    <h3 class="sect">Try a real project</h3>
    <div class="card"><p class="empty" style="margin-bottom:10px">Our n8n reads the repo and an AI Agent explains it. Takes about 10 seconds.</p><div class="mrow left" id="homeReal"></div></div>
@@ -1066,7 +1083,8 @@ const AUTOS=[
  {id:'audit',t:'Weekly audit',when:'Every Monday 9am',d:'Reads every workflow in your n8n through the n8n API and emails you a list of what to fix.',nodes:['Schedule','n8n API','Code','Gmail'],needs:'email'},
  {id:'mcp',t:'MCP server',when:'Whenever your AI asks',d:'Claude, Cursor or any MCP client can scan a repo, audit a workflow, and check code for keys before it commits.',nodes:['MCP Server Trigger','HTTP Request Tool','Code Tool'],needs:'url'},
  {id:'scan',t:'Repo scanner',when:'When you press Scan',d:'Your n8n reads a GitHub repo and an AI Agent explains the stack. Powers "Scan a GitHub repo" and the MCP scan tool.',nodes:['Webhook','HTTP Request','Code','AI Agent'],needs:''}];
-const autoOn=id=>lsGet('sm_auto_'+id)==='on';
+const LIVE_DEFAULT=['scan','push'];
+const autoOn=id=>{const v=lsGet('sm_auto_'+id);return v==='on'||(v===''&&LIVE_DEFAULT.includes(id))};
 function fillWorkflow(id){
  const w=JSON.parse(JSON.stringify(WORKFLOWS[id]||{}));const email=lsGet('sm_email').trim(),url=lsGet('sm_n8n_url').trim();
  for(const n of w.nodes||[]){if(email&&n.parameters&&n.parameters.sendTo==='you@example.com')n.parameters.sendTo=email;if(url&&n.parameters&&/YOUR-NAME\.app\.n8n\.cloud/.test(n.parameters.url||''))n.parameters.url=url}
@@ -1138,7 +1156,7 @@ function renderAgents(){const el=$('#agentsBody');if(!el)return;const email=lsGe
  const save=()=>{lsSet('sm_email',$('#aEmail').value.trim());lsSet('sm_n8n_url',$('#aUrl').value.trim())};$('#aEmail').onchange=save;$('#aUrl').onchange=save;
  $$('#agentsBody [data-copy]').forEach(b=>b.onclick=()=>{save();copyText(JSON.stringify(fillWorkflow(b.dataset.copy),null,2),'Copied. In n8n, click an empty canvas and paste (Ctrl+V).')});
  $$('#agentsBody [data-real]').forEach(b=>b.onclick=()=>{showTab('map');scanViaN8n(lsGet('sm_n8n_url'),b.dataset.real)});
- $$('#agentsBody [data-on]').forEach(b=>b.onclick=()=>{const id=b.dataset.on;lsSet('sm_auto_'+id,autoOn(id)?'':'on');renderWatch();renderAgents()});}
+ $$('#agentsBody [data-on]').forEach(b=>b.onclick=()=>{const id=b.dataset.on;lsSet('sm_auto_'+id,autoOn(id)?'off':'on');renderWatch();renderAgents()});}
 function autoModalOld(){
  const email=lsGet('sm_email'),url=lsGet('sm_n8n_url');const fx=S.wf?fixWorkflow(S.wf):null;
  $('#mBox').classList.add('wide');
