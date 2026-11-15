@@ -20,7 +20,7 @@
     },
     {
       "parameters": {
-        "url": "={{ 'https://api.github.com/repos/' + $json.body.repository.full_name + '/compare/' + $json.body.before + '...' + $json.body.after }}",
+        "url": "={{ /^0+$/.test($json.body.before) ? 'https://api.github.com/repos/' + $json.body.repository.full_name + '/commits/' + $json.body.after : 'https://api.github.com/repos/' + $json.body.repository.full_name + '/compare/' + $json.body.before + '...' + $json.body.after }}",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [

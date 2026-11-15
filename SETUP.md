@@ -137,6 +137,8 @@ Tap the comet: the exact field, the n8n steps to fix it, and a reminder to rotat
 
 **1:55 The satellites.** "These 5 satellites orbiting the sun are real n8n workflows running in our n8n. Green means it is watching right now." Click one, and the Automations panel opens.
 
+**1:58 A real project.** + Add workflow, then **Scan a GitHub repo**, then click **🧗 GitUp** or **🐔 The Coop**. Our n8n reads the real repo, and the solar system builds from it live.
+
 **2:00 n8n as the engine.** Open the **🤖 Agents** tab: "Everything you just saw is n8n. Six workflows, one click each to copy." Switch to the n8n editor. "This workflow takes a GitHub repo, pulls the files, and an AI Agent explains the stack in plain words." Run the scan from the app, and the 3D map plus the agent's summary appear.
 
 **2:15 MCP: it's in your AI tool too.** In Claude or Cursor: "Audit this n8n workflow" (paste one), then the health score and fixes come back from our n8n MCP server. "Your AI assistant can check its own work before it ships."
