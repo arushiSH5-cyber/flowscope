@@ -1,6 +1,6 @@
 # Flowscope × n8n: setup, demo and pitch
 
-**One line:** Flowscope shows every app your automations and code touch as a sunny 3D island map, fixes the holes for you, and keeps watch with n8n automations. n8n is both the engine and a target. Pitch, competitors and money: see `PITCH.md`.
+**One line:** Flowscope shows every app your automations and code touch as a 3D solar system, fixes the holes for you, and keeps watch with n8n automations. n8n is both the engine and a target. Pitch, competitors and money: see `PITCH.md`.
 
 Files (all in `~/Downloads/flowscope`):
 - `flowscope.html`: the app (one file, open it in Chrome). `index.html` forwards to it for GitHub Pages.
@@ -120,16 +120,16 @@ What runs automatically once set up:
 
 **0:00 Hook.** "The deck this morning said one person can now ship what used to take a team. They also connect what used to take a team: our sample automation touches 6 apps. Can you name them all, and which ones hold a key? Nobody can. So we built a map."
 
-**0:20 The map.** Flowscope opens on a sample lead-gen workflow. "Every island is an app this workflow touches. Currents show which way data flows. Chests are keys." Press **Tour** (15 seconds, auto-plays).
+**0:20 The map.** Flowscope opens on a sample lead-gen workflow. "Every planet is an app this workflow touches. The bigger and closer it orbits, the more the workflow uses it. Beams show which way data flows." Press **Tour** (15 seconds, auto-plays).
 
-**0:45 The problems (and the lighthouse).** The lighthouse beam is red because a key leaked. Health score 27, five creatures:
-- the shark: an Apify token typed straight into the URL of an HTTP node, so anyone you share the workflow with has it
+**0:45 The problems (and the sun).** The sun flares red because a key leaked. Health score 27, five hazards:
+- the comet: an Apify token typed straight into the URL of an HTTP node, so anyone you share the workflow with has it
 - an unsubscribe webhook anyone can call
 - an AI agent that can send email with no human approving it
 - a turned-off Gemini node still wired in
 - no error workflow
 
-Tap the shark: the exact field, the n8n steps to fix it, and a reminder to rotate the key.
+Tap the comet: the exact field, the n8n steps to fix it, and a reminder to rotate the key.
 
 **1:10 Fix it for me (the wow moment).** Open **Automations**: "Other scanners stop at a report. We hand you the fixed workflow." Show the list of fixes, press **See it on the map**, and health goes **27 → 74**. "And it tells you the 2 things that still need a human." Press **Copy fixed workflow** and paste it into n8n, so they see the sticky note listing every change.
 
@@ -151,7 +151,7 @@ Then the GitHub commit page: the lint Action's notes on the exact lines.
 
 - **Idea / uniqueness:** n8n scanners exist (n8n audit, FlowGuard, FlowSentry, RiskVoid, audit8n), but they all stop at a report. Flowscope **returns the fixed workflow**, explains it to beginners as a map, covers the code too, and runs inside n8n and your AI tool (MCP).
 - **Implementation / does it work:** a real n8n MCP server (MCP Server Trigger + HTTP Request Tool + Code Tools), real parsing of any pasted workflow JSON, real repo scans through n8n (HTTP Request, Code, AI Agent, Respond to Webhook), a real push webhook with an email alert, and a real audit through the n8n API. No fake data outside the clearly labeled sample.
-- **Presentation / clarity:** one health score, one picture, one creature per problem, and steps written for n8n users.
+- **Presentation / clarity:** one health score, one picture, one space hazard per problem, and steps written for n8n users.
 
 ## Likely questions
 - *Does it see my keys?* Keys stored in n8n credentials are never in the workflow JSON, so Flowscope can't see them, which is the point. It only catches keys typed into node fields.

@@ -1,7 +1,7 @@
 # Flowscope: pitch, standout and money
 
 ## One line
-Flowscope shows everything your n8n automations and code touch as a sunny 3D island map, **fixes the holes for you**, and keeps watch with n8n automations so new holes get caught the day they appear.
+Flowscope shows everything your n8n automations and code touch as a 3D solar system, **fixes the holes for you**, and keeps watch with n8n automations so new holes get caught the day they appear.
 
 ## The problem
 n8n makes it easy for one person to connect a dozen apps. The fastest way to get a node working is to paste the API key straight into it, leave the webhook on "None", and let the AI agent send email by itself. Those workflows then get shared as templates, exported, and screenshotted. Nobody sees the whole picture, and nobody is told when something breaks.

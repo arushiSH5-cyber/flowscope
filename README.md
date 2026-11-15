@@ -1,6 +1,6 @@
 # Flowscope
 
-See every app your n8n automations and code touch as a sunny 3D island map, then **fix the holes in one click** and keep watch with n8n.
+See every app your n8n automations and code touch as a 3D solar system, then **fix the holes in one click** and keep watch with n8n.
 
 **Try it:** open `flowscope.html` in Chrome. It starts on a sample n8n workflow. Press **Automations** → **Fix it for me**, then **See it on the map** (health 27 → 74).
 
