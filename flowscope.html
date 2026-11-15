@@ -470,6 +470,7 @@ function frame(dt){
  const D=[];
  D.push({z:P(0,0,0).z,draw:drawCenter});
  for(const s of vis){const p=P(s.x,s.y+fl(s),s.z);D.push({z:p.z,draw:()=>drawIsland(s,p)});if(s.keys.length&&s.anim>.9&&!s.unused){const[x,y,z]=curve(s,.42),cp=P(x,y,z);D.push({z:cp.z-1,draw:()=>drawChest(s,cp)})}}
+ if(typeof AUTOS!=='undefined')AUTOS.forEach((au,i)=>{const a=i/AUTOS.length*Math.PI*2-time*.06*(RM?0:1)+.3,R=585,y=70+(RM?0:Math.sin(time*.9+i)*6),x=Math.cos(a)*R,z=Math.sin(a)*R,p=P(x,y,z);D.push({z:p.z,draw:()=>drawSat(au,p)})});
  D.sort((a,b)=>b.z-a.z).forEach(d=>d.draw());
  labels(vis);
  // leaving sharks
@@ -478,6 +479,18 @@ function frame(dt){
 }
 function rockBody(cx,cy,r,top,side){ctx.beginPath();ctx.moveTo(cx-r,cy);ctx.bezierCurveTo(cx-r*.98,cy+r*.3,cx-r*.45,cy+r*.5,cx,cy+r*.52);ctx.bezierCurveTo(cx+r*.45,cy+r*.5,cx+r*.98,cy+r*.3,cx+r,cy);ctx.closePath();const g=ctx.createLinearGradient(cx-r,cy,cx+r,cy+r);g.addColorStop(0,side[0]);g.addColorStop(1,side[1]);ctx.fillStyle=g;ctx.fill();ctx.beginPath();ctx.ellipse(cx,cy,r,r*.36,0,0,Math.PI*2);const g2=ctx.createLinearGradient(cx,cy-r*.36,cx,cy+r*.36);g2.addColorStop(0,top[0]);g2.addColorStop(1,top[1]);ctx.fillStyle=g2;ctx.fill()}
 function shadow(x,z,r){const p=P(x,-90,z);ctx.fillStyle='rgba(8,80,110,.12)';ctx.beginPath();ctx.ellipse(p.x,p.y,r*p.s,r*p.s*Math.max(.18,Math.sin(cam.pitch)),0,0,Math.PI*2);ctx.fill()}
+function drawSat(au,p){
+ const on=autoOn(au.id),u=Math.max(7,13*p.s*1.5),c=on?'#5be39a':'#8a90c0',hl=hover&&hover.auto===au,sun=P(0,0,0);
+ if(on&&!RM){ctx.save();ctx.globalCompositeOperation='lighter';ctx.strokeStyle='rgba(91,227,154,.22)';ctx.setLineDash([3,9]);ctx.lineDashOffset=-time*30;ctx.lineWidth=1.4;ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(sun.x,sun.y);ctx.stroke();ctx.setLineDash([]);ctx.restore()}
+ ctx.save();ctx.globalCompositeOperation='lighter';const g=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,u*2.6);g.addColorStop(0,on?'rgba(91,227,154,.55)':'rgba(138,144,192,.22)');g.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=g;ctx.beginPath();ctx.arc(p.x,p.y,u*2.6,0,7);ctx.fill();ctx.restore();
+ ctx.save();ctx.translate(p.x,p.y);ctx.rotate(Math.sin(time*.7+u)*.15);
+ ctx.fillStyle=on?'#2f6fe0':'#3a3f6e';ctx.strokeStyle='#0c1030';ctx.lineWidth=1;for(const sx of[-1,1]){ctx.fillRect(sx>0?u*.55:-u*1.75,-u*.32,u*1.2,u*.64);ctx.strokeRect(sx>0?u*.55:-u*1.75,-u*.32,u*1.2,u*.64);ctx.beginPath();ctx.moveTo(sx*u*1.15,-u*.32);ctx.lineTo(sx*u*1.15,u*.32);ctx.stroke()}
+ ctx.fillStyle='#dfe3ff';rr(-u*.55,-u*.45,u*1.1,u*.9,3);ctx.fill();ctx.fillStyle=c;ctx.beginPath();ctx.arc(0,0,u*.24,0,7);ctx.fill();
+ ctx.strokeStyle='#dfe3ff';ctx.lineWidth=1.2;ctx.beginPath();ctx.moveTo(0,-u*.45);ctx.lineTo(0,-u*.95);ctx.stroke();ctx.fillStyle=c;ctx.beginPath();ctx.arc(0,-u*1.0,u*.14,0,7);ctx.fill();
+ ctx.restore();
+ if(hl||W>=600){ctx.font='800 11px Nunito, system-ui';ctx.textAlign='center';ctx.textBaseline='middle';const t=au.t,w=ctx.measureText(t).width+14;ctx.fillStyle='rgba(10,14,42,.8)';ctx.strokeStyle=c;ctx.lineWidth=1;rr(p.x-w/2,p.y+u*1.3,w,18,8);ctx.fill();ctx.stroke();ctx.fillStyle=on?'#c9ffe0':'#c3c8ee';ctx.fillText(t,p.x,p.y+u*1.3+9)}
+ hits.push({type:'sat',auto:au,x:p.x,y:p.y,r:u*1.9,z:p.z});
+}
 function drawCenter(){
  const p=P(0,0,0),r=74*p.s,ps=openProbs(),worried=ps.some(x=>x.kind==='shark'),pulse=RM?0:Math.sin(time*2)*.06;
  ctx.save();ctx.globalCompositeOperation='lighter';
@@ -554,9 +567,9 @@ cv.addEventListener('pointerleave',()=>setHover(null));
 cv.addEventListener('wheel',e=>{e.preventDefault();lastInput=performance.now();goal.dist=clamp(goal.dist*Math.exp(e.deltaY*.0012),420,2200)},{passive:false});
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 function setHover(h,x,y){hover=h&&(h.svc?{svc:h.svc}:h.prob?{svc:svcById(h.prob.svc)}:null);cv.classList.toggle('hov',!!h);const tip=$('#tip');if(!h){tip.style.opacity=0;return}
- let t='',s='';if(h.type==='svc'){t=h.svc.name;s=h.svc.unused?'Installed, but nothing uses it':h.svc.does}else if(h.type==='current'){t=`${h.svc.dir==='out'?'Sends':'Shares'}: ${h.svc.data}`;s=`${S.name} ↔ ${h.svc.name} · ${UNIT(h.svc.ev.filter(e=>e.p!=='package.json').length)}`}else if(h.type==='chest'){const st=keyStatus(h.svc);t=st==='leak'?'Key leaked':st==='miss'?'Key missing from .env.example':'Keys stored safely';s=h.svc.keys.map(k=>k.name).join(', ')}else if(h.type==='prob'){t=h.prob.title;s='Tap to see the fix'}else if(h.type==='center'){t=`${S.name} (your app)`;s='Tap for an overview'}
+ let t='',s='';if(h.type==='svc'){t=h.svc.name;s=h.svc.unused?'Installed, but nothing uses it':h.svc.does}else if(h.type==='current'){t=`${h.svc.dir==='out'?'Sends':'Shares'}: ${h.svc.data}`;s=`${S.name} ↔ ${h.svc.name} · ${UNIT(h.svc.ev.filter(e=>e.p!=='package.json').length)}`}else if(h.type==='chest'){const st=keyStatus(h.svc);t=st==='leak'?'Key leaked':st==='miss'?'Key missing from .env.example':'Keys stored safely';s=h.svc.keys.map(k=>k.name).join(', ')}else if(h.type==='prob'){t=h.prob.title;s='Tap to see the fix'}else if(h.type==='center'){t=`${S.name} (your app)`;s='Tap for an overview'}else if(h.type==='sat'){t=`n8n automation: ${h.auto.t}`;s=autoOn(h.auto.id)?`Running in your n8n · ${h.auto.when}`:'Not set up yet · tap to set it up'}
  tip.innerHTML=`${esc(t)}<small>${esc(s)}</small>`;tip.style.opacity=1;const tw=tip.offsetWidth;tip.style.left=clamp(x+14,6,W-tw-6)+'px';tip.style.top=clamp(y+14,6,H-60)+'px'}
-function clickHit(h){if(h.type==='prob')openProblem(h.prob);else if(h.type==='svc'||h.type==='current')openService(h.svc);else if(h.type==='chest')openService(h.svc,'keys');else if(h.type==='center')openOverview()}
+function clickHit(h){if(h.type==='prob')openProblem(h.prob);else if(h.type==='svc'||h.type==='current')openService(h.svc);else if(h.type==='chest')openService(h.svc,'keys');else if(h.type==='center')openOverview();else if(h.type==='sat')autoModal()}
 function flyTo(s,dist=760){if(!s){goal.tx=0;goal.ty=0;goal.tz=0;goal.dist=fitDist();goal.pitch=.5;goal.ox=0;return}goal.tx=s.x*.85;goal.ty=s.y;goal.tz=s.z*.85;goal.dist=Math.max(dist,F*.9);const ang=Math.atan2(s.x,s.z);goal.yaw=nearestAngle(cam.yaw,-ang+Math.PI);goal.pitch=.42;lastInput=performance.now()}
 function nearestAngle(cur,t){let d=((t-cur)%(Math.PI*2)+Math.PI*3)%(Math.PI*2)-Math.PI;return cur+d}
 $('#zIn').onclick=()=>{goal.dist=clamp(goal.dist*.8,420,2200);lastInput=performance.now()};
@@ -838,7 +851,8 @@ const SAMPLE_N8N={name:'Lead machine (sample)',active:true,settings:{executionOr
   'Google Gemini Chat Model':{ai_languageModel:[[{node:'Find the email',type:'ai_languageModel',index:0}]]},'OpenRouter Chat Model':{ai_languageModel:[[{node:'Find the email',type:'ai_languageModel',index:0}]]},'OpenAI Chat Model':{ai_languageModel:[[{node:'Write cold email',type:'ai_languageModel',index:0}]]},'Send email':{ai_tool:[[{node:'Write cold email',type:'ai_tool',index:0}]]}}};
 
 /* ---------- n8n modal ---------- */
-const lsGet=k=>{try{return localStorage.getItem(k)||''}catch(e){return''}},lsSet=(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}};
+const N8N_DEFAULT='https://flowscope.app.n8n.cloud/webhook/flowscope-scan';
+const lsGet=k=>{let v='';try{v=localStorage.getItem(k)||''}catch(e){}return v||(k==='sm_n8n_url'?N8N_DEFAULT:'')},lsSet=(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}};
 function n8nModal(tab='paste'){
  openModal(`<h2>Flowscope + n8n</h2><div class="tabs"><button class="tab ${tab==='paste'?'on':''}" data-t="paste">Map an n8n workflow</button><button class="tab ${tab==='repo'?'on':''}" data-t="repo">Scan a GitHub repo with n8n</button><button class="tab ${tab==='code'?'on':''}" data-t="code">Code demo</button></div><div id="tabBody"></div>`);
  $$('#mBox .tab').forEach(b=>b.onclick=()=>n8nModal(b.dataset.t));const tb=$('#tabBody');
