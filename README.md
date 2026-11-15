@@ -1,10 +1,25 @@
 # 🪐 Flowscope
 
-### ▶️ Live app: **[arushish5-cyber.github.io/flowscope](https://arushish5-cyber.github.io/flowscope/)**
+<table>
+<tr>
+<td width="68%">
 
-[![Open the live app](https://img.shields.io/badge/Open%20the%20live%20app-ff8a5c?style=for-the-badge)](https://arushish5-cyber.github.io/flowscope/)
-[![Built on n8n](https://img.shields.io/badge/Built%20on-n8n-ea4b71?style=for-the-badge)](https://n8n.io)
-[![Installable app](https://img.shields.io/badge/Installable-PWA-3ee0d0?style=for-the-badge)](https://arushish5-cyber.github.io/flowscope/)
+### 👉 Start here
+| | |
+|---|---|
+| 🚀 **Open the app** | **[arushish5-cyber.github.io/flowscope](https://arushish5-cyber.github.io/flowscope/)** |
+| 🎬 **Watch the 2-minute film** | **[flowscope-film.mp4](media/flowscope-film.mp4)** |
+| 📱 **Put it on your phone** | Scan the QR code → **Share → Add to Home Screen** |
+| ⚙️ **See the 5 n8n workflows** | **[workflows folder](workflows)** · [how they work](#n8n-workflows) |
+| 🧠 **How it's built** | [brain, heart, face](#brain) · [why not just ask Claude?](#why-not-ai) |
+
+</td>
+<td width="32%" align="center">
+<img src="media/qr-app.png" alt="QR code that opens the Flowscope app" width="200"><br>
+<b>📱 Scan to open on your phone</b>
+</td>
+</tr>
+</table>
 
 **See every app your n8n automations touch as a 3D solar system, fix what's exposed in one click, and let n8n agents keep watch.**
 
@@ -84,6 +99,8 @@ The same rules also run as **Flowscope lint**: a CLI, a pre-commit hook and a Gi
 
 ---
 
+<a id="n8n-workflows"></a>
+
 ## 🖼️ The real workflows in n8n
 
 These are drawn by n8n's own canvas from the files in [`workflows/`](workflows). You can see them live in the app too: **Home → ❤️ How n8n powers it → 🔍 Look inside n8n** (no sign-in needed). A red ⚠ on a node only means "connect your own credential here". No keys are stored in these files.
@@ -105,6 +122,8 @@ These are drawn by n8n's own canvas from the files in [`workflows/`](workflows).
 
 ---
 
+<a id="brain"></a>
+
 ## 🧠 The brain, the heart, and the face
 
 | Part | What it is | Why it's built this way |
@@ -112,6 +131,8 @@ These are drawn by n8n's own canvas from the files in [`workflows/`](workflows).
 | 🧠 **Brain** | A rule engine in the page (`flowscope.html`): it reads n8n workflow JSON or code, finds every app, scores health, spots hazards, and the 🪄 Fixer writes the repaired workflow. | Rules, not AI, so it's **instant, free, private** (nothing uploaded) and gives **the same answer every time**. |
 | ❤️ **Heart** | **n8n**: 5 workflows that talk to the outside world (GitHub, the AI Agent node, Gmail, schedules, MCP). | No server of our own. n8n runs the agents 24/7 and does the AI part. |
 | 🪐 **Face** | The 3D solar system, plain-English fixes and the cute characters. | Beginners understand a picture faster than a report. |
+
+<a id="why-not-ai"></a>
 
 ## 🤔 Why not just ask Claude (or any AI agent)?
 
