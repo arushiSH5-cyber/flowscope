@@ -1,0 +1,21 @@
+{
+  "name": "Flowscope",
+  "short_name": "Flowscope",
+  "description": "See every app your n8n automations touch as a solar system, fix what is exposed, and let n8n agents keep watch.",
+  "start_url": "./flowscope.html#home",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#070a1f",
+  "theme_color": "#070a1f",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Map", "url": "./flowscope.html#map" },
+    { "name": "Fix", "url": "./flowscope.html#fix" },
+    { "name": "Agents", "url": "./flowscope.html#agents" }
+  ]
+}

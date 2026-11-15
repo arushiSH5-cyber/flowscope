@@ -5,6 +5,13 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#070a1f">
 <title>Flowscope</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Flowscope">
+<meta name="description" content="See every app your n8n automations touch as a solar system, fix what is exposed, and let n8n agents keep watch.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 <style>
@@ -276,6 +283,44 @@ body.t-fix #pg-fix,body.t-agents #pg-agents,body.t-learn #pg-learn{display:flex}
  #top .acts{margin-left:auto}
  .fixer{flex-direction:column}
 }
+/* home */
+body.t-home #pg-home{display:flex}
+.mrow.left{justify-content:flex-start}
+.hero{padding:26px 4px 8px;display:flex;flex-direction:column;gap:14px}
+.hlogo{width:84px;height:72px}
+.hero h1{font-family:"Outfit",var(--font);font-size:clamp(30px,5vw,46px);line-height:1.08;font-weight:700;letter-spacing:-.02em}
+.hero h1 span{background:linear-gradient(90deg,#ffc857,#ff8a5c);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{color:var(--soft);font-size:16.5px;line-height:1.55;max-width:600px}
+.sect{font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--soft);font-weight:700;margin-top:14px}
+.how{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.how div{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:16px 14px;display:flex;flex-direction:column;gap:4px}
+.how b{position:absolute;top:12px;right:14px;font-family:"Outfit",var(--font);color:var(--mute);font-size:14px}
+.how i{font-style:normal;font-size:26px}
+.how strong{font-family:"Outfit",var(--font);font-size:17px}
+.how span{color:var(--soft);font-size:13.5px;line-height:1.45}
+.hgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.hcard{text-align:left;background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:18px;display:flex;flex-direction:column;gap:6px;transition:transform .15s,border-color .15s}
+.hcard:hover{transform:translateY(-2px);border-color:var(--teal)}
+.hcard i{font-style:normal;font-size:30px}
+.hcard b{font-family:"Outfit",var(--font);font-size:19px;font-weight:700;display:flex;gap:8px;align-items:center}
+.hcard small{font-size:12px;font-weight:700;padding:1px 8px;border-radius:999px;background:var(--panel2);color:var(--soft)}
+.hcard small:empty{display:none}
+.hcard span{color:var(--soft);font-size:14px;line-height:1.5}
+.hcard em{font-style:normal;color:var(--teal);font-weight:600;font-size:14px;margin-top:4px}
+.installc div{display:flex;flex-direction:column;gap:6px}.installc b{font-size:16px}.installc span{color:var(--soft);font-size:14px;line-height:1.5}
+@media (max-width:860px){
+ .how{grid-template-columns:1fr 1fr}
+ .hgrid{grid-template-columns:1fr}
+ #tabs{position:fixed;left:0;right:0;bottom:0;z-index:70;margin:0;width:auto;border-radius:0;border:0;border-top:1px solid var(--line);background:rgba(9,12,36,.97);backdrop-filter:blur(14px);padding:6px 6px calc(6px + env(safe-area-inset-bottom));justify-content:space-around}
+ .tabb{flex:1;flex-direction:column;gap:2px;padding:6px 2px;font-size:11px;position:relative;box-shadow:none!important}
+ .tabb i{font-size:21px}
+ .tabb.on{background:rgba(255,255,255,.07)}
+ .tabb em{position:absolute;top:2px;right:calc(50% - 26px);padding:0 5px;font-size:10px}
+ #app{margin-bottom:calc(64px + env(safe-area-inset-bottom))}
+ #ctrls{position:absolute;left:14px;right:auto;bottom:14px;top:auto;display:flex}
+ #toast{bottom:calc(84px + env(safe-area-inset-bottom))}
+ #top{padding-top:calc(10px + env(safe-area-inset-top))}
+}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
@@ -284,12 +329,13 @@ body.t-fix #pg-fix,body.t-agents #pg-agents,body.t-learn #pg-learn{display:flex}
  <div class="logo" id="logo"></div>
  <div class="ttl"><b>Flowscope</b><span><span id="pname">bean-there</span><span class="tag demo" id="modeTag">DEMO</span><span class="opt-hide" id="pmeta" hidden></span></span></div>
  <nav id="tabs" role="tablist">
+  <button class="tabb" data-tab="home" role="tab"><i>🏠</i><span>Home</span></button>
   <button class="tabb on" data-tab="map" role="tab"><i>🪐</i><span>Map</span></button>
   <button class="tabb" data-tab="fix" role="tab"><i>🛠️</i><span>Fix</span><em id="tbFix"></em></button>
   <button class="tabb" data-tab="agents" role="tab"><i>🤖</i><span>Agents</span><em id="tbAg"></em></button>
   <button class="tabb" data-tab="learn" role="tab"><i>📚</i><span>Learn</span></button>
  </nav>
- <div class="acts"><button class="btn" id="n8nBtn" title="Map an n8n workflow or a repo"><b style="font-size:18px;line-height:0">+</b><span class="lbl">Add workflow</span></button></div>
+ <div class="acts"><button class="btn ghost" id="hdrInstall" hidden title="Install Flowscope as an app">📲<span class="lbl">Install</span></button><button class="btn" id="n8nBtn" title="Map an n8n workflow or a repo"><b style="font-size:18px;line-height:0">+</b><span class="lbl">Add workflow</span></button></div>
  <input type="file" id="dirIn" webkitdirectory multiple hidden>
 </header>
 <main id="app">
@@ -309,6 +355,31 @@ body.t-fix #pg-fix,body.t-agents #pg-agents,body.t-learn #pg-learn{display:flex}
   </div>
  </section>
  <section id="pages">
+  <div class="page" id="pg-home">
+   <div class="hero">
+    <div class="hlogo" id="homeLogo"></div>
+    <h1>See what your automations touch.<br><span>Fix what’s exposed.</span></h1>
+    <p>Flowscope turns an n8n workflow or a GitHub repo into a solar system, finds the security holes, and gives you n8n agents that keep watch for you.</p>
+    <div class="mrow left"><button class="btn" data-go="add">+ Add your workflow</button><button class="btn ghost" data-go="map">🪐 See the sample</button></div>
+   </div>
+   <h3 class="sect">How it works</h3>
+   <div class="how">
+    <div><b>1</b><i>➕</i><strong>Add</strong><span>Paste an n8n workflow or scan a GitHub repo</span></div>
+    <div><b>2</b><i>🪐</i><strong>See</strong><span>Your project is the sun, every app it uses is a planet</span></div>
+    <div><b>3</b><i>🛠️</i><strong>Fix</strong><span>Plain-English fixes, or let the Fixer do it</span></div>
+    <div><b>4</b><i>🤖</i><strong>Keep watch</strong><span>n8n agents check every push, failure and Monday</span></div>
+   </div>
+   <h3 class="sect">Where everything is</h3>
+   <div class="hgrid">
+    <button class="hcard" data-go="map"><i>🪐</i><b>Map</b><span>The solar system. Bigger, closer planets are apps you use more. Tap a planet or a space hazard to learn more.</span><em>Open Map →</em></button>
+    <button class="hcard" data-go="fix"><i>🛠️</i><b>Fix <small id="hFix"></small></b><span>Every problem with steps written for n8n, plus the 🪄 Fixer that hands back a repaired workflow.</span><em>Open Fix →</em></button>
+    <button class="hcard" data-go="agents"><i>🤖</i><b>Agents <small id="hAg"></small></b><span>5 real n8n workflows: Guard, Siren, Inspector, Buddy and Scout. Set one up and it keeps watch.</span><em>Open Agents →</em></button>
+    <button class="hcard" data-go="learn"><i>📚</i><b>Learn</b><span>A 60-second quiz, what each app does, and rules that stop your AI from repeating mistakes.</span><em>Open Learn →</em></button>
+   </div>
+   <h3 class="sect">Try a real project</h3>
+   <div class="card"><p class="empty" style="margin-bottom:10px">Our n8n reads the repo and an AI Agent explains it. Takes about 10 seconds.</p><div class="mrow left" id="homeReal"></div></div>
+   <div class="card installc"><div><b>📲 Use Flowscope as an app</b><span id="installBox"></span></div></div>
+  </div>
   <div class="page" id="pg-fix">
    <div class="phead"><h2>🛠️ Fix what’s exposed</h2><p>Every problem on your map, with the fix written for n8n. Or let the Fixer do it for you.</p></div>
    <div id="fixHero"></div>
@@ -646,7 +717,7 @@ $('#zReset').onclick=()=>{flyTo(null);goal.yaw=-.55};
 
 /* ---------- side + glance ---------- */
 function renderAll(){
- setTimeout(()=>{const n=openProbs().length;const b=$('#tbFix');if(b){b.textContent=n||'';b.classList.toggle('bad',n>0)}$('#tl').style.display=(S.saves||[]).length>1?'':'none';if(document.body.classList.contains('t-fix'))renderFix()},0);
+ setTimeout(()=>{const n=openProbs().length;const b=$('#tbFix');if(b){b.textContent=n||'';b.classList.toggle('bad',n>0)}$('#tl').style.display=(S.saves||[]).length>1?'':'none';if(document.body.classList.contains('t-fix'))renderFix();if(document.body.classList.contains('t-home'))renderHome()},0);
  $('#pname').textContent=S.name;$('#modeTag').style.display=(S.mode==='demo'||S.mode==='n8n-demo')?'':'none';$('#modeTag').textContent=S.mode==='n8n-demo'?'SAMPLE':'DEMO';$('#pmeta').textContent=S.unit==='node'?'Every app this n8n workflow touches':S.via==='n8n'?'Scanned by your n8n workflow':'Every outside service your app talks to';
  $('#foot').textContent=S.unit==='node'?'Mapped from the workflow JSON on this device. Nothing was uploaded. Keys inside credentials are never in the JSON, so only keys typed into nodes show up.':S.mode==='demo'?'Demo project with sample data. Swaps are options with tradeoffs, not verdicts. Free tiers and prices change, so check each pricing page before switching.':'Mapped from your files on this device. Nothing was uploaded, and .env values were never read. Swaps are options with tradeoffs, not verdicts.';
  const vs=S.services.filter(visSvc),ps=openProbs().sort((a,b)=>SEV[b.kind]-SEV[a.kind]),hs=health(),keysN=vs.filter(s=>s.keys.some(k=>k.where==='server')).length;
@@ -1002,8 +1073,24 @@ function fixWorkflow(wf){
 
 const AGENT={push:{e:'🛡️',n:'Guard'},errors:{e:'🚨',n:'Siren'},audit:{e:'🕵️',n:'Inspector'},mcp:{e:'🤖',n:'Buddy'},scan:{e:'🔭',n:'Scout'}};
 const N8N_IDS={scan:'FmtmqBrZmjyEHcds',push:'uabOeamLfekau9VS',audit:'MzSGjsJlUN5LguPq',errors:'0s8ZDJy4po1H3FBx',mcp:'x27Y8805w4lU9i8j'};
-function showTab(t){document.body.className=document.body.className.replace(/\bt-\w+/g,'').trim()+' t-'+t;$$('.tabb').forEach(b=>b.classList.toggle('on',b.dataset.tab===t));if(t!=='map'){closeDrawer?.();endTour?.()}if(t==='agents')renderAgents();if(t==='fix')renderFix();try{localStorage.setItem('sm_tab',t)}catch(e){}}
+function showTab(t){document.body.className=document.body.className.replace(/\bt-\w+/g,'').trim()+' t-'+t;$$('.tabb').forEach(b=>b.classList.toggle('on',b.dataset.tab===t));if(t!=='map'){closeDrawer?.();endTour?.()}if(t==='agents')renderAgents();if(t==='home')renderHome();if(location.hash!=='#'+t)history.replaceState(null,'','#'+t);if(t==='fix')renderFix();try{localStorage.setItem('sm_tab',t)}catch(e){}}
 $$('.tabb').forEach(b=>b.onclick=()=>showTab(b.dataset.tab));
+function renderHome(){const n=openProbs().length;$('#hFix')&&($('#hFix').textContent=n?n+' to fix':'');$('#hAg')&&($('#hAg').textContent=AUTOS.filter(a=>autoOn(a.id)).length+'/'+AUTOS.length+' on');
+ if($('#homeLogo')&&!$('#homeLogo').innerHTML)$('#homeLogo').innerHTML=LIGHTHOUSE();
+ const r=$('#homeReal');if(r&&!r.innerHTML){r.innerHTML=REAL.map(x=>`<button class="btn ghost" data-real="${x.repo}">${x.e} ${x.n}</button>`).join('');$$('#homeReal [data-real]').forEach(b=>b.onclick=()=>{showTab('map');scanViaN8n(lsGet('sm_n8n_url'),b.dataset.real)})}
+ renderInstall()}
+$$('[data-go]').forEach(b=>b.onclick=()=>{const g=b.dataset.go;if(g==='add')n8nModal('paste');else showTab(g)});
+let installEvt=null;
+addEventListener('beforeinstallprompt',e=>{e.preventDefault();installEvt=e;renderInstall()});
+addEventListener('appinstalled',()=>{installEvt=null;renderInstall();toast('Flowscope is installed. Open it from your home screen or dock.')});
+function renderInstall(){const box=$('#installBox'),hb=$('#hdrInstall');const standalone=matchMedia('(display-mode: standalone)').matches||navigator.standalone;const ios=/iphone|ipad|ipod/i.test(navigator.userAgent);
+ if(hb)hb.hidden=!installEvt||standalone;
+ if(!box)return;
+ box.innerHTML=standalone?'You’re using the installed app. It opens full screen, like any other app.':installEvt?'Install it on this device so it opens full screen from your dock or home screen. <button class="btn teal sm" id="installBtn" style="margin-left:6px">📲 Install</button>':ios?'On iPhone or iPad: tap the Share button in Safari, then <b>Add to Home Screen</b>.':'On a laptop: in Chrome or Edge, click the install icon at the right end of the address bar. On a phone: open this page and choose <b>Add to Home Screen</b>.';
+ const ib=$('#installBtn');if(ib)ib.onclick=doInstall}
+async function doInstall(){if(!installEvt)return;installEvt.prompt();await installEvt.userChoice;installEvt=null;renderInstall()}
+$('#hdrInstall').onclick=doInstall;
+if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost'))addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
 function renderFix(){const el=$('#fixHero');if(!el)return;if(!S.wf){el.innerHTML=`<div class="fixer"><div class="face">🪄</div><div class="bd"><b class="t">Fixer</b><p class="empty">Map an n8n workflow (the + Add workflow button) and the Fixer will hand you back a repaired copy.</p></div></div>`;return}
  const fx=fixWorkflow(S.wf);el.innerHTML=`<div class="fixer"><div class="face">🪄</div><div class="bd"><b class="t">Fixer can close ${fx.did.length} hole${fx.did.length===1?'':'s'} in “${esc(S.name)}”</b>
  ${fx.did.length?`<ul class="fixlist did">${fx.did.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:''}
@@ -1053,8 +1140,9 @@ const _closeModal=closeModal;closeModal=function(){$('#mBox').classList.remove('
 addEventListener('resize',resize);new ResizeObserver(resize).observe(cv);
 loadDemo();resize();mapN8n(SAMPLE_N8N,{demo:true,quiet:true});requestAnimationFrame(loop);
 $('#n8nBtn').onclick=()=>n8nModal('paste');
-renderWatch();{let t='map';try{t=localStorage.getItem('sm_tab')||'map'}catch(e){}showTab(t)}
-setTimeout(()=>toast('Sample n8n workflow. Tap a planet or a hazard, or press Tour. Add your own with + Add workflow.'),600);
+renderWatch();{const tabs=['home','map','fix','agents','learn'];let t=location.hash.slice(1);if(!tabs.includes(t)){t='home';try{t=localStorage.getItem('sm_tab')||'home'}catch(e){}}showTab(tabs.includes(t)?t:'home')}
+addEventListener('hashchange',()=>{const t=location.hash.slice(1);if(['home','map','fix','agents','learn'].includes(t))showTab(t)});
+setTimeout(()=>document.body.classList.contains('t-map')&&toast('Sample n8n workflow. Tap a planet or a hazard, or press Tour. Add your own with + Add workflow.'),600);
 </script>
 </body>
 </html>
