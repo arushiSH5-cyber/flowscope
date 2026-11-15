@@ -73,9 +73,9 @@ svg.i{width:18px;height:18px;flex:none}
 #tip{position:absolute;pointer-events:none;background:#12304a;color:#fffaf0;padding:7px 11px;border-radius:10px;font-size:13px;font-weight:800;max-width:280px;line-height:1.35;opacity:0;transition:opacity .12s;z-index:5;box-shadow:0 8px 24px rgba(0,0,0,.35)}
 #tip small{display:block;font-weight:700;color:#bfe3ee;font-size:12px}
 #cap{position:absolute;left:50%;top:5%;transform:translateX(-50%);text-align:center;pointer-events:none;opacity:0;transition:opacity .3s;width:min(640px,90%)}
-#cap .k{font-family:var(--mono);font-size:12.5px;color:#fff6d6;letter-spacing:.06em}
-#cap .t{font-size:clamp(24px,4vw,40px);font-weight:900;color:#fff;text-shadow:0 2px 18px rgba(8,60,90,.55);margin:4px 0}
-#cap .s{font-size:15px;color:#fff;text-shadow:0 1px 10px rgba(8,60,90,.7)}
+#cap .k{font-family:var(--mono);font-size:12.5px;font-weight:800;text-shadow:0 0 8px #fff;color:#0b8f8a;letter-spacing:.06em}
+#cap .t{font-size:clamp(24px,4vw,40px);font-weight:900;color:#12304a;text-shadow:0 0 18px #fff,0 0 6px #fff;margin:4px 0}
+#cap .s{font-size:15px;font-weight:800;color:#12304a;text-shadow:0 0 10px #fff,0 0 4px #fff}
 #skipTour{position:absolute;top:14px;right:14px;display:none;z-index:7}
 #stage.touring #ov{opacity:0;pointer-events:none}#stage.touring #ov>*{pointer-events:none}
 #ov{transition:opacity .3s}
@@ -475,8 +475,8 @@ function frame(dt){
  leaving=leaving.filter(l=>time-l.t<1.6);for(const l of leaving){const u=(time-l.t)/1.6;ctx.globalAlpha=1-u;const x=l.x+u*u*W*.6,y=l.y-u*60;ctx.drawImage(IMG.shark,x-28,y-21,56,42);ctx.globalAlpha=1}
  bursts=bursts.filter(b=>time-b.t<1.2);for(const b of bursts){const u=(time-b.t)/1.2;for(let i=0;i<22;i++){const a=i/22*Math.PI*2;ctx.fillStyle=i%2?'#0b8f8a':'#e8513a';ctx.globalAlpha=1-u;ctx.beginPath();ctx.arc(b.x+Math.cos(a)*u*120,b.y+Math.sin(a)*u*120-u*20,4*(1-u)+1,0,7);ctx.fill()}ctx.globalAlpha=1}
 }
-function rockBody(cx,cy,r,top,side){ctx.beginPath();ctx.moveTo(cx-r,cy);ctx.bezierCurveTo(cx-r*.95,cy+r*.55,cx-r*.35,cy+r*.95,cx,cy+r*1.02);ctx.bezierCurveTo(cx+r*.35,cy+r*.95,cx+r*.95,cy+r*.55,cx+r,cy);ctx.closePath();const g=ctx.createLinearGradient(cx-r,cy,cx+r,cy+r);g.addColorStop(0,side[0]);g.addColorStop(1,side[1]);ctx.fillStyle=g;ctx.fill();ctx.beginPath();ctx.ellipse(cx,cy,r,r*.36,0,0,Math.PI*2);const g2=ctx.createLinearGradient(cx,cy-r*.36,cx,cy+r*.36);g2.addColorStop(0,top[0]);g2.addColorStop(1,top[1]);ctx.fillStyle=g2;ctx.fill()}
-function shadow(x,z,r){const p=P(x,-90,z);ctx.fillStyle='rgba(8,80,110,.22)';ctx.beginPath();ctx.ellipse(p.x,p.y,r*p.s,r*p.s*Math.max(.18,Math.sin(cam.pitch)),0,0,Math.PI*2);ctx.fill()}
+function rockBody(cx,cy,r,top,side){ctx.beginPath();ctx.moveTo(cx-r,cy);ctx.bezierCurveTo(cx-r*.98,cy+r*.3,cx-r*.45,cy+r*.5,cx,cy+r*.52);ctx.bezierCurveTo(cx+r*.45,cy+r*.5,cx+r*.98,cy+r*.3,cx+r,cy);ctx.closePath();const g=ctx.createLinearGradient(cx-r,cy,cx+r,cy+r);g.addColorStop(0,side[0]);g.addColorStop(1,side[1]);ctx.fillStyle=g;ctx.fill();ctx.beginPath();ctx.ellipse(cx,cy,r,r*.36,0,0,Math.PI*2);const g2=ctx.createLinearGradient(cx,cy-r*.36,cx,cy+r*.36);g2.addColorStop(0,top[0]);g2.addColorStop(1,top[1]);ctx.fillStyle=g2;ctx.fill()}
+function shadow(x,z,r){const p=P(x,-90,z);ctx.fillStyle='rgba(8,80,110,.12)';ctx.beginPath();ctx.ellipse(p.x,p.y,r*p.s,r*p.s*Math.max(.18,Math.sin(cam.pitch)),0,0,Math.PI*2);ctx.fill()}
 function drawCenter(){
  const p=P(0,40,0),r=96*p.s,ps=openProbs(),worried=ps.some(x=>x.kind==='shark');
  shadow(0,0,110);
