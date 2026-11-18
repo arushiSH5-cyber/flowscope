@@ -415,7 +415,7 @@ body.t-home #pg-home{display:flex}
    <h3 class="sect" id="watchSec">🛰️ Your projects, checked on for you</h3>
    <div class="card watchc">
     <p class="empty">Students and vibe coders start lots of projects and forget them. Add your GitHub repos and Flowscope tells you which ones are alive, getting quiet, or forgotten. Scout (n8n) can scan any of them, and Inspector (n8n) can email you a check-in every Monday.</p>
-    <div class="mrow left"><input class="ta" id="watchIn" placeholder="owner/repo, e.g. arushiSH5-cyber/thecoop" style="flex:1;min-width:220px"><button class="btn" id="watchAdd">+ Watch</button></div>
+    <div class="mrow left"><input class="ta" id="watchIn" placeholder="owner/repo, e.g. your-name/your-app" style="flex:1;min-width:220px"><button class="btn" id="watchAdd">+ Watch</button></div>
     <div id="watchList"></div>
    </div>
    <h3 class="sect">Try a real project</h3>
@@ -1048,7 +1048,7 @@ function mapN8n(wf,opts={}){
 
 const SAMPLE_N8N={name:'Lead Machine (n8n demo workflow)',active:true,settings:{executionOrder:'v1'},nodes:[
  {name:'On form submission',type:'n8n-nodes-base.formTrigger',parameters:{formTitle:'Find leads',formFields:{values:[{fieldLabel:'Business type'},{fieldLabel:'City'}]}}},
- {name:'Scrape businesses',type:'n8n-nodes-base.httpRequest',parameters:{method:'POST',url:'https://api.apify.com/v2/acts/maps-scraper/run-sync-get-dataset-items?token=apify_api_Q7mXk2LpR9vT4wZ8nB3cY6hJ',sendBody:true}}, // flowscope-ignore: fake key for the labeled sample
+ {name:'Scrape businesses',type:'n8n-nodes-base.httpRequest',parameters:{method:'POST',url:'https://api.apify.com/v2/acts/maps-scraper/run-sync-get-dataset-items?token=apify_api_FAKEsampleNOTaRealKey0',sendBody:true}}, // flowscope-ignore: fake key for the labeled sample
  {name:'Has a website',type:'n8n-nodes-base.filter',parameters:{}},
  {name:'Find the email',type:'@n8n/n8n-nodes-langchain.informationExtractor',parameters:{text:'={{ $json.website }}'}},
  {name:'Google Gemini Chat Model',type:'@n8n/n8n-nodes-langchain.lmChatGoogleGemini',disabled:true,parameters:{}},
@@ -1067,7 +1067,7 @@ const SAMPLE_N8N={name:'Lead Machine (n8n demo workflow)',active:true,settings:{
 /* ---------- n8n modal ---------- */
 const N8N_DEFAULT='https://flowscope.app.n8n.cloud/webhook/flowscope-scan';
 const lsGet=k=>{let v='';try{v=localStorage.getItem(k)||''}catch(e){}return v||(k==='sm_n8n_url'?N8N_DEFAULT:'')},lsSet=(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}};
-const REAL=[{repo:'arushiSH5-cyber/thecoop',n:'The Coop',e:'🐔'},{repo:'arushiSH5-cyber/otto',n:'Otto',e:'🦉'},{repo:'arushiSH5-cyber/flowscope',n:'Flowscope itself',e:'🪐'}];
+const REAL=[{repo:'arushiSH5-cyber/flowscope',n:'Flowscope itself',e:'🪐'}];
 function n8nModal(tab='paste'){
  openModal(`<h2>Flowscope + n8n</h2><div class="tabs"><button class="tab ${tab==='paste'?'on':''}" data-t="paste">Map an n8n workflow</button><button class="tab ${tab==='repo'?'on':''}" data-t="repo">Scan a GitHub repo with n8n</button><button class="tab ${tab==='code'?'on':''}" data-t="code">Code demo</button></div><div id="tabBody"></div>`);
  $$('#mBox .tab').forEach(b=>b.onclick=()=>n8nModal(b.dataset.t));const tb=$('#tabBody');
@@ -1191,7 +1191,7 @@ function renderFix(){const el=$('#fixHero');if(!el)return;if(!S.wf){el.innerHTML
 function renderAgents(){const el=$('#agentsBody');if(!el)return;const email=lsGet('sm_email');const url=lsGet('sm_n8n_url');const base=url.replace(/\/webhook\/.*$/,'');
  el.innerHTML=`<div class="card"><div class="arow"><div><label class="lbl2">Email for alerts</label><input class="ta" id="aEmail" type="email" placeholder="you@yourmail.com" value="${esc(email)}"></div><div><label class="lbl2">Your n8n scan URL</label><input class="ta" id="aUrl" value="${esc(url)}"></div></div></div>
  <div class="agrid2">${AUTOS.map(a=>{const ag=AGENT[a.id],on=autoOn(a.id);return`<div class="agent ${on?'on':''}"><div class="top"><div class="face">${ag.e}</div><div class="nm"><b>${ag.n}</b><span>${a.t}</span></div><span class="st ${on?'on':'off'}" style="margin-left:auto">${on?'Running':'Not set up'}</span></div><div class="when">${a.when}</div><p>${a.d}</p><div class="nodes">${a.nodes.map(n=>`<span>${n}</span>`).join('')}</div>
- <div class="bar">${a.id==='scan'?`<button class="btn teal sm" data-real="arushiSH5-cyber/thecoop">🔭 Scan The Coop live</button>`:''}<button class="btn sm" data-copy="${a.id}">Copy to n8n</button>${/flowscope\.app\.n8n\.cloud/.test(base)&&N8N_IDS[a.id]?`<a class="btn ghost sm" target="_blank" rel="noopener" href="${base}/workflow/${N8N_IDS[a.id]}">Open in n8n</a>`:''}<button class="btn ghost sm" data-on="${a.id}">${on?'Turn off':'It’s running'}</button></div></div>`}).join('')}</div>`;
+ <div class="bar">${a.id==='scan'?`<button class="btn teal sm" data-real="arushiSH5-cyber/flowscope">🔭 Scan Flowscope live</button>`:''}<button class="btn sm" data-copy="${a.id}">Copy to n8n</button>${/flowscope\.app\.n8n\.cloud/.test(base)&&N8N_IDS[a.id]?`<a class="btn ghost sm" target="_blank" rel="noopener" href="${base}/workflow/${N8N_IDS[a.id]}">Open in n8n</a>`:''}<button class="btn ghost sm" data-on="${a.id}">${on?'Turn off':'It’s running'}</button></div></div>`}).join('')}</div>`;
  const save=()=>{lsSet('sm_email',$('#aEmail').value.trim());lsSet('sm_n8n_url',$('#aUrl').value.trim())};$('#aEmail').onchange=save;$('#aUrl').onchange=save;
  $$('#agentsBody [data-copy]').forEach(b=>b.onclick=()=>{save();copyText(JSON.stringify(fillWorkflow(b.dataset.copy),null,2),'Copied. In n8n, click an empty canvas and paste (Ctrl+V).')});
  $$('#agentsBody [data-real]').forEach(b=>b.onclick=()=>{showTab('map');scanViaN8n(lsGet('sm_n8n_url'),b.dataset.real)});
@@ -1260,7 +1260,7 @@ setTimeout(()=>document.body.classList.contains('t-map')&&toast('Sample n8n work
  setTimeout(()=>show(cur),1500);
 })();
 // Your projects: a check-in for every repo you started. Uses GitHub's public API from your browser; the list stays on this device.
-(()=>{const KEY='sm_watch2',DEF=['arushiSH5-cyber/flowscope','arushiSH5-cyber/thecoop','arushiSH5-cyber/truefalse','arushiSH5-cyber/otto','arushiSH5-cyber/sentinelpay','arushiSH5-cyber/CS-131-FINAL-PROJECT-'];
+(()=>{const KEY='sm_watch3',DEF=['arushiSH5-cyber/flowscope'];
  let list;try{list=JSON.parse(localStorage.getItem(KEY))||DEF}catch(e){list=DEF}
  const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(list))}catch(e){}};const cache={};
  const ago=d=>{const m=(Date.now()-d)/6e4;return m<60?Math.max(1,m|0)+' min ago':m<1440?(m/60|0)+' h ago':((m/1440|0)===1?'1 day ago':(m/1440|0)+' days ago')};
@@ -1276,7 +1276,7 @@ setTimeout(()=>document.body.classList.contains('t-map')&&toast('Sample n8n work
   $$('#watchList [data-wscan]').forEach(b=>b.onclick=()=>{showTab('map');scanViaN8n(lsGet('sm_n8n_url'),b.dataset.wscan)})};
  const fetchOne=r=>{if(cache[r])return;fetch('https://api.github.com/repos/'+r).then(x=>x.ok?x.json():Promise.reject(x.status===404?'Not found, or private':'GitHub is busy, try again soon'))
   .then(j=>{cache[r]={name:j.name,t:Date.parse(j.pushed_at),lang:j.language,issues:j.open_issues_count}}).catch(e=>{cache[r]={err:typeof e==='string'?e:'Couldn’t reach GitHub'}}).finally(render)};
- const add=()=>{const v=clean($('#watchIn').value);if(!/^[\w.-]+\/[\w.-]+$/.test(v)){toast('Use owner/repo, like arushiSH5-cyber/thecoop');return}if(!list.includes(v))list.unshift(v);$('#watchIn').value='';save();render();fetchOne(v)};
+ const add=()=>{const v=clean($('#watchIn').value);if(!/^[\w.-]+\/[\w.-]+$/.test(v)){toast('Use owner/repo, like your-name/your-app');return}if(!list.includes(v))list.unshift(v);$('#watchIn').value='';save();render();fetchOne(v)};
  $('#watchAdd')&&($('#watchAdd').onclick=add);$('#watchIn')&&$('#watchIn').addEventListener('keydown',e=>{if(e.key==='Enter')add()});
  render();list.forEach(fetchOne)})();
 </script>
